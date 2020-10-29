@@ -14,7 +14,7 @@ namespace BoshDev;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
- 
+
 use BoshDev\Themalizer\Core\Engine as Engine;
 
 /**
