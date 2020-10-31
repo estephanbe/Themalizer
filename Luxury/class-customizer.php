@@ -5,31 +5,21 @@
  * @package BoshDev
  */
 
-namespace BoshDev\Luxury;
-
-use BoshDev;
-use BoshDev\Helper\Tests;
-use BoshDev\Helper\Sanitizers;
+namespace Themalizer\Luxury;
 
 
-class Customizer {
-
-	use Tests;
-	use Sanitizers;
+class Customizer extends \Themalizer\Core\Engine {
 
 	public $sectionSettingsSelectors = array();
 	public $sectionSettingsIds       = array();
 	public $finalSectionSettings     = array();
 
-	function __construct( $init, $args = array() ) {
-		if ( is_string( $init ) ) {
-			$this->makePanel( $init, $args );
-		} else {
-			$this->processArgs( $init, $args );
-			$this->processSettings();
-			add_action( 'customize_register', array( $this, 'finalAddAction' ) );
-		}
+	function __construct( $args = array() ) {
 
+		$this->processArgs( $args );
+		$this->processSettings();
+		add_action( 'customize_register', array( $this, 'finalAddAction' ) );
+		
 	}
 
 	function finalAddAction( $wp_customize ) {
@@ -149,23 +139,19 @@ class Customizer {
 		}
 	}
 
-	function processArgs( $init, $args ) {
-		$this->is_init_test( $init, 'Make sure the "init" argument is instance of INIT class' );
-		$this->init = $init;
+	function processArgs( $args ) {
 
 		$this->args = (object) $args;
 		$this->testTheArgs();
 
-		$this->textDomain  = BoshDev::get( 'text_domain' );
-		$this->themePrefix = BoshDev::get( 'prefix' );
+		$this->textDomain  = self::get( 'text_domain' );
+		$this->themePrefix = self::get( 'prefix' );
 
 		$this->sectionTitle       = $this->args->section_title;
 		$this->sectionDescription = $this->args->section_description;
 		$this->sectionSettings    = $this->args->section_settings;
 		$this->sectionOtherArgs   = isset( $this->args->section_args ) ? $this->args->section_args : array();
 		$this->sectionID          = $this->themePrefix . '_' . strtolower( str_replace( ' ', '_', $this->sectionTitle ) );
-
-		unset( $this->init, $this->args );
 
 	}
 
@@ -185,30 +171,6 @@ class Customizer {
 			$msg4 = 'Add the type of the "' . $setting_slug . '" control';
 			self::empty_isset_test( $args['control']['type'], $msg4 ); // test if each control args array has type argument
 		}
-	}
-
-	function makePanel( $key, $args ) {
-		self::string_test( $key, 'panel' );
-		self::empty_test( $args, 'Make sure args is not empty' );
-		self::empty_isset_test( $args['init'], 'Make sure init is added to the args and is not empty' );
-		self::empty_isset_test( $args['title'], 'Make sure title is added to the args and is not empty' );
-		self::empty_isset_test( $args['description'], 'Make sure description is added to the args and is not empty' );
-
-		$this->themePrefix = BoshDev::get( 'prefix' );
-		unset( $args['init'] );
-
-		$this->panelArgs = $args;
-		$this->panel_id  = $this->themePrefix . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $args['title'] ) );
-
-		add_action(
-			'customize_register',
-			function( $wp_customize ) {
-				$wp_customize->add_panel(
-					$this->panel_id,
-					$this->panelArgs
-				);
-			}
-		);
 	}
 
 	function theSelector_ID( $setting_id ) {

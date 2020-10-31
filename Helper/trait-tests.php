@@ -5,7 +5,7 @@
  * @package BoshDev
  */
 
-namespace BoshDev\Themalizer\Helper;
+namespace Themalizer\Helper;
 
 /**
  * Contain testing methods

@@ -5,7 +5,7 @@
  * @package BoshDev
  */
 
-namespace BoshDev\Core;
+namespace Themalizer\Core;
 
 /**
  * Security Class:

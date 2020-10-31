@@ -7,14 +7,13 @@
 
 namespace  Themalizer\Core;
 
-use Helper\Tests;
+use Themalizer;
 
 /**
  * Initialize all the necessary actions and processes for any WordPress theme according to the provided arguments.
  */
-class Init {
-	use Tests;
-
+class Init extends Engine {
+	
 	/**
 	 * The theme object.
 	 * WordPress value.
@@ -129,6 +128,13 @@ class Init {
 	 * @var string 'main'
 	 */
 	private $script_file_name = 'main';
+
+	/**
+	 * The theme's js file name container, after processing.
+	 *
+	 * @var string
+	 */
+	private $main_script_file_name = '';
 
 	/**
 	 * The theme's admin customization js file name, it can't be amended.
@@ -249,12 +255,17 @@ class Init {
 	 */
 	private $customize_selective_refresh_widgets = true;
 
+	public $customizer_panel;
+
+	public $panel_id;
+
+
 	/**
 	 * Set of cusomizable properties.
 	 *
 	 * @var array
 	 */
-	public $customizable_properties = array(
+	private $customizable_properties = array(
 		'prefix',
 		'assets_dir_name',
 		'script_dir',
@@ -269,6 +280,7 @@ class Init {
 		'nav_menus',
 		'change_post_label_name',
 		'support_admin_script',
+		'customizer_panel'
 	);
 
 	/**
@@ -277,9 +289,9 @@ class Init {
 	 * @param array $custom_args if there is any amendments.
 	 */
 	public function __construct( $custom_args = array() ) {
-
+		self::check_framework();
 		$this->process_args( $custom_args );
-
+		$this->make_panel();
 		$this->add_initial_actions();
 	}
 
@@ -299,7 +311,7 @@ class Init {
 	 * @param array $custom_args array of customizable properties values.
 	 * @return void
 	 */
-	protected function process_args( $custom_args ) {
+	private function process_args( $custom_args ) {
 
 		if ( ! empty( $custom_args ) ) {
 			foreach ( $custom_args as $property => $value ) {
@@ -321,10 +333,10 @@ class Init {
 		$this->admin_stylesheet_name  = $this->prefix . '_admin_style'; // compose the admin stylesheet name.
 		$this->script_name            = $this->prefix . '_script'; // compose the script name.
 		$this->admin_script_name      = $this->prefix . '_admin_script'; // compose the admint script name.
-		$this->script_file_name       = $this->script_file_name . '.js'; // compose the scipt file name.
+		$this->main_script_file_name       = $this->script_file_name . '.js'; // compose the scipt file name.
 		$this->admin_script_file_name = $this->script_file_name . '_admin.js'; // compose the admin script file name.
 		$this->script_dir             = empty( $this->script_dir ) ? $this->assets_dir_uri . 'js/' : $this->dir_uri . $this->script_dir; // compose the script dir URI.
-		$this->js_src                 = $this->script_dir . $this->script_file_name; // compose the js file URI source.
+		$this->js_src                 = $this->script_dir . $this->main_script_file_name; // compose the js file URI source.
 		$this->admin_css_src          = $this->assets_dir_uri . 'css/admin.css'; // compose the admin stylesheet source.
 		$this->admin_js_src           = $this->script_dir . $this->admin_script_file_name; // compose the admin script source.
 
@@ -335,12 +347,30 @@ class Init {
 	 *
 	 * @return void
 	 */
-	protected function add_initial_actions() {
+	private function add_initial_actions() {
 		add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );
 		add_action( 'after_setup_theme', array( $this, 'theme_nav_menus' ) );
 		add_action( 'init', array( $this, 'change_post_object_name' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_basic_theme_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ) );
+	}
+
+	private function make_panel() {
+		self::empty_test( $this->customizer_panel , 'Make sure args is not empty' );
+		self::empty_isset_test( $this->customizer_panel['title'], 'Make sure title is added to the args and is not empty' );
+		self::empty_isset_test( $this->customizer_panel['description'], 'Make sure description is added to the args and is not empty' );
+
+		$this->panel_id  = Themalizer::get( 'prefix' ) . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $args['title'] ) );
+
+		add_action(
+			'customize_register',
+			function( $wp_customize ) {
+				$wp_customize->add_panel(
+					$this->panel_id,
+					$this->customizer_panel
+				);
+			}
+		);
 	}
 
 	/**
@@ -387,18 +417,8 @@ class Init {
 	 * @return void
 	 */
 	public function add_admin_theme_scripts( $hook_suffix ) {
-
 		if ( $this->support_admin_script ) {
 			wp_enqueue_media();
-
-			// phpcs:ignore
-			// if ( $hook_suffix == 'toplevel_page_lic_settings_slug' ) {
-			// wp_enqueue_style( 'lic_bootstrap4', $this->assets_dir_uri . 'css/bootstrap.min.css' );
-			// wp_enqueue_script( 'jQuery_script', $this->assets_dir_uri . 'js/libs/jquery-3.5.1.min.js', array(), $this->version, true );
-			// wp_enqueue_script( 'pooper_script', $this->assets_dir_uri . 'js/libs/popper.min.js', array(), $this->version, true );
-			// wp_enqueue_script( 'bootstrap4_script', $this->assets_dir_uri . 'js/libs/bootstrap.min.js', array(), $this->version, true );
-			// }.
-
 			wp_enqueue_style( $this->admin_stylesheet_name, $this->admin_css_src, array(), $this->version );
 			wp_enqueue_script( $this->admin_script_name, $this->admin_js_src, array(), $this->version, true );
 		}
@@ -435,4 +455,4 @@ class Init {
 			$labels->name_admin_bar     = "$plurar";
 		}
 	}
-} // class ends
+}

@@ -5,11 +5,11 @@
  * @package BoshDev
  */
 
-namespace BoshDev\Register;
+namespace Themalizer\Register;
 
 use BoshDev;
-use BoshDev\Helper\Tests;
-use BoshDev\Helper\Sanitizers;
+use Helper\Tests;
+use Helper\Sanitizers;
 
 /**
  * Create theme setting page with options.

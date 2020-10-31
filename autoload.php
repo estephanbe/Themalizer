@@ -14,6 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
+if ( class_exists( 'Themalizer' ) ) {
+	throw new exception("There is an initialization for a plugin or a theme which has the same name of Themalizer. You need to uninstall it in order to run this framework.");
+	exit();
+}
 
 /** Include Themalizer library */
 require_once 'vendor/autoload.php';
@@ -28,12 +32,14 @@ spl_autoload_register(
 	}
 );
 
-$GLOBALS['BoshDev\Themalizer'] = new BoshDev\Themalizer();
+
+
+$GLOBALS['BoshDev\Themalizer'] = new Themalizer();
 
 /**
  * Return the class URI to load the class
  *
- * @param String $class_name the class name which will be processed. Example: BoshDev\Themalizer\Core\Init.
+ * @param String $class_name the class name which will be processed. Example: Themalizer\Core\Init.
  * @return String processed class URI.
  */
 function get_class_uri( $class_name ) {
@@ -49,12 +55,11 @@ function get_class_uri( $class_name ) {
 	}
 
 	// Check if it is the Main class and return its URI DIR without proceed processing.
-	if ( 'BoshDev\Themalizer' === $class_name ) {
-		unset( $class_path_array[0] );
-		return __DIR__ . '/class-' . strtolower( $class_path_array[1] ) . '.php';
+	if ( 'Themalizer' === $class_name ) {
+		return __DIR__ . '/class-' . strtolower( $class_path_array[0] ) . '.php';
 	} else {
 		// unset the Themalizer file path as this file is already in themalizer folder.
-		unset( $class_path_array[0], $class_path_array[1] );
+		unset( $class_path_array[0] );
 	}
 
 	$class_path_array = array_values( $class_path_array );
@@ -92,11 +97,9 @@ function get_class_uri( $class_name ) {
 function is_themalizer( $arr ) {
 
 	// if the array's count is less than 2, it doesn't follow the framework namespace.
-	if ( 2 > count( $arr ) ) {
+	if ( 1 > count( $arr ) ) {
 		return false;
-	} elseif ( 'BoshDev' !== $arr[0] ) {
-		return false;
-	} elseif ( 'Themalizer' !== $arr[1] ) {
+	} elseif ( 'Themalizer' !== $arr[0] ) {
 		return false;
 	}
 

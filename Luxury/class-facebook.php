@@ -1,8 +1,8 @@
 <?php
-namespace BoshDev\Luxury;
+namespace Themalizer\Luxury;
 
-use BoshDev\Helper\tests;
-use BoshDev\Helper\sanitizes;
+use Helper\tests;
+use Helper\sanitizes;
 
 
 class Facebook 

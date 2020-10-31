@@ -5,7 +5,7 @@
  * @package Themalizer
  */
 
-namespace BoshDev\Themalizer\Helper;
+namespace Themalizer\Helper;
 
 /**
  * Sanitizing mehtods to sanitize outputs and inputs
@@ -19,33 +19,33 @@ trait Sanitizers {
 	 * @return string
 	 */
 	public static function get_sanitizing_method( $type ) {
-		$fun = '';
+		$method = '';
 		switch ( $type ) {
 			case 'text':
-				$fun = 'bod_text_field_sanitization';
+				$method = 'text_field_sanitization';
 				break;
 
 			case 'textarea':
-				$fun = 'bod_textarea_sanitization';
+				$method = 'textarea_sanitization';
 				break;
 
 			case 'url':
-				$fun = 'bod_url_sanitization';
+				$method = 'url_sanitization';
 				break;
 
 			case 'image':
-				$fun = 'bod_image_sanitization';
+				$method = 'image_sanitization';
 				break;
 
 			case 'color':
-				$fun = 'bod_color_sanitization';
+				$method = 'color_sanitization';
 				break;
 
 			default:
 				break;
 		}
 
-		return $fun;
+		return $method;
 	}
 
 	// =============================================== PHP
@@ -57,7 +57,7 @@ trait Sanitizers {
 	 * @param string $input Input to be sanitized.
 	 * @return string Sanitized string.
 	 */
-	public static function bod_text_field_sanitization( $input ) {
+	public static function text_field_sanitization( $input ) {
 		return sanitize_text_field( $input );
 	}
 
@@ -68,7 +68,7 @@ trait Sanitizers {
 	 * @param string $input Input to be sanitized.
 	 * @return string Sanitized string.
 	 */
-	public static function bod_textarea_sanitization( $input ) {
+	public static function textarea_sanitization( $input ) {
 		return sanitize_textarea_field( $input );
 	}
 
@@ -79,7 +79,7 @@ trait Sanitizers {
 	 * @param string $input URL to be sanitized.
 	 * @return string Sanitized URL.
 	 */
-	public static function bod_url_sanitization( $input ) {
+	public static function url_sanitization( $input ) {
 		return esc_url_raw( $input );
 	}
 
@@ -90,7 +90,7 @@ trait Sanitizers {
 	 * @param string $input Image source to be sanitized.
 	 * @return string Sanitized image source.
 	 */
-	public static function bod_image_sanitization( $input ) {
+	public static function image_sanitization( $input ) {
 		return esc_url_raw( $input );
 	}
 
@@ -101,7 +101,7 @@ trait Sanitizers {
 	 * @param string $input Hex color to be sanitized.
 	 * @return string Sanitized hex color.
 	 */
-	public static function bod_color_sanitization( $input ) {
+	public static function color_sanitization( $input ) {
 		return sanitize_hex_color( $input );
 	}
 
@@ -114,7 +114,7 @@ trait Sanitizers {
 	 * @param string $html_value HTML to be sanitized.
 	 * @return string Sanitized HTML.
 	 */
-	public static function bod_html_sanitization( $html_value ) {
+	public static function html_sanitization( $html_value ) {
 		return esc_html( $html_value );
 	}
 
@@ -125,7 +125,7 @@ trait Sanitizers {
 	 * @param string $url_value URL to be sanitized.
 	 * @return string Sanitized URL.
 	 */
-	public static function bod_html_url_sanitization( $url_value ) {
+	public static function html_url_sanitization( $url_value ) {
 		return esc_url( $url_value );
 	}
 
@@ -136,7 +136,7 @@ trait Sanitizers {
 	 * @param string $js_value JS to be sanitized.
 	 * @return string Sanitized JS.
 	 */
-	public static function bod_html_js_sanitization( $js_value ) {
+	public static function html_js_sanitization( $js_value ) {
 		return esc_js( $js_value );
 	}
 
@@ -147,7 +147,7 @@ trait Sanitizers {
 	 * @param string $attr_value attributes to be sanitized.
 	 * @return string Sanitized attributes.
 	 */
-	public static function bod_html_attr_sanitization( $attr_value ) {
+	public static function html_attr_sanitization( $attr_value ) {
 		return esc_attr( $attr_value );
 	}
 
@@ -158,7 +158,7 @@ trait Sanitizers {
 	 * @param string $textarea_value Textarea values to be sanitized.
 	 * @return string Sanitized textarea values.
 	 */
-	public static function bod_html_textarea_sanitization( $textarea_value ) {
+	public static function html_textarea_sanitization( $textarea_value ) {
 		return esc_textarea( $textarea_value );
 	}
 

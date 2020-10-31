@@ -1,7 +1,7 @@
 <?php 
-namespace BoshDev\Register;
+namespace Themalizer\Register;
 
-use BoshDev\Helper\tests;
+use Helper\tests;
 
 
 class Sidebar

@@ -1,7 +1,7 @@
 <?php 
-namespace BoshDev\Luxury;
+namespace Themalizer\Luxury;
 
-use BoshDev\Helper\tests;
+use Helper\tests;
 
 // this class is for loading more posts in AJAX request
 

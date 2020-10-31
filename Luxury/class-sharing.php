@@ -1,7 +1,7 @@
 <?php
-namespace BoshDev\Luxury;
+namespace Themalizer\Luxury;
 
-use BoshDev\Helper\Tests;
+use Helper\Tests;
 
 class Sharing {
 
