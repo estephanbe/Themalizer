@@ -43,7 +43,7 @@ class Engine {
 	use Tests;
 	use Sanitizers;
 
-	protected static function initialize_theme ($args) {
+	protected static function initialize_theme( $args ) {
 		self::check_framework();
 		$GLOBALS['BoshDev\Themalizer']->init = new Initialization( $args ); // phpcs:ignore
 	}
@@ -63,7 +63,7 @@ class Engine {
 
 		// TODO: define Setting->id property
 		$new_setting_page = new Setting( $args );
-		$GLOBALS['BoshDev\Themalizer']->settings[$new_setting_page->id] = $new_setting_page;
+		$GLOBALS['BoshDev\Themalizer']->settings[ $new_setting_page->id ] = $new_setting_page;
 	}
 
 	protected static function initialize_sharing( $linkingPlatforms, $sharingPlatforms = array() ) {
@@ -77,10 +77,10 @@ class Engine {
 		// TODO: define Setting->id property
 		$new_sharing = new Sharing( $linkingPlatforms );
 
-		$GLOBALS['BoshDev\Themalizer']->sharing[$new_sharing->id] = $new_sharing;
+		$GLOBALS['BoshDev\Themalizer']->sharing[ $new_sharing->id ] = $new_sharing;
 	}
 
-	protected static function initialize_customizer( $customizer_name, $init, $args) {
+	protected static function initialize_customizer( $customizer_name, $init, $args ) {
 		self::check_framework();
 		self::empty_test( $customizer_name, 'Please fill out the sharing arguments array.' );
 
@@ -92,9 +92,9 @@ class Engine {
 		$GLOBALS['BoshDev\Themalizer']->customizer[ $customizer_name ] = $new_customizer;
 	}
 
-	protected static function check_framework () {
+	protected static function check_framework() {
 		// Check if the auto run file was included.
-		self::isset_test( $GLOBALS['BoshDev\Themalizer'], 'You didn\'t initialize Themalizer framework' ); 
+		self::isset_test( $GLOBALS['BoshDev\Themalizer'], 'You didn\'t initialize Themalizer framework' );
 	}
 
 	/** Public Methods */
@@ -108,10 +108,10 @@ class Engine {
 	public static function get( $input ) {
 		self::check_framework();
 		// Case should be used here when calling properties of multiple classes.
-		return self::get_container()->init->get( $input );
+		return self::get_container()->init->get_property( $input );
 	}
- 
-	public static function get_container () {
+
+	public static function get_container() {
 		self::check_framework();
 		return $GLOBALS['BoshDev\Themalizer'];
 	}

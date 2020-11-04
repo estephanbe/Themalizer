@@ -7,13 +7,11 @@
 
 namespace  Themalizer\Core;
 
-use Themalizer;
-
 /**
  * Initialize all the necessary actions and processes for any WordPress theme according to the provided arguments.
  */
 class Init extends Engine {
-	
+
 	/**
 	 * The theme object.
 	 * WordPress value.
@@ -255,8 +253,18 @@ class Init extends Engine {
 	 */
 	private $customize_selective_refresh_widgets = true;
 
+	/**
+	 * The theme customizer panel info.
+	 *
+	 * @var string
+	 */
 	public $customizer_panel;
 
+	/**
+	 * The theme customizer panel generated id.
+	 *
+	 * @var string
+	 */
 	public $panel_id;
 
 
@@ -280,7 +288,7 @@ class Init extends Engine {
 		'nav_menus',
 		'change_post_label_name',
 		'support_admin_script',
-		'customizer_panel'
+		'customizer_panel',
 	);
 
 	/**
@@ -301,7 +309,7 @@ class Init extends Engine {
 	 * @param String $property the needed property.
 	 * @return mixed The property value
 	 */
-	public function get( $property ) {
+	public function get_property( $property ) {
 		return $this->{$property};
 	}
 
@@ -333,7 +341,7 @@ class Init extends Engine {
 		$this->admin_stylesheet_name  = $this->prefix . '_admin_style'; // compose the admin stylesheet name.
 		$this->script_name            = $this->prefix . '_script'; // compose the script name.
 		$this->admin_script_name      = $this->prefix . '_admin_script'; // compose the admint script name.
-		$this->main_script_file_name       = $this->script_file_name . '.js'; // compose the scipt file name.
+		$this->main_script_file_name  = $this->script_file_name . '.js'; // compose the scipt file name.
 		$this->admin_script_file_name = $this->script_file_name . '_admin.js'; // compose the admin script file name.
 		$this->script_dir             = empty( $this->script_dir ) ? $this->assets_dir_uri . 'js/' : $this->dir_uri . $this->script_dir; // compose the script dir URI.
 		$this->js_src                 = $this->script_dir . $this->main_script_file_name; // compose the js file URI source.
@@ -355,22 +363,29 @@ class Init extends Engine {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ) );
 	}
 
+	/**
+	 * A method to generat the theme customizer panel if $customizer_panel was not empty.
+	 *
+	 * @return void
+	 */
 	private function make_panel() {
-		self::empty_test( $this->customizer_panel , 'Make sure args is not empty' );
-		self::empty_isset_test( $this->customizer_panel['title'], 'Make sure title is added to the args and is not empty' );
-		self::empty_isset_test( $this->customizer_panel['description'], 'Make sure description is added to the args and is not empty' );
+		if ( ! empty( $this->customizer_panel ) ) {
+			self::empty_test( $this->customizer_panel, 'Make sure args is not empty' );
+			self::empty_isset_test( $this->customizer_panel['title'], 'Make sure title is added to the args and is not empty' );
+			self::empty_isset_test( $this->customizer_panel['description'], 'Make sure description is added to the args and is not empty' );
 
-		$this->panel_id  = Themalizer::get( 'prefix' ) . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $args['title'] ) );
+			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $this->customizer_panel['title'] ) );
 
-		add_action(
-			'customize_register',
-			function( $wp_customize ) {
-				$wp_customize->add_panel(
-					$this->panel_id,
-					$this->customizer_panel
-				);
-			}
-		);
+			add_action(
+				'customize_register',
+				function( $wp_customize ) {
+					$wp_customize->add_panel(
+						$this->panel_id,
+						$this->customizer_panel
+					);
+				}
+			);
+		}
 	}
 
 	/**

@@ -7,14 +7,10 @@
 
 namespace Themalizer\Register;
 
-use BoshDev;
-use Helper\Tests;
-use Helper\Sanitizers;
-
 /**
  * Create theme setting page with options.
  */
-class SettingPage {
+class SettingPage extends Engine{
 
 	use Tests;
 	use Sanitizers;

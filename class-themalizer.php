@@ -21,37 +21,44 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Themalizer extends Engine {
 
-	
+
 
 	/** ================ INITIALIZATIONS ================ */
-	
+
 
 	/**
 	 * Register a new Init class in $GLOBALS and overrides the previous
 	 *
-	 * @param Array $args the initialization params.
-	 * @return object Initialization object.
+	 * @param array $args the initialization params.
+	 * @return void Initialization object.
 	 */
 	public static function init( $args = array() ) {
-		self::initialize_theme($args);
+		self::initialize_theme( $args );
 	}
 
 	/**
 	 * Create Settings Page.
 	 *
 	 * @param array $args the settings arguments.
-	 * @return array The settings array.
+	 * @return void
 	 */
-	public static function setting( $args, $return_all = false ) {
-		return self::initialize_setting_page($args, $return_all);
+	public static function setting( $args ) {
+		self::initialize_setting_page( $args );
 	}
 
-	public static function get_setting($setting_id , $all=false) {
+	/**
+	 * Get setting page from the container
+	 *
+	 * @param string $setting_id
+	 * @param boolean $all
+	 * @return void
+	 */
+	public static function get_setting( $setting_id, $all = false ) {
 		self::check_framework();
 		if ( $all ) {
 			return self::get_container()->settings;
-		} 
-		return self::get_container()->settings[$setting_id];
+		}
+		return self::get_container()->settings[ $setting_id ];
 	}
 
 	/**
@@ -61,15 +68,15 @@ class Themalizer extends Engine {
 	 * @return array The sharing array.
 	 */
 	public static function sharing( $linking_platforms ) {
-		return self::initialize_sharing($linking_platforms);
+		return self::initialize_sharing( $linking_platforms );
 	}
 
-	public static function get_sharing($sharing_id , $all=false) {
+	public static function get_sharing( $sharing_id, $all = false ) {
 		self::check_framework();
 		if ( $all ) {
 			return self::get_container()->sharing;
-		} 
-		return self::get_container()->sharing[$sharing_id];
+		}
+		return self::get_container()->sharing[ $sharing_id ];
 	}
 
 	/**
@@ -79,10 +86,10 @@ class Themalizer extends Engine {
 	 * @return array The customizer array.
 	 */
 	public static function customizer( $customizer_name, $init, $args ) {
-		return self::initialize_customizer( $customizer_name, $init, $args);
+		return self::initialize_customizer( $customizer_name, $init, $args );
 	}
 
-	public static function get_customizer( $name, $all=false ) {
+	public static function get_customizer( $name, $all = false ) {
 		self::check_framework();
 		if ( $all ) {
 			return self::get_container()->customizer;
