@@ -7,7 +7,6 @@
 
 namespace Themalizer\Luxury;
 
-
 class Customizer extends \Themalizer\Core\Engine {
 
 	public $sectionSettingsSelectors = array();
@@ -19,7 +18,7 @@ class Customizer extends \Themalizer\Core\Engine {
 		$this->processArgs( $args );
 		$this->processSettings();
 		add_action( 'customize_register', array( $this, 'finalAddAction' ) );
-		
+
 	}
 
 	function finalAddAction( $wp_customize ) {

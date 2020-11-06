@@ -11,6 +11,10 @@
 
 namespace Themalizer\Core;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+}
+
 /**
  * Including all the classes in the framework
  */
@@ -30,12 +34,8 @@ use Themalizer\Luxury\Sharing as Sharing;
 use Themalizer\Helper\Tests;
 use Themalizer\Helper\Sanitizers;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
-}
-
 /**
- * Provides general methods and calls used internally in all the classes in the framework.
+ * Provides general methods and calls used internally in all classes in the framework.
  */
 class Engine {
 
@@ -61,9 +61,8 @@ class Engine {
 			$GLOBALS['BoshDev\Themalizer']->settings = array();
 		}
 
-		// TODO: define Setting->id property
-		$new_setting_page = new Setting( $args );
-		$GLOBALS['BoshDev\Themalizer']->settings[ $new_setting_page->id ] = $new_setting_page;
+		$new_setting_page                        = new Setting( $args );
+		$GLOBALS['BoshDev\Themalizer']->settings = $new_setting_page;
 	}
 
 	protected static function initialize_sharing( $linkingPlatforms, $sharingPlatforms = array() ) {

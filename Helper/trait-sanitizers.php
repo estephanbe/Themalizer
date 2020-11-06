@@ -48,7 +48,7 @@ trait Sanitizers {
 		return $method;
 	}
 
-	// =============================================== PHP
+	// =============================================== Input sanitization
 
 	/**
 	 * Sanitize text field values.
@@ -105,7 +105,7 @@ trait Sanitizers {
 		return sanitize_hex_color( $input );
 	}
 
-	// =============================================== HTML
+	// =============================================== Output sanitization
 
 	/**
 	 * Sanitize general HTML values.
@@ -160,6 +160,10 @@ trait Sanitizers {
 	 */
 	public static function html_textarea_sanitization( $textarea_value ) {
 		return esc_textarea( $textarea_value );
+	}
+
+	public static function html_int_sanitization ( $int ) {
+		return absint( $int );
 	}
 
 

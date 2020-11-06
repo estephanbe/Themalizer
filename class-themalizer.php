@@ -9,12 +9,11 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-use Themalizer\Core\Engine as Engine;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
+use Themalizer\Core\Engine as Engine;
 
 /**
  * Provides direct access to all methods in the framework through static calls
@@ -49,16 +48,13 @@ class Themalizer extends Engine {
 	/**
 	 * Get setting page from the container
 	 *
-	 * @param string $setting_id
-	 * @param boolean $all
-	 * @return void
+	 * @param string  $option_id the option name.
+	 * @return string
 	 */
-	public static function get_setting( $setting_id, $all = false ) {
+	public static function get_setting( $option_id ) {
 		self::check_framework();
-		if ( $all ) {
-			return self::get_container()->settings;
-		}
-		return self::get_container()->settings[ $setting_id ];
+		$setting = self::get_container()->settings->get_option_value( $option_id );
+		return reset( $setting );
 	}
 
 	/**
