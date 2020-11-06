@@ -48,13 +48,24 @@ class Themalizer extends Engine {
 	/**
 	 * Get setting page from the container
 	 *
-	 * @param string  $option_id the option name.
+	 * @param string $option_id the option name.
 	 * @return string
 	 */
 	public static function get_setting( $option_id ) {
 		self::check_framework();
 		$setting = self::get_container()->settings->get_option_value( $option_id );
 		return reset( $setting );
+	}
+
+	public static function custom_post_type( $singular, $plural, $description = '', $args = array() ) {
+		return self::initialize_custom_post_type( $singular, $plural, $description, $args );
+	}
+
+	public static function post_type_slug( $singular ) {
+		if ( ! isset( self::get_container()->custom_post_types[ $singular ] ) ) {
+			throw new \Exception( 'custom post type is not existed' );
+		}
+		return self::get_container()->custom_post_types[ $singular ]->get_slug();
 	}
 
 	/**

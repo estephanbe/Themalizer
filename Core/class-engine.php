@@ -57,12 +57,17 @@ class Engine {
 		self::check_framework();
 		self::empty_test( $args, 'Please fill out the settings arguments array.' );
 
-		if ( ! isset( self::get_container()->settings ) ) {
-			$GLOBALS['BoshDev\Themalizer']->settings = array();
+		$GLOBALS['BoshDev\Themalizer']->settings = new Setting( $args );
+	}
+
+	protected static function initialize_custom_post_type( $singular, $plural, $description = '', $args = array() ) {
+		self::check_framework();
+
+		if ( ! isset( self::get_container()->custom_post_types ) ) {
+			$GLOBALS['BoshDev\Themalizer']->custom_post_types = array();
 		}
 
-		$new_setting_page                        = new Setting( $args );
-		$GLOBALS['BoshDev\Themalizer']->settings = $new_setting_page;
+		$GLOBALS['BoshDev\Themalizer']->custom_post_types[ $singular ] = new PostType( $singular, $plural, $description, $args );
 	}
 
 	protected static function initialize_sharing( $linkingPlatforms, $sharingPlatforms = array() ) {
