@@ -53,6 +53,10 @@ class Themalizer extends Engine {
 		self::initialize_custom_taxonomy( $singular, $plural, $posts_scope, $args );
 	}
 
+	public static function sidebar( $args = array() ) {
+		self::initialize_sidebar( $args );
+	}
+
 	/**
 	 * Get setting page from the container
 	 *
@@ -77,6 +81,13 @@ class Themalizer extends Engine {
 			throw new \Exception( 'custom taxonomy is not existed' );
 		}
 		return self::get_container()->custom_taxonomies[ $singular ]->get_slug();
+	}
+
+	public static function echo_sidebar( $sidebar_name, $jquery = array() ) {
+		if ( ! isset( self::get_container()->sidebars[ $sidebar_name ] ) ) {
+			throw new \Exception( 'sidebar is not existed' );
+		}
+		self::get_container()->sidebars[ $sidebar_name ]->echo( $jquery );
 	}
 
 

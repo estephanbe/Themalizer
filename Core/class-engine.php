@@ -80,6 +80,17 @@ class Engine {
 		$GLOBALS['BoshDev\Themalizer']->custom_taxonomies[ $singular ] = new Taxonomy( $singular, $plural, $posts_scope, $args );
 	}
 
+	protected static function initialize_sidebar( $args = array() ) {
+		self::check_framework();
+		self::isset_test( $args['name'], 'please add the name of your sidebar' );
+
+		if ( ! isset( self::get_container()->sidebars ) ) {
+			$GLOBALS['BoshDev\Themalizer']->sidebars = array();
+		}
+
+		$GLOBALS['BoshDev\Themalizer']->sidebars[ $args['name'] ] = new Sidebar( $args );
+	}
+
 	protected static function initialize_sharing( $linkingPlatforms, $sharingPlatforms = array() ) {
 		self::check_framework();
 		self::empty_test( $linkingPlatforms, 'Please fill out the sharing arguments array.' );

@@ -1,94 +1,190 @@
-<?php 
+<?php
+/**
+ * Class File - Register sidebar Class
+ *
+ * @package Themalizer
+ * @copyright 2019-2020 BoshDev - Bisharah Estephan
+ * @author Bisharah Estephan (BoshDev Founder)
+ * @link https://boshdev.com/ BoshDev
+ * @license http://www.opensource.org/licenses/bsd-license.php BSD License
+ */
+
 namespace Themalizer\Register;
 
-use Helper\tests;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+}
 
+use Themalizer\Core\Engine;
 
-class Sidebar
-{
-  use tests;
-  
-  function __construct($init, $args=[])
-  {
-    $this->isInit_test($init, 'Make sure the "init" argument is instance of INIT class');
-    $this->init = $init;
-    $this->process_args($args);
-    add_action( 'widgets_init', [$this, 'registerSidebar'] );
-  }
+/**
+ * Register sidebar class.
+ */
+class Sidebar extends Engine {
 
-  public function registerSidebar () 
-  {
-    register_sidebar( array(
-      'name'          => $this->name,
-      'id'            => $this->id,
-      'description' => $this->description,
-      'class' => $this->class,
-      'before_widget' => $this->befWid,
-      'after_widget'  => $this->aftWid,
-      'before_title'  => $this->befTitle,
-      'after_title'   => $this->aftTitle,
-    ) );
-  }
+	/**
+	 * Sidebar name.
+	 *
+	 * @var string
+	 */
+	private $name = '';
 
-  public function echo ($jQuery=[])
-  {
-    
-    if (is_active_sidebar( $this->id )) {
-      dynamic_sidebar( $this->id );
-      if (!empty($jQuery)) {
-        $this->domScript($jQuery);
-      }
-    }
+	/**
+	 * Sidebar uniqe id.
+	 *
+	 * @var string
+	 */
+	private $id = '';
 
-  }
+	/**
+	 * Sidebar description.
+	 *
+	 * @var string
+	 */
+	private $description = 'Sidebar does not have description.';
 
-  private function domScript($jQuery)
-  {
-    ?>
-    <script>
-    jQuery(document).ready(function($) { 
-      <?php  
-      echo "\r\n";
-    
-      foreach ($jQuery as $selector => $action) { // lood through jQuery set
-        if (!is_array($action)) { // if action is str, then the method has no value like .show()
-          echo "$('$selector').$action();\r\n";
-        } else { // the action is a method which has value
-          foreach ($action as $method => $methodValue) { // loop through each method to apply it on the selector
-            if (!is_array($methodValue)) { // if the method value is str, the method has one value;
-              echo "$('$selector').$method('$methodValue');\r\n";
-            } else { // the method value is an array with a key as the first method value and a value as the second method value
-              foreach ($methodValue as $methodFirstArg => $methodSecondArg) {
-                echo "$('$selector').$method('$methodFirstArg', '$methodSecondArg');\r\n";
-              }              
-            }
-          } // foreach $action
-        } // if !is_array($action)
-      } // foreach $jQuery
+	/**
+	 * Sidebar class.
+	 *
+	 * @var string
+	 */
+	private $class = '';
 
-      ?>
-    });
-    </script>
-    <?php 
-  }
+	/**
+	 * Sidebar before widget html.
+	 *
+	 * @var string
+	 */
+	private $before_widget = '<div>';
 
-  private function process_args ($args)
-  {
-    $this->empty_test($args, 'please add sidebar args');
-    $this->isset_test($args['name'], 'please add the name of your sidebar');
-    $this->args = (OBJECT) $args;
+	/**
+	 * Sidebar after widget html.
+	 *
+	 * @var string
+	 */
+	private $after_widget = '</div>';
 
-    $this->name = $this->args->name;
-    $this->id = $this->init->prefix . '_' . strtolower(str_replace(' ', '_', $this->name));
+	/**
+	 * Before title html.
+	 *
+	 * @var string
+	 */
+	private $before_title = '<h2>';
 
-    $this->befWid = isset($this->args->before_widget) ? $this->args->before_widget : '';
-    $this->aftWid = isset($this->args->after_widget) ? $this->args->after_widget : '';
-    $this->befTitle = isset($this->args->before_title) ? $this->args->before_title : '';
-    $this->aftTitle = isset($this->args->after_title) ? $this->args->after_title : '';
-    $this->description = isset($this->args->description) ? $this->args->description : '';
-    $this->class = isset($this->args->class) ? $this->args->class : '';
-  }
+	/**
+	 * After title html.
+	 *
+	 * @var string
+	 */
+	private $after_title = '</h2>';
 
+	/**
+	 * Jquery manipulation container.
+	 *
+	 * @var array
+	 */
+	private $jquery = array();
+
+	/**
+	 * The constructor
+	 *
+	 * @param array $args the sidebar arguments.
+	 * @return void
+	 */
+	public function __construct( $args = array() ) {
+		$this->process_args( $args );
+
+		add_action(
+			'widgets_init',
+			function() {
+				register_sidebar(
+					array(
+						'name'          => $this->name,
+						'id'            => $this->id,
+						'description'   => $this->description,
+						'class'         => $this->class,
+						'before_widget' => $this->before_widget,
+						'after_widget'  => $this->after_widget,
+						'before_title'  => $this->before_title,
+						'after_title'   => $this->after_title,
+					)
+				);
+			}
+		);
+	}
+
+	/**
+	 * Process sidebar arguments.
+	 *
+	 * @param array $custom_args Sidebar arguments.
+	 * @return void
+	 */
+	private function process_args( $custom_args ) {
+		if ( ! empty( $custom_args ) ) {
+			foreach ( $custom_args as $property => $value ) {
+				$this->{$property} = $value;
+			}
+		}
+		$this->id = self::get( 'prefix' ) . '_' . strtolower( str_replace( ' ', '_', $this->name ) ) . '_sidebar';
+	}
+
+	/**
+	 * Echo the sidebar.
+	 *
+	 * @param array $jquery jQuery amendments to the sidebar.
+	 * @return void
+	 */
+	public function echo( $jquery = array() ) {
+
+		if ( is_active_sidebar( $this->id ) ) {
+
+			dynamic_sidebar( $this->id ); // echo the sidebar.
+
+			if ( ! empty( $jquery ) ) {
+				$this->jquery = $jquery;
+				add_action( 'wp_print_footer_scripts', array( $this, 'dom_script' ) ); // add the jquery scripts.
+			}
+		}
+
+	}
+
+	/**
+	 * Jquery manipulation to the sidebar.
+	 *
+	 * @return void
+	 */
+	public function dom_script() {
+		echo '<script>jQuery(document).ready(function($){';
+		foreach ( $this->jquery as $selector => $action ) { // lood through jQuery set.
+			if ( ! is_array( $action ) ) { // if action is str, then the method has no value like .show().
+				echo "$('$selector').$action();"; // phpcs:ignore
+			} else { // the action is a method which has value.
+				foreach ( $action as $method => $method_value ) { // loop through each method to apply it on the selector.
+					if ( ! is_array( $method_value ) ) { // if the method value is str, the method has one value;.
+						echo "$('$selector').$method('$method_value');"; // phpcs:ignore
+					} else { // the method value is an array with a key as the first method value and a value as the second method value.
+						foreach ( $method_value as $method_args ) {
+							$args = '';
+							foreach ( $method_args as $method_single_arg ) {
+								$args .= "'$method_single_arg',";
+							}
+							echo "$('$selector').$method($args);"; // phpcs:ignore
+						}
+					}
+				}
+			}
+		}
+		echo '});</script>';
+	}
+
+	/**
+	 * Get the sidebar id publicly
+	 *
+	 * @return string
+	 */
+	public function get_id() {
+		return $this->id;
+	}
 }
 
 
