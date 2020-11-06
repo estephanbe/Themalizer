@@ -70,6 +70,16 @@ class Engine {
 		$GLOBALS['BoshDev\Themalizer']->custom_post_types[ $singular ] = new PostType( $singular, $plural, $description, $args );
 	}
 
+	protected static function initialize_custom_taxonomy( $singular, $plural, $posts_scope = '', $args = array() ) {
+		self::check_framework();
+
+		if ( ! isset( self::get_container()->custom_taxonomies ) ) {
+			$GLOBALS['BoshDev\Themalizer']->custom_taxonomies = array();
+		}
+
+		$GLOBALS['BoshDev\Themalizer']->custom_taxonomies[ $singular ] = new Taxonomy( $singular, $plural, $posts_scope, $args );
+	}
+
 	protected static function initialize_sharing( $linkingPlatforms, $sharingPlatforms = array() ) {
 		self::check_framework();
 		self::empty_test( $linkingPlatforms, 'Please fill out the sharing arguments array.' );

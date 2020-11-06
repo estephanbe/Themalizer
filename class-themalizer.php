@@ -45,6 +45,14 @@ class Themalizer extends Engine {
 		self::initialize_setting_page( $args );
 	}
 
+	public static function custom_post_type( $singular, $plural, $description = '', $args = array() ) {
+		self::initialize_custom_post_type( $singular, $plural, $description, $args );
+	}
+
+	public static function custom_taxonomy( $singular, $plural, $posts_scope = '', $args = array() ) {
+		self::initialize_custom_taxonomy( $singular, $plural, $posts_scope, $args );
+	}
+
 	/**
 	 * Get setting page from the container
 	 *
@@ -57,16 +65,21 @@ class Themalizer extends Engine {
 		return reset( $setting );
 	}
 
-	public static function custom_post_type( $singular, $plural, $description = '', $args = array() ) {
-		return self::initialize_custom_post_type( $singular, $plural, $description, $args );
-	}
-
 	public static function post_type_slug( $singular ) {
 		if ( ! isset( self::get_container()->custom_post_types[ $singular ] ) ) {
 			throw new \Exception( 'custom post type is not existed' );
 		}
 		return self::get_container()->custom_post_types[ $singular ]->get_slug();
 	}
+
+	public static function taxonomy_slug( $singular ) {
+		if ( ! isset( self::get_container()->custom_taxonomies[ $singular ] ) ) {
+			throw new \Exception( 'custom taxonomy is not existed' );
+		}
+		return self::get_container()->custom_taxonomies[ $singular ]->get_slug();
+	}
+
+
 
 	/**
 	 * Create sharing buttons.
