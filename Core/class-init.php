@@ -264,16 +264,16 @@ class Init extends Engine {
 	/**
 	 * The theme customizer panel info.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $customizer_panel;
+	public $customizer_panel = array();
 
 	/**
 	 * The theme customizer panel generated id.
 	 *
 	 * @var string
 	 */
-	public $panel_id;
+	public $panel_id = '';
 
 
 	/**

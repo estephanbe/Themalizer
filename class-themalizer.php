@@ -90,7 +90,17 @@ class Themalizer extends Engine {
 		self::get_container()->sidebars[ $sidebar_name ]->echo( $jquery );
 	}
 
+	public static function customizer( $customizer_id, $args ) {
+		return self::initialize_customizer( $customizer_id, $args );
+	}
 
+	public static function get_customizer( $customizer_id, $all = false ) {
+		self::check_framework();
+		if ( $all ) {
+			return self::get_container()->customizers;
+		}
+		return $GLOBALS['BoshDev\Themalizer']->customizers[ $customizer_id ];
+	}
 
 	/**
 	 * Create sharing buttons.
@@ -108,24 +118,6 @@ class Themalizer extends Engine {
 			return self::get_container()->sharing;
 		}
 		return self::get_container()->sharing[ $sharing_id ];
-	}
-
-	/**
-	 * Customizer
-	 *
-	 * @param array $linking_platforms the customizer arguments.
-	 * @return array The customizer array.
-	 */
-	public static function customizer( $customizer_name, $init, $args ) {
-		return self::initialize_customizer( $customizer_name, $init, $args );
-	}
-
-	public static function get_customizer( $name, $all = false ) {
-		self::check_framework();
-		if ( $all ) {
-			return self::get_container()->customizer;
-		}
-		return $GLOBALS['BoshDev\Themalizer']->customizer[ $name ];
 	}
 
 	/** ================ HELPERS ================ */

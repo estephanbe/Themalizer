@@ -91,6 +91,18 @@ class Engine {
 		$GLOBALS['BoshDev\Themalizer']->sidebars[ $args['name'] ] = new Sidebar( $args );
 	}
 
+	protected static function initialize_customizer( $customizer_id, $args ) {
+		self::check_framework();
+		self::empty_test( $customizer_id, 'Please add the customizer id.' );
+
+		if ( ! isset( $GLOBALS['BoshDev\Themalizer']->customizers ) ) {
+			$GLOBALS['BoshDev\Themalizer']->customizers = array();
+		}
+
+		$GLOBALS['BoshDev\Themalizer']->customizers[ $customizer_id ] = new Customizer( $args );
+	}
+
+
 	protected static function initialize_sharing( $linkingPlatforms, $sharingPlatforms = array() ) {
 		self::check_framework();
 		self::empty_test( $linkingPlatforms, 'Please fill out the sharing arguments array.' );
@@ -103,18 +115,6 @@ class Engine {
 		$new_sharing = new Sharing( $linkingPlatforms );
 
 		$GLOBALS['BoshDev\Themalizer']->sharing[ $new_sharing->id ] = $new_sharing;
-	}
-
-	protected static function initialize_customizer( $customizer_name, $init, $args ) {
-		self::check_framework();
-		self::empty_test( $customizer_name, 'Please fill out the sharing arguments array.' );
-
-		if ( ! isset( $GLOBALS['BoshDev\Themalizer']->customizer ) ) {
-			$GLOBALS['BoshDev\Themalizer']->customizer = array();
-		}
-
-		$new_customizer = new Customizer( $init, $args );
-		$GLOBALS['BoshDev\Themalizer']->customizer[ $customizer_name ] = $new_customizer;
 	}
 
 	protected static function check_framework() {
