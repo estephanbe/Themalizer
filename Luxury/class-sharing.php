@@ -1,11 +1,26 @@
 <?php
+/**
+ * Class File - Customizer Class
+ *
+ * @package Themalizer
+ * @copyright 2019-2020 BoshDev - Bisharah Estephan
+ * @author Bisharah Estephan (BoshDev Founder)
+ * @link https://boshdev.com/ BoshDev
+ * @license http://www.opensource.org/licenses/bsd-license.php BSD License
+ */
+
 namespace Themalizer\Luxury;
 
-use Helper\Tests;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+}
 
-class Sharing {
+use Themalizer\Core\Engine;
 
-	use Tests;
+/**
+ * Manage the sharing and social media buttons.
+ */
+class Sharing extends Engine {
 
 	public $sharingAPI = array(
 		'facebook' => 'https://facebook.com/sharer.php?display=page&u=',

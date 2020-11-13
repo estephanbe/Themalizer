@@ -292,7 +292,7 @@ class Customizer extends Engine {
 	 * @param string $setting_id the setting id.
 	 * @return void
 	 */
-	public function c_setting( $setting_id ) {
+	public function setting( $setting_id ) {
 		self::empty_test( $setting_id, 'Please add the setting id.' );
 		$setting = get_option( $this->settings_processed_ids[ $setting_id ] );
 		$type    = $this->settings[ $setting_id ]['control']['type'];
