@@ -306,6 +306,7 @@ class Init extends Engine {
 	 */
 	public function __construct( $custom_args = array() ) {
 		self::check_framework();
+		self::initialize_security();
 		$this->process_args( $custom_args );
 		$this->make_panel();
 		$this->add_initial_actions();

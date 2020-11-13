@@ -43,6 +43,22 @@ class Engine {
 	use Tests;
 	use Sanitizers;
 
+	/**
+	 * Define if theme is under development or not.
+	 *
+	 * @var boolean
+	 */
+	public static $development = false;
+
+	/**
+	 * Initialize the security class
+	 *
+	 * @return class
+	 */
+	protected static function initialize_security() {
+		return new Security();
+	}
+
 	protected static function initialize_theme( $args ) {
 		self::check_framework();
 		$GLOBALS['BoshDev\Themalizer']->init = new Initialization( $args ); // phpcs:ignore
