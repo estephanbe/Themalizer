@@ -133,12 +133,11 @@ class Security extends Engine {
 	 * @return void
 	 */
 	private function smart_jquery_inclusion() {
-		// smart jquery inclusion
-		if ( ! is_admin() ) {
-			wp_deregister_script( 'jquery' );
-			wp_register_script( 'jquery', ( 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' ), false );
-			wp_enqueue_script( 'jquery' );
-		}
+		// if ( ! is_admin() ) {
+		// 	wp_deregister_script( 'jquery' );
+		// 	wp_register_script( 'jquery', ( 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' ), false );
+		// 	wp_enqueue_script( 'jquery' );
+		// }
 	}
 
 	/**
