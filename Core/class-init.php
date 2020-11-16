@@ -305,11 +305,19 @@ class Init extends Engine {
 	 * @param array $custom_args if there is any amendments.
 	 */
 	public function __construct( $custom_args = array() ) {
-		self::check_framework();
 		self::initialize_security();
 		$this->process_args( $custom_args );
 		$this->make_panel();
 		$this->add_initial_actions();
+
+		if ( class_exists( 'WooCommerce' ) ) {
+			add_action(
+				'after_setup_theme',
+				function() {
+					add_theme_support( 'woocommerce' );
+				}
+			);
+		}
 	}
 
 	/**
@@ -352,7 +360,7 @@ class Init extends Engine {
 		$this->admin_script_name      = $this->prefix . '_admin_script'; // compose the admint script name.
 		$this->main_script_file_name  = $this->script_file_name . '.js'; // compose the scipt file name.
 		$this->admin_script_file_name = $this->script_file_name . '_admin.js'; // compose the admin script file name.
-		$this->script_dir             = empty( $this->script_dir ) ? $this->assets_dir_uri . 'js/' : $this->dir_uri . $this->script_dir; // compose the script dir URI.
+		$this->script_dir             = empty( $this->script_dir ) ? $this->assets_dir_uri : $this->dir_uri . $this->script_dir; // compose the script dir URI.
 		$this->js_src                 = $this->script_dir . $this->main_script_file_name; // compose the js file URI source.
 		$this->admin_css_src          = $this->assets_dir_uri . 'css/admin.css'; // compose the admin stylesheet source.
 		$this->admin_js_src           = $this->script_dir . $this->admin_script_file_name; // compose the admin script source.

@@ -137,6 +137,7 @@ class Customizer extends Engine {
 			$this->section_settings_selectors[ $setting_slug ] = isset( $setting_args['selector'] ) ? substr( $setting_args['selector'], 1 ) : ''; // add the selector.
 			$setting_id                                        = $this->theme_prefix . '_' . $setting_slug . '_customizer_setting'; // generate the setting id.
 			$this->settings_processed_ids[ $setting_slug ]     = $setting_id; // add the setting id.
+			$setting_args['control']['type']                   = isset( $setting_args['control']['type'] ) ? $setting_args['control']['type'] : 'text';
 			// Merge the settings with the default settings in order to override any provided settings arguments.
 			$this->processed_settings[ $setting_id ] = array_merge(
 				array(
@@ -166,7 +167,6 @@ class Customizer extends Engine {
 			self::empty_test( $args, 'Add "' . $setting_slug . '"" setting args' ); // test if the settings args array is not empty.
 			self::empty_isset_test( $args['control'], 'Add the control of the "' . $setting_slug . '" setting' ); // test if the control section is set inside the settings args.
 			self::empty_isset_test( $args['control']['label'], 'Add the label of the "' . $setting_slug . '" control' ); // test if the contol args array is not empty.
-			self::empty_isset_test( $args['control']['type'], 'Add the type of the "' . $setting_slug . '" control' ); // test if each control args array has type argument.
 		}
 		if ( isset( $this->args->args['title'] ) ) { // to make sure that it is only taking the main input.
 			unset( $this->args->args['title'] );
@@ -204,7 +204,7 @@ class Customizer extends Engine {
 			$priority                    = isset( $setting_control['priority'] ) ? $setting_control['priority'] : 10; // set the priority variable.
 			$setting_control['section']  = $this->section_id; // override or add the section id.
 			$setting_control['settings'] = $setting_id; // override or add the settings id.
-			$setting_control['label'] = __( $setting_control['label'], $this->text_domain ); // phpcs:ignore
+			$setting_control['label']    = __( $setting_control['label'], $this->text_domain ); // phpcs:ignore
 
 			// Add control according to the field type.
 			switch ( $setting_control['type'] ) {
@@ -247,11 +247,9 @@ class Customizer extends Engine {
 				$wp_customize->selective_refresh->add_partial(
 					$setting_id . '-partial',
 					array(
-						'selector'        => $setting_selector,
-						'settings'        => array( $setting_id ),
-						'render_callback' => function() {
-							return get_option( $setting_id ); // phpcs:ignore
-						},
+						'selector' => $setting_selector,
+						'settings' => array( $setting_id ),
+
 					)
 				);
 			}
@@ -279,7 +277,7 @@ class Customizer extends Engine {
 				$html .= self::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
 				$html .= '" ';
 				break;
-			case 'cv':
+			case 'v':
 				$html = self::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
 				break;
 		}
@@ -289,13 +287,14 @@ class Customizer extends Engine {
 	/**
 	 * Echo the customizer setting value.
 	 *
-	 * @param string $setting_id the setting id.
-	 * @return void
+	 * @param string  $setting_id the setting id.
+	 * @param boolean $echo to echo the setting of not.
+	 * @return string if $echo is false.
 	 */
-	public function setting( $setting_id ) {
+	public function setting( $setting_id, $echo = true ) {
 		self::empty_test( $setting_id, 'Please add the setting id.' );
 		$setting = get_option( $this->settings_processed_ids[ $setting_id ] );
-		$type    = $this->settings[ $setting_id ]['control']['type'];
+		$type    = isset( $this->settings[ $setting_id ]['control']['type'] ) ? $this->settings[ $setting_id ]['control']['type'] : 'text';
 		switch ( $type ) {
 			case 'url':
 			case 'image':
@@ -308,7 +307,12 @@ class Customizer extends Engine {
 				$setting = self::html_sanitization( $setting );
 				break;
 		}
-		echo $setting; // phpcs:ignore
+
+		if ( $echo ) {
+			echo $setting; // phpcs:ignore
+		} else {
+			return $setting;
+		}
 	}
 
 	// There is issue with non text sanitization controls types like checkbox.

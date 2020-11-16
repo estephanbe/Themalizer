@@ -20,6 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Security extends Engine {
 
+	private $most_recent_php_version = '';
+	private $server_php_version      = '';
+
 	/**
 	 * Constructor
 	 */
@@ -106,16 +109,16 @@ class Security extends Engine {
 			if ( ! is_wp_error( $response )
 				&& isset( $response['response']['code'] )
 				&& 200 === $response['response']['code'] ) {
-				$body                = wp_remote_retrieve_body( $response );
-				$data                = json_decode( $body );
-				$most_recent_version = $data->version;
-				$server_php_version  = phpversion();
+				$body                          = wp_remote_retrieve_body( $response );
+				$data                          = json_decode( $body );
+				$this->most_recent_php_version = $data->version;
+				$this->server_php_version      = phpversion();
 
-				if ( $server_php_version !== $most_recent_version ) {
+				if ( $this->server_php_version !== $this->most_recent_php_version ) {
 					add_action(
 						'admin_notices',
 						function() {
-							$msg = __( 'Your php version is not the most recent one, this may make your site vulnerable. please update the php version to the most recent one!' );
+							$msg = __( 'Your php version is ' . $this->server_php_version . ' and it is not the most recent one which is ' . $this->most_recent_php_version . ', this may make your site vulnerable. please update the php version to the most recent one!' );
 							echo '<div class="error notice"><p>' . $msg . '</p></div>';
 						}
 					);

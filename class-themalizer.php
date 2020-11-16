@@ -57,6 +57,28 @@ class Themalizer extends Engine {
 		self::initialize_sidebar( $args );
 	}
 
+	public static function start_header( $html_classes = '', $title_seperator = '' ) {
+		self::echo_start_header( $html_classes, $title_seperator );
+	}
+
+	public static function header_css_link( $link, $url = false ) {
+		self::empty_test( $link, 'add the stylesheet link.' );
+		self::generate_header_css_link( $link, $url );
+	}
+
+	public static function wp_head() {
+		self::prioratize_wp_head();
+	}
+
+	public static function close_header( $body_class = '' ) {
+		self::echo_close_header( $body_class );
+	}
+
+	public static function footer() {
+		\wp_footer();
+		echo "\r\n</body>\r\n</html>";
+	}
+
 	/**
 	 * Get setting page from the container
 	 *
@@ -64,9 +86,8 @@ class Themalizer extends Engine {
 	 * @return string
 	 */
 	public static function get_setting( $option_id ) {
-		self::check_framework();
 		$setting = self::get_container()->settings->get_option_value( $option_id );
-		return reset( $setting );
+		return is_array( $setting ) ? reset( $setting ) : false;
 	}
 
 	public static function post_type_slug( $singular ) {
@@ -95,7 +116,6 @@ class Themalizer extends Engine {
 	}
 
 	public static function get_customizer( $customizer_id, $all = false ) {
-		self::check_framework();
 		if ( $all ) {
 			return self::get_container()->customizers;
 		}
@@ -113,7 +133,6 @@ class Themalizer extends Engine {
 	}
 
 	public static function get_sharing( $sharing_id, $all = false ) {
-		self::check_framework();
 		if ( $all ) {
 			return self::get_container()->sharing;
 		}
@@ -121,21 +140,6 @@ class Themalizer extends Engine {
 	}
 
 	/** ================ HELPERS ================ */
-
-	/**
-	 * Generate full URI to the given path.
-	 *
-	 * @param string  $path the path to be appended to the assets URI.
-	 * @param boolean $echo switch to echo the path or return it as it is.
-	 * @return string   return the path if the switch is False.
-	 */
-	public static function make_assets_uri( $path, $echo = true ) {
-		if ( $echo ) {
-			echo self::bod_html_url_sanitization( $GLOBALS['BoshDev\Themalizer']->init->get( 'assets_dir_uri' ) . $path ); // phpcs:ignore
-		} else {
-			return self::bod_html_url_sanitization( $GLOBALS['BoshDev\Themalizer']->init->get( 'assets_dir_uri' ) . $path );
-		}
-	}
 
 	/**
 	 * Get all the registered menus with their locations.
@@ -151,7 +155,22 @@ class Themalizer extends Engine {
 		return $locations;
 	}
 
+	/**
+	 * Register image size.
+	 *
+	 * @param string  $slug the image size name.
+	 * @param int     $width the image width.
+	 * @param int     $hight the image hieght.
+	 * @param boolean $crop if the image should be croped or not.
+	 * @return void
+	 */
+	public static function add_image_size( $slug, $width, $height, $crop = false ) {
+		self::generate_new_image_size( $slug, $width, $height, $crop );
+	}
 
+	public static function change_image_size( $url, $size_slug ) {
+		return self::customized_image_size( $url, $size_slug );
+	}
 
 
 }
