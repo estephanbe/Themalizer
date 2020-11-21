@@ -31,6 +31,7 @@ class Security extends Engine {
 
 		if ( ! self::$development ) {
 			$this->security_headers_and_ini_setups();
+			$this->check_php_version();
 		}
 
 	}
@@ -51,7 +52,6 @@ class Security extends Engine {
 	 */
 	private function security_practices() {
 		$this->smart_jquery_inclusion();
-		$this->check_php_version();
 
 		define( 'DISALLOW_FILE_EDIT', true );
 
