@@ -5,6 +5,7 @@ If you are using *Git* already in your theme, you need to clone Themalizer as a 
 ```bash
 git submodule add https://github.com/estephanbe/Themalizer.git
 ```
+And don't forget to ignore Themalizer directory in .gitignore file.
 
 If you are not using git in your theme, so you need just to clone Themalizer using the simple git clone method as following:
 
