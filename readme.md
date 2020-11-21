@@ -39,6 +39,6 @@ For securing your theme, go ahead and copy the following index.php file into you
 ```markdown
 .
 +-- Themalizer
-|	+-- index.php
+|+-- index.php
 ```
 
