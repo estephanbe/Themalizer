@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Themalizer\Core\Engine;
 
+use function PHPSTORM_META\type;
+
 /**
  * Manage the theme customizations.
  */
@@ -62,9 +64,12 @@ class ImageSize extends Engine {
 	public static function change_image_size( $url, $size_slug ) {
 		self::empty_test( $url, 'add the image url.' );
 		self::empty_test( $size_slug, 'add the size slug.' );
+		$attachment_id = $url;
+		if ( gettype( $attachment_id ) !== 'integer' ) {
+			$attachment_id = \attachment_url_to_postid( $url );
+		}
 
-		$attachment_id = \attachment_url_to_postid( $url );
-		return \wp_get_attachment_image_src( $attachment_id, $size_slug )[0];
+		return \esc_url( \wp_get_attachment_image_src( $attachment_id, $size_slug )[0] );
 	}
 
 

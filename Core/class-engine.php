@@ -32,6 +32,10 @@ use Themalizer\Luxury\MailChimp as MailChimp;
 use Themalizer\Luxury\Sharing as Sharing;
 use Themalizer\Luxury\ImageSize as ImageSize;
 
+/** Customized Classes */
+use Themalizer\Custom\NavWalker as NavWalker;
+
+
 /** Traits */
 use Themalizer\Helper\Tests;
 use Themalizer\Helper\Sanitizers;
@@ -127,8 +131,15 @@ class Engine {
 		$GLOBALS['BoshDev\Themalizer']->sharing[ $new_sharing->id ] = $new_sharing;
 	}
 
-	protected static function echo_start_header( $html_classes = '', $title_seperator = '' ) {
+	protected static function initialize_nav_walker() {
+		return new NavWalker();
+	}
 
+	protected static function echo_simple_header( $html_classes = '', $title_seperator = '' ) {
+		ThemeHeader::simple_header();
+	}
+
+	protected static function echo_start_header( $html_classes = '', $title_seperator = '' ) {
 		ThemeHeader::top_of_the_header( $html_classes, $title_seperator );
 	}
 

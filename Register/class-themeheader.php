@@ -24,6 +24,11 @@ class ThemeHeader extends Engine {
 
 	public static $wp_head = true;
 
+	public static function simple_header() { 
+		self::top_of_the_header();
+		self::bottom_of_the_header();
+	}
+
 	public static function top_of_the_header( $html_classes = '', $title_seperator = '>' ) { ?>
 		<!DOCTYPE html>
 		<html class="<?php echo $html_classes; ?>" <?php language_attributes(); ?>>

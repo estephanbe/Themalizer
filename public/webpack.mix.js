@@ -15,7 +15,7 @@ mix
 	.scripts([
 
 	], 'assets/main.js')
-	.sass('assets/sass/style.scss', '')
+	.sass('assets/sass/style.sass', '')
     .options({
         processCssUrls: false
     });

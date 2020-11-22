@@ -57,6 +57,14 @@ class Themalizer extends Engine {
 		self::initialize_sidebar( $args );
 	}
 
+	public static function nav_walker( $args = array() ) {
+		return self::initialize_nav_walker();
+	}
+
+	public static function simple_header() {
+		self::echo_simple_header();
+	}
+
 	public static function start_header( $html_classes = '', $title_seperator = '' ) {
 		self::echo_start_header( $html_classes, $title_seperator );
 	}
