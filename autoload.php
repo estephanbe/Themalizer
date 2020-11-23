@@ -15,12 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( class_exists( 'Themalizer' ) ) {
-	throw new exception("There is an initialization for a plugin or a theme which has the same name of Themalizer. You need to uninstall it in order to run this framework.");
+	throw new exception( 'There is an initialization for a plugin or a theme which has the same name of Themalizer. You need to uninstall it in order to run this framework.' );
 	exit();
 }
 
-/** Include Themalizer library */
+/** Include external libraries */
 require_once 'vendor/autoload.php';
+
+/** Include Helper Functions */
+require_once 'themalizer-helper-functions.php';
 
 /** Check if file exists and load the classes automatically */
 spl_autoload_register(

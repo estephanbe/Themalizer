@@ -275,6 +275,13 @@ class Init extends Engine {
 	 */
 	public $panel_id = '';
 
+	/**
+	 * Enable MailChimp Support.
+	 *
+	 * @var boolean
+	 */
+	private $mailchimp = false;
+
 
 	/**
 	 * Set of cusomizable properties.
@@ -297,6 +304,7 @@ class Init extends Engine {
 		'change_post_label_name',
 		'support_admin_script',
 		'customizer_panel',
+		'mailchimp',
 	);
 
 	/**
@@ -305,10 +313,20 @@ class Init extends Engine {
 	 * @param array $custom_args if there is any amendments.
 	 */
 	public function __construct( $custom_args = array() ) {
+		self::initialize_constants();
 		self::initialize_security();
 		$this->process_args( $custom_args );
+
+		define( 'THEMALIZER_THEME_PREFIX', $this->prefix );
+		define( 'THEMALIZER_STYLE_NAME', $this->stylesheet_name );
+		define( 'THEMALIZER_SCRIPT_NAME', $this->script_name );
+
 		$this->make_panel();
 		$this->add_initial_actions();
+
+		if ( $this->mailchimp ) {
+			$this->mailchimp_support();
+		}
 
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_action(
@@ -388,8 +406,8 @@ class Init extends Engine {
 	private function make_panel() {
 		if ( ! empty( $this->customizer_panel ) ) {
 			self::empty_test( $this->customizer_panel, 'Make sure args is not empty' );
-			self::empty_isset_test( $this->customizer_panel['title'], 'Make sure title is added to the args and is not empty' );
-			self::empty_isset_test( $this->customizer_panel['description'], 'Make sure description is added to the args and is not empty' );
+			self::empty_isset_test( $this->customizer_panel['title'], 'Make sure panel title is added to the args and is not empty' );
+			self::empty_isset_test( $this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty' );
 
 			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $this->customizer_panel['title'] ) );
 
@@ -439,7 +457,7 @@ class Init extends Engine {
 	 */
 	public function add_basic_theme_scripts() {
 		wp_enqueue_style( $this->stylesheet_name, get_stylesheet_uri(), array(), $this->version );
-		wp_enqueue_script( $this->script_name, $this->js_src, array(), $this->version, true );
+		wp_enqueue_script( THEMALIZER_SCRIPT_NAME, $this->js_src, array(), $this->version, true );
 	}
 
 	/**
@@ -486,5 +504,68 @@ class Init extends Engine {
 			$labels->menu_name          = "$plurar";
 			$labels->name_admin_bar     = "$plurar";
 		}
+	}
+
+	public function mailchimp_support() {
+		self::initialize_mailchimp();
+
+		add_action(
+			'wp_enqueue_scripts',
+			function() {
+				$url    = self::mailchimp_action_url( false );
+				$script = <<<EOD
+				$(document).ready(function () {
+					var successModal = document.getElementById("themalizer-mailchimp-success-message-modal");
+					var failureModal = document.getElementById("themalizer-mailchimp-failure-message-modal");
+
+					// Get the <span> element that closes the modal
+					var closeBtnSuccess = document.querySelectorAll('#themalizer-mailchimp-success-message-modal .close')[0];
+					var closeBtnFailure = document.querySelectorAll('#themalizer-mailchimp-failure-message-modal .close')[0];
+
+					closeBtnSuccess.onclick = function() {
+						successModal.style.display = "none";
+					}
+
+					closeBtnFailure.onclick = function() {
+						failureModal.style.display = "none";
+					}
+
+					// When the user clicks anywhere outside of the modal, close it
+					window.onclick = function(event) {
+						if ( event.target == successModal ) {
+							successModal.style.display = "none";
+						} else if ( event.target == failureModal ) {
+							failureModal.style.display = "none";
+						}
+					}
+
+					$('#themalizer-mailchimp-form').submit(function(e){
+						e.preventDefault();
+						var email = $('#themalizer-mailchimp-form input[name=email]').val();
+						
+						$.ajax({
+							type: "POST",
+							url: "$url",
+							data: JSON.stringify({"email": email}),
+							dataType: 'json',
+							contentType: 'application/json',
+							success: function (response) {
+								if ( 200 === response.status ) {
+									successModal.style.display = "block";
+									$('#themalizer-mailchimp-form input[name=email]').val('');
+								}
+							},
+							error: function (request, status, error) {
+								failureModal.style.display = "block";
+								$('#themalizer-mailchimp-form input[name=email]').val('');
+							}
+						});
+					});
+				});
+				EOD;
+				\wp_add_inline_script( THEMALIZER_SCRIPT_NAME, $script );
+				\wp_add_inline_style( THEMALIZER_STYLE_NAME, '#themalizer-mailchimp-form .modal{display:none;position:fixed;z-index:1;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:#000;background-color:rgba(0,0,0,.4)}#themalizer-mailchimp-form .modal-content{background-color:#fefefe;margin:15% auto;padding:20px;border:1px solid #888;width:20%}#themalizer-mailchimp-form .modal-content p{text-align:center}#themalizer-mailchimp-form .close{color:#aaa;float:right;font-size:28px;font-weight:700}#themalizer-mailchimp-form .close:focus,#themalizer-mailchimp-form .close:hover{color:#000;text-decoration:none;cursor:pointer}' );
+			}
+		);
 	}
 }

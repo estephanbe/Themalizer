@@ -1,0 +1,1 @@
+- Create a class and a patern to allow developers to create custom endpoints.

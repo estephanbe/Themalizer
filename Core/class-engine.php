@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Including all the classes in the framework
  */
+use Themalizer\Core\Constants as Constants;
 use Themalizer\Core\Init as Initialization;
 use Themalizer\Core\Security as Security;
 use Themalizer\Register\PostType as PostType;
@@ -55,6 +56,15 @@ class Engine {
 	 * @var boolean
 	 */
 	public static $development = false;
+
+	/**
+	 * Initialize the security class
+	 *
+	 * @return class
+	 */
+	protected static function initialize_constants() {
+		return new Constants();
+	}
 
 	/**
 	 * Initialize the security class
@@ -129,6 +139,10 @@ class Engine {
 		$new_sharing = new Sharing( $linkingPlatforms );
 
 		$GLOBALS['BoshDev\Themalizer']->sharing[ $new_sharing->id ] = $new_sharing;
+	}
+
+	protected static function initialize_mailchimp() {
+		return new MailChimp();
 	}
 
 	protected static function initialize_nav_walker() {
@@ -214,6 +228,14 @@ class Engine {
 		} else {
 			return self::html_url_sanitization( $GLOBALS['BoshDev\Themalizer']->init->get( 'dir_uri' ) . $path );
 		}
+	}
+
+	public static function mailchimp_action_url( $echo = true ) {
+		$url = \esc_url( \get_rest_url() . THEMALIZER_REST_API_NAMESPACE . THEMALIZER_REST_API_MAILCHIMP_ENDPOINT );
+		if ( $echo ) {
+			return $url;
+		}
+		return $url;
 	}
 
 

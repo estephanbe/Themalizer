@@ -53,6 +53,12 @@ class Themalizer extends Engine {
 		self::initialize_custom_taxonomy( $singular, $plural, $posts_scope, $args );
 	}
 
+	/**
+	 * Registering Sidebar
+	 *
+	 * @param array $args the arguments of register_sidebar() WP function.
+	 * @return void
+	 */
 	public static function sidebar( $args = array() ) {
 		self::initialize_sidebar( $args );
 	}
@@ -112,6 +118,13 @@ class Themalizer extends Engine {
 		return self::get_container()->custom_taxonomies[ $singular ]->get_slug();
 	}
 
+	/**
+	 * Echo the sidebar
+	 *
+	 * @param string $sidebar_name the registered sidebar name.
+	 * @param array  $jquery jquery manipulations.
+	 * @return void
+	 */
 	public static function echo_sidebar( $sidebar_name, $jquery = array() ) {
 		if ( ! isset( self::get_container()->sidebars[ $sidebar_name ] ) ) {
 			throw new \Exception( 'sidebar is not existed' );
@@ -119,6 +132,24 @@ class Themalizer extends Engine {
 		self::get_container()->sidebars[ $sidebar_name ]->echo( $jquery );
 	}
 
+	/**
+	 * Create Customizer Object which is the customized section in the theme's panel.
+	 *
+	 * - $args['title'] string The customizer title in the panel.
+	 * - $args['description'] string The customizer description in the panel.
+	 * - $args['args'] array The customizer.
+	 * - $args['settings'] array Settings array which defines the controls and settings.
+	 * - - $args['settings'][$setting_slug] array Defines the arguments to initiate the single setting inside the section.
+	 * - - $setting_slug: The setting slug which will be used to call the registered setting:
+	 * - - - $args['settings'][$setting_slug]['selector'] The selection which will be used to initiate the setting and link it with the partial view.
+	 * - - - $args['settings'][$setting_slug]['control'] The control arguments, take the following arguments plus the default control arguments.
+	 * - - - - $args['settings'][$setting_slug]['control']['label'] The control label.
+	 * - - - - $args['settings'][$setting_slug]['control']['type'] The control type.
+	 *
+	 * @param string $customizer_id the customizer name which will be used to call the customizer.
+	 * @param array  $args (see above).
+	 * @return object
+	 */
 	public static function customizer( $customizer_id, $args ) {
 		return self::initialize_customizer( $customizer_id, $args );
 	}
@@ -180,5 +211,56 @@ class Themalizer extends Engine {
 		return self::customized_image_size( $url, $size_slug );
 	}
 
+	public static function mailchimp_form( $args ) {
+		$args            = (object) $args;
+		$form_class      = $args->class ? ' class="' . \esc_attr( $args->class ) . '" ' : '';
+		$input_order     = $args->input_order ? $args->input_order : 1;
+		$input_attrs     = '';
+		$success_message = $args->success_message ? $args->success_message : 'You are subscribed!';
+		$failure_message = $args->failure_message ? $args->failure_message : 'Something went wrong, please try again later!';
 
+		if ( $args->input && is_array( $args->input ) ) {
+			foreach ( $args->input as $attr => $attr_value ) {
+				$input_attrs .= ' ' . $attr . '="' . $attr_value . '" ';
+			}
+		}
+
+		?>
+		<form id="themalizer-mailchimp-form" <?php echo $form_class; ?> method="POST" action="<?php self::mailchimp_action_url(); ?>">
+			<?php
+			if ( 1 === $input_order ) {
+				echo $args->before_input ? $args->before_input : '';
+					echo '<input type="email" name="email" ' . $input_attrs . ' required>';
+				echo $args->after_input ? $args->after_input : '';
+			}
+
+			if ( $args->submit ) {
+				echo $args->submit;
+			} else {
+				echo '<button type="submit"></button>';
+			}
+
+			if ( 2 === $input_order ) {
+				echo $args->before_input ? $args->before_input : '';
+					echo '<input type="email" name="email" ' . $input_attrs . ' required>';
+				echo $args->after_input ? $args->after_input : '';
+			}
+			?>
+			<div id="themalizer-mailchimp-success-message-modal" class="modal">
+				<!-- Modal content -->
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<p><?php echo \esc_html( $success_message ); ?></p>
+				</div>
+			</div>
+			<div id="themalizer-mailchimp-failure-message-modal" class="modal">
+				<!-- Modal content -->
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<p><?php echo \esc_html( $failure_message ); ?></p>
+				</div>
+			</div>
+		</form>
+		<?php
+	}
 }

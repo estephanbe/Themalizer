@@ -164,7 +164,7 @@ class SettingPage extends Engine {
 	}
 
 	/**
-	 * Register the setting page in the admin menu.
+	 * Register the setting page in the appearance menu.
 	 *
 	 * @return void
 	 */
@@ -494,7 +494,7 @@ class SettingPage extends Engine {
 	 * @return void
 	 */
 	public function add_setting_page_style() {
-		echo '<style>' . self::html_attr_sanitization( '#themalizer_settings_page{background-color:#fff;padding:2rem;margin:1rem}#themalizer_settings_page>h1{text-align:center;padding:1rem;margin-bottom:4rem;font-size:300%;font-weight:700}#themalizer_settings_page h2{margin-bottom:.5rem;font-size:150%;font-weight:700}#themalizer_settings_page .form-table{background-color:#fafafa;border:1px solid #dee2e6;width:100%;height:auto;border-collapse:separate;border-spacing:1rem}.switch-msgs{color:#6c757d!important}.themalizer-settings-page-input{display:block;width:100%;height:calc(1.5em + .75rem + 2px);padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;color:#495057;background-color:#fff;background-clip:padding-box;border:1px solid #ced4da;border-radius:.25rem;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}.themalizer-settings-page-input-description{color:#6c757d!important;padding-left:.5rem;padding-top:.5rem}' ) . ' </style>';
+		echo '<style>#themalizer_settings_page{background-color:#fff;padding:2rem;margin:1rem}#themalizer_settings_page>h1{text-align:center;padding:1rem;margin-bottom:4rem;font-size:300%;font-weight:700}#themalizer_settings_page h2{margin-bottom:.5rem;font-size:150%;font-weight:700}#themalizer_settings_page .form-table{background-color:#fafafa;border:1px solid #dee2e6;width:100%;height:auto;border-collapse:separate;border-spacing:1rem}.switch-msgs{color:#6c757d!important}.themalizer-settings-page-input{display:block;width:100%;height:calc(1.5em + .75rem + 2px);padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;color:#495057;background-color:#fff;background-clip:padding-box;border:1px solid #ced4da;border-radius:.25rem;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}.themalizer-settings-page-input-description{color:#6c757d!important;padding-left:.5rem;padding-top:.5rem}</style>';
 	}
 
 	/**

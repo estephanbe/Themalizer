@@ -19,6 +19,8 @@ use Themalizer\Core\Engine;
 
 /**
  * Manage the theme customizations.
+ *
+ * @todo make each setting slug uniqe with its section in order to avoid duplication between sections by prepending the section_id to the setting_slug.
  */
 class Customizer extends Engine {
 
