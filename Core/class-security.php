@@ -167,14 +167,14 @@ class Security extends Engine {
 
 	private function security_headers_and_ini_setups() {
 		// reference: https://websitesetup.org/wordpress-security/
-		header( 'Content-Security-Policy: default-src https:' );
-		header( 'X-XSS-Protection: 1; mode=block' );
-		header( 'X-Content-Type-Options: nosniff' );
-		header( 'Strict-Transport-Security:max-age=31536000; includeSubdomains; preload' );
+		// header( 'Content-Security-Policy: default-src https:' );
+		// header( 'X-XSS-Protection: 1; mode=block' );
+		// header( 'X-Content-Type-Options: nosniff' );
+		// header( 'Strict-Transport-Security:max-age=31536000; includeSubdomains; preload' );
 
-		@ini_set( 'session.cookie_httponly', true );
-		@ini_set( 'session.cookie_secure', true );
-		@ini_set( 'session.use_only_cookies', true );
+		// @ini_set( 'session.cookie_httponly', true );
+		// @ini_set( 'session.cookie_secure', true );
+		// @ini_set( 'session.use_only_cookies', true );
 	}
 
 
