@@ -36,11 +36,7 @@ class ThemeHeader extends Engine {
 		<head>
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
 			<meta http-equiv="X-UA-Compatible" content="IE=edge">
-			<meta name="description" content="Themalizer Theme">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
-
-			<title><?php wp_title( $title_seperator, $display = true ); ?></title>
-
 		<?php
 	}
 
