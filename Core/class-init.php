@@ -567,5 +567,19 @@ class Init extends Engine {
 				\wp_add_inline_style( THEMALIZER_STYLE_NAME, '#themalizer-mailchimp-form .modal{display:none;position:fixed;z-index:1;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:#000;background-color:rgba(0,0,0,.4)}#themalizer-mailchimp-form .modal-content{background-color:#fefefe;margin:15% auto;padding:20px;border:1px solid #888;width:20%}#themalizer-mailchimp-form .modal-content p{text-align:center}#themalizer-mailchimp-form .close{color:#aaa;float:right;font-size:28px;font-weight:700}#themalizer-mailchimp-form .close:focus,#themalizer-mailchimp-form .close:hover{color:#000;text-decoration:none;cursor:pointer}' );
 			}
 		);
+
+		add_filter(
+			'script_loader_tag',
+			function( $tag, $handle ) {
+				$searched_tag = strpos( $tag, "id='" . THEMALIZER_SCRIPT_NAME . "-js-after'" );
+
+				if ( ! $searched_tag ) {
+					return $tag;
+				}
+				return str_replace( "id='" . THEMALIZER_SCRIPT_NAME . "-js-after'", "defer id='" . THEMALIZER_SCRIPT_NAME . "-js-after'", $tag );
+			},
+			10,
+			2
+		);
 	}
 }

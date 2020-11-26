@@ -226,7 +226,7 @@ class Themalizer extends Engine {
 		}
 
 		?>
-		<form id="themalizer-mailchimp-form" <?php echo $form_class; ?> method="POST" action="<?php self::mailchimp_action_url(); ?>">
+		<form id="themalizer-mailchimp-form" <?php echo $form_class; ?>>
 			<?php
 			if ( 1 === $input_order ) {
 				echo $args->before_input ? $args->before_input : '';
