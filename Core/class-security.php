@@ -109,10 +109,10 @@ class Security extends Engine {
 			if ( ! is_wp_error( $response )
 				&& isset( $response['response']['code'] )
 				&& 200 === $response['response']['code'] ) {
-				$body                          = wp_remote_retrieve_body( $response );
+				$body                          = \wp_remote_retrieve_body( $response );
 				$data                          = json_decode( $body );
-				$this->most_recent_php_version = $data->version;
-				$this->server_php_version      = phpversion();
+				$this->most_recent_php_version = substr( $data->version, 0, 3 );
+				$this->server_php_version      = substr( phpversion(), 0, 3 );
 
 				if ( $this->server_php_version !== $this->most_recent_php_version ) {
 					add_action(
@@ -134,9 +134,9 @@ class Security extends Engine {
 	 */
 	private function smart_jquery_inclusion() {
 		// if ( ! is_admin() ) {
-		// 	wp_deregister_script( 'jquery' );
-		// 	wp_register_script( 'jquery', ( 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' ), false );
-		// 	wp_enqueue_script( 'jquery' );
+		// wp_deregister_script( 'jquery' );
+		// wp_register_script( 'jquery', ( 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' ), false );
+		// wp_enqueue_script( 'jquery' );
 		// }
 	}
 
