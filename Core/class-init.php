@@ -457,7 +457,7 @@ class Init extends Engine {
 	 */
 	public function add_basic_theme_scripts() {
 		wp_enqueue_style( $this->stylesheet_name, get_stylesheet_uri(), array(), $this->version );
-		wp_enqueue_script( THEMALIZER_SCRIPT_NAME, $this->js_src, array(), $this->version, true );
+		wp_enqueue_script( THEMALIZER_SCRIPT_NAME, $this->js_src, array( 'jquery' ), $this->version, true );
 	}
 
 	/**
