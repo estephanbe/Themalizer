@@ -515,23 +515,18 @@ class Init extends Engine {
 				$url    = self::mailchimp_action_url( false );
 				$script = <<<EOD
 				window.addEventListener('DOMContentLoaded', function() {
-
 					$(document).ready(function () {
 						var successModal = document.getElementById("themalizer-mailchimp-success-message-modal");
 						var failureModal = document.getElementById("themalizer-mailchimp-failure-message-modal");
-
 						// Get the <span> element that closes the modal
 						var closeBtnSuccess = document.querySelectorAll('#themalizer-mailchimp-success-message-modal .close')[0];
 						var closeBtnFailure = document.querySelectorAll('#themalizer-mailchimp-failure-message-modal .close')[0];
-
 						closeBtnSuccess.onclick = function() {
 							successModal.style.display = "none";
 						}
-
 						closeBtnFailure.onclick = function() {
 							failureModal.style.display = "none";
 						}
-
 						// When the user clicks anywhere outside of the modal, close it
 						window.onclick = function(event) {
 							if ( event.target == successModal ) {
@@ -540,11 +535,9 @@ class Init extends Engine {
 								failureModal.style.display = "none";
 							}
 						}
-
 						$('#themalizer-mailchimp-form').submit(function(e){
 							e.preventDefault();
 							var email = $('#themalizer-mailchimp-form input[name=email]').val();
-							
 							$.ajax({
 								type: "POST",
 								url: "$url",
