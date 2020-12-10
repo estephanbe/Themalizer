@@ -13,6 +13,10 @@ If you are not using git in your theme, so you need just to clone Themalizer usi
 git clone https://github.com/estephanbe/Themalizer.git
 ```
 
+Use the following code if the submodule was not installed
+```bash
+git submodule update --init --recursive
+```
 
 
 # Initialization
