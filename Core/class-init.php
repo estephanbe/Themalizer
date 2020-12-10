@@ -480,7 +480,7 @@ class Init extends Engine {
 	 * @return void
 	 */
 	public function change_post_object_name() {
-		if ( ! empty( $this->change_post_label_name ) ) {
+		if ( ! empty( $this->change_post_label_name ) && is_array( $this->change_post_label_name ) ) {
 
 			self::isset_test( $this->change_post_label_name[0], 'Add the Post Lable Single Name' );
 			self::isset_test( $this->change_post_label_name[1], 'Add the Post Lable Plurar Name' );
