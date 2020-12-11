@@ -27,8 +27,6 @@ use Themalizer\Register\Sidebar as Sidebar;
 use Themalizer\Register\Taxonomy as Taxonomy;
 use Themalizer\Register\ThemeHeader as ThemeHeader;
 use Themalizer\Luxury\Customizer as Customizer;
-use Themalizer\Luxury\Facebook as Facebook;
-use Themalizer\Luxury\LoadMorePosts as LoadMorePosts;
 use Themalizer\Luxury\MailChimp as MailChimp;
 use Themalizer\Luxury\Sharing as Sharing;
 use Themalizer\Luxury\ImageSize as ImageSize;
