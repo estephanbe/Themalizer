@@ -25,9 +25,6 @@ class Constants {
 	 */
 	public function __construct() {
 
-		// THEMALIZER_THEME_PREFIX will be defined in Init class.
-		// THEMALIZER_STYLE_NAME will be defined in Init class.
-		// THEMALIZER_SCRIPT_NAME will be defined in Init class.
 		define( 'THEMALIZER_REST_API_NAMESPACE', 'themalizer/v1/' );
 
 		/** MailChimp */
@@ -35,5 +32,14 @@ class Constants {
 		define( 'THEMALIZER_MAILCHIMP_MENU_SLUG', 'themalizer_mailchimp_settings' );
 		define( 'THEMALIZER_MAILCHIMP_API_KEY_OPTION_NAME', 'themalizer_plugin_mail_chimp_api_key' );
 		define( 'THEMALIZER_MAILCHIMP_LIST_ID_OPTION_NAME', 'themalizer_plugin_mail_chimp_list_id' );
+
+
+		/** Constents to be defined */
+		// Init::define( 'THEMALIZER_THEME_PREFIX' );
+		// Init::define( 'THEMALIZER_STYLE_NAME',  );
+		// Init::define( 'THEMALIZER_SCRIPT_NAME',  );
+		// Init::define( 'THEMALIZER_THEME_VERSION',  );
+
+
 	}
 }

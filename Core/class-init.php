@@ -320,6 +320,7 @@ class Init extends Engine {
 		define( 'THEMALIZER_THEME_PREFIX', $this->prefix );
 		define( 'THEMALIZER_STYLE_NAME', $this->stylesheet_name );
 		define( 'THEMALIZER_SCRIPT_NAME', $this->script_name );
+		define( 'THEMALIZER_THEME_VERSION', $this->version );
 
 		$this->make_panel();
 		$this->add_initial_actions();
@@ -394,8 +395,8 @@ class Init extends Engine {
 		add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );
 		add_action( 'after_setup_theme', array( $this, 'theme_nav_menus' ) );
 		add_action( 'init', array( $this, 'change_post_object_name' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'add_basic_theme_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'add_basic_theme_scripts' ), 100 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ), 100 );
 	}
 
 	/**
@@ -514,46 +515,48 @@ class Init extends Engine {
 			function() {
 				$url    = self::mailchimp_action_url( false );
 				$script = <<<EOD
-				window.addEventListener('DOMContentLoaded', function() {
-					$(document).ready(function () {
-						var successModal = document.getElementById("themalizer-mailchimp-success-message-modal");
-						var failureModal = document.getElementById("themalizer-mailchimp-failure-message-modal");
-						// Get the <span> element that closes the modal
-						var closeBtnSuccess = document.querySelectorAll('#themalizer-mailchimp-success-message-modal .close')[0];
-						var closeBtnFailure = document.querySelectorAll('#themalizer-mailchimp-failure-message-modal .close')[0];
-						closeBtnSuccess.onclick = function() {
-							successModal.style.display = "none";
-						}
-						closeBtnFailure.onclick = function() {
-							failureModal.style.display = "none";
-						}
-						// When the user clicks anywhere outside of the modal, close it
-						window.onclick = function(event) {
-							if ( event.target == successModal ) {
+				jQuery(document).ready(($) => {
+					window.addEventListener('DOMContentLoaded', function() {
+						$(document).ready(function () {
+							var successModal = document.getElementById("themalizer-mailchimp-success-message-modal");
+							var failureModal = document.getElementById("themalizer-mailchimp-failure-message-modal");
+							// Get the <span> element that closes the modal
+							var closeBtnSuccess = document.querySelectorAll('#themalizer-mailchimp-success-message-modal .close')[0];
+							var closeBtnFailure = document.querySelectorAll('#themalizer-mailchimp-failure-message-modal .close')[0];
+							closeBtnSuccess.onclick = function() {
 								successModal.style.display = "none";
-							} else if ( event.target == failureModal ) {
+							}
+							closeBtnFailure.onclick = function() {
 								failureModal.style.display = "none";
 							}
-						}
-						$('#themalizer-mailchimp-form').submit(function(e){
-							e.preventDefault();
-							var email = $('#themalizer-mailchimp-form input[name=email]').val();
-							$.ajax({
-								type: "POST",
-								url: "$url",
-								data: JSON.stringify({"email": email}),
-								dataType: 'json',
-								contentType: 'application/json',
-								success: function (response) {
-									if ( 200 === response.status ) {
-										successModal.style.display = "block";
+							// When the user clicks anywhere outside of the modal, close it
+							window.onclick = function(event) {
+								if ( event.target == successModal ) {
+									successModal.style.display = "none";
+								} else if ( event.target == failureModal ) {
+									failureModal.style.display = "none";
+								}
+							}
+							$('#themalizer-mailchimp-form').submit(function(e){
+								e.preventDefault();
+								var email = $('#themalizer-mailchimp-form input[name=email]').val();
+								$.ajax({
+									type: "POST",
+									url: "$url",
+									data: JSON.stringify({"email": email}),
+									dataType: 'json',
+									contentType: 'application/json',
+									success: function (response) {
+										if ( 200 === response.status ) {
+											successModal.style.display = "block";
+											$('#themalizer-mailchimp-form input[name=email]').val('');
+										}
+									},
+									error: function (request, status, error) {
+										failureModal.style.display = "block";
 										$('#themalizer-mailchimp-form input[name=email]').val('');
 									}
-								},
-								error: function (request, status, error) {
-									failureModal.style.display = "block";
-									$('#themalizer-mailchimp-form input[name=email]').val('');
-								}
+								});
 							});
 						});
 					});
