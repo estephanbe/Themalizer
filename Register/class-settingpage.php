@@ -79,6 +79,13 @@ class SettingPage extends Engine {
 	private $sections = array();
 
 	/**
+	 * The location of the menu.
+	 *
+	 * @var string main, theme.
+	 */
+	private $menu_location = 'main';
+
+	/**
 	 * Theme prefix.
 	 * It is good practice to have this propertiy as the theme prefix used many times in the class.
 	 *
@@ -97,6 +104,7 @@ class SettingPage extends Engine {
 		'capability',
 		'position',
 		'sections',
+		'menu_location',
 	);
 
 	/**
@@ -169,14 +177,26 @@ class SettingPage extends Engine {
 	 * @return void
 	 */
 	public function settings_menu() {
-		add_theme_page(
-			$this->page_title,
-			$this->menu_title,
-			$this->capability,
-			$this->menu_slug,
-			array( $this, 'echo_the_page' ),
-			$this->position
-		);
+		if ( 'theme' === $this->menu_location ) {
+			add_theme_page(
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'echo_the_page' ),
+				$this->position
+			);
+		} else {
+			add_menu_page(
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'echo_the_page' ),
+				'',
+				$this->position
+			);
+		}
 	}
 
 	/**
@@ -299,6 +319,16 @@ class SettingPage extends Engine {
 			case 'text':
 				if ( isset( $input['text'] ) ) {
 					$new_input['text'] = self::text_field_sanitization( $input['text'] );
+				}
+				break;
+			case 'date':
+				if ( isset( $input['date'] ) ) {
+					$new_input['date'] = self::text_field_sanitization( $input['date'] );
+				}
+				break;
+			case 'number':
+				if ( isset( $input['number'] ) ) {
+					$new_input['number'] = intval( $input['number'] );
 				}
 				break;
 			default:
@@ -449,40 +479,38 @@ class SettingPage extends Engine {
 			echo "<div class='switch-msgs'>" . $switch['message'] . '</div>'; // phpcs:ignore
 		}
 
-		$switch_styling = $switch['value'] ? 'style="display:none;"' : 'style="width:' . $width . '%;"';
+		$switch_styling = $switch['value'] ? 'display:none;' : '';
 		$input_name     = $option_name . "[$field_type]";
 
 		// phpcs:disable
 		echo $html;
 		switch ( $field_type ) {
-			case 'text':
-				$sanitized_option_value = self::html_attr_sanitization(
-					isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0
-				);
-				echo "<input 
-				class='themalizer-settings-page-input' 
-				$switch_styling 
-				type='$field_type' 
-				id='$field_name' 
-				name='$input_name' 
-				value='$sanitized_option_value'
-				/>";
-				echo "<div $switch_styling class='themalizer-settings-page-input-description'>$description</div>";
-				break;
 			case 'checkbox':
 				$sanitized_option_value = self::html_int_sanitization( isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0 );
 				echo "<input 
 				class='themalizer-settings-page-input' 
-				$switch_styling 
+				style='$switch_styling width:'$width%;'
 				type='$field_type' 
 				id='$field_name' 
 				name='$input_name' 
 				value='1' 
 				" . checked( 1, $sanitized_option_value, false ) . '
 				/>';
-				echo "<span $switch_styling class='themalizer-settings-page-input-description'>$description</span>";
+				echo "<span style='$switch_styling' class='themalizer-settings-page-input-description'>$description</span>";
 				break;
 			default:
+				$sanitized_option_value = self::html_attr_sanitization(
+					isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0
+				);
+				echo "<input 
+				class='themalizer-settings-page-input' 
+				style='$switch_styling width:$width%;'
+				type='$field_type' 
+				id='$field_name' 
+				name='$input_name' 
+				value='$sanitized_option_value'
+				/>";
+				echo "<div style='$switch_styling' class='themalizer-settings-page-input-description'>$description</div>";
 				break;
 		}
 		// phpcs:enable
