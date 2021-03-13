@@ -33,13 +33,11 @@ class Constants {
 		define( 'THEMALIZER_MAILCHIMP_API_KEY_OPTION_NAME', 'themalizer_plugin_mail_chimp_api_key' );
 		define( 'THEMALIZER_MAILCHIMP_LIST_ID_OPTION_NAME', 'themalizer_plugin_mail_chimp_list_id' );
 
-
 		/** Constents to be defined */
-		// Init::define( 'THEMALIZER_THEME_PREFIX' );
-		// Init::define( 'THEMALIZER_STYLE_NAME',  );
-		// Init::define( 'THEMALIZER_SCRIPT_NAME',  );
-		// Init::define( 'THEMALIZER_THEME_VERSION',  );
-
-
+		// Init::define( 'THEMALIZER_THEME_PREFIX' );.
+		// Init::define( 'THEMALIZER_STYLE_NAME',  );.
+		// Init::define( 'THEMALIZER_SCRIPT_NAME',  );.
+		// Init::define( 'THEMALIZER_THEME_VERSION',  );.
+		// Init::define( 'THEMALIZER_ENQ_PRIORITY', 100 );.
 	}
 }

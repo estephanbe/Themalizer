@@ -321,6 +321,7 @@ class Init extends Engine {
 		define( 'THEMALIZER_STYLE_NAME', $this->stylesheet_name );
 		define( 'THEMALIZER_SCRIPT_NAME', $this->script_name );
 		define( 'THEMALIZER_THEME_VERSION', $this->version );
+		define( 'THEMALIZER_ENQ_PRIORITY', 100 );
 
 		$this->make_panel();
 		$this->add_initial_actions();
@@ -395,8 +396,8 @@ class Init extends Engine {
 		add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );
 		add_action( 'after_setup_theme', array( $this, 'theme_nav_menus' ) );
 		add_action( 'init', array( $this, 'change_post_object_name' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'add_basic_theme_scripts' ), 100 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ), 100 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'add_basic_theme_scripts' ), THEMALIZER_ENQ_PRIORITY );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ), THEMALIZER_ENQ_PRIORITY );
 	}
 
 	/**
