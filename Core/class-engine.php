@@ -163,9 +163,9 @@ class Engine {
 		ThemeHeader::echo_wp_head();
 	}
 
-	protected static function echo_close_header( $body_class = '' ) {
+	protected static function echo_close_header( $body_class = '', $attrs ) {
 
-		ThemeHeader::bottom_of_the_header( $body_class );
+		ThemeHeader::bottom_of_the_header( $body_class, $attrs );
 	}
 
 	protected static function generate_new_image_size( $slug, $width, $height, $crop = false ) {

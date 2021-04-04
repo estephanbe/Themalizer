@@ -84,8 +84,8 @@ class Themalizer extends Engine {
 		self::prioratize_wp_head();
 	}
 
-	public static function close_header( $body_class = '' ) {
-		self::echo_close_header( $body_class );
+	public static function close_header( $body_class = '', $attrs = array() ) {
+		self::echo_close_header( $body_class, $attrs );
 	}
 
 	public static function footer() {

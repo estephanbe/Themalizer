@@ -147,9 +147,9 @@ class PostType extends Engine {
 	 * @return void
 	 */
 	private function add_lables_to_args() {
-		$singular             = $this->singular;
-		$plural               = $this->plural;
-		$text_domain          = $this->text_domain;
+		$singular    = $this->singular;
+		$plural      = $this->plural;
+		$text_domain = $this->text_domain;
 		// phpcs:disable
 		$this->args['labels'] = array(
 			'name'               => __( "$plural", "$text_domain" ),

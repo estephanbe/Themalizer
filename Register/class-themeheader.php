@@ -24,7 +24,7 @@ class ThemeHeader extends Engine {
 
 	public static $wp_head = true;
 
-	public static function simple_header() { 
+	public static function simple_header() {
 		self::top_of_the_header();
 		self::bottom_of_the_header();
 	}
@@ -57,13 +57,29 @@ class ThemeHeader extends Engine {
 		wp_head();
 	}
 
-	public static function bottom_of_the_header( $body_class = '' ) {
+	/**
+	 * Close the header
+	 *
+	 * @param string $body_class add classes to the body tag.
+	 * @param [type] $attrs add attributes to the body tag.
+	 * @return void
+	 */
+	public static function bottom_of_the_header( $body_class = '', $attrs ) {
 		if ( self::$wp_head ) {
 			wp_head();
 		}
 		?>
 		</head>
-			<body <?php echo body_class( $body_class ); ?>>
+			<body 
+			<?php
+			echo ' ' . body_class( $body_class ) . ' ';
+			if ( is_array( $attrs ) ) {
+				foreach ( $attrs as $attr => $value ) {
+					echo $attr . '="' . esc_attr( $value ) . '" ';
+				}
+			}
+			?>
+			>
 		<?php
 	}
 
