@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Theme Header
  *
@@ -22,6 +23,7 @@ use Themalizer\Core\Engine;
  */
 class ThemeHeader extends Engine {
 
+
 	public static $wp_head = true;
 
 	public static function simple_header() {
@@ -29,7 +31,7 @@ class ThemeHeader extends Engine {
 		self::bottom_of_the_header();
 	}
 
-	public static function top_of_the_header( $html_classes = '', $title_seperator = '>' ) { ?>
+	public static function top_of_the_header( $html_classes = '', $title_seperator = '>' ) {    ?>
 		<!DOCTYPE html>
 		<html class="<?php echo $html_classes; ?>" <?php language_attributes(); ?>>
 
@@ -37,23 +39,23 @@ class ThemeHeader extends Engine {
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
 			<meta http-equiv="X-UA-Compatible" content="IE=edge">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
-		<?php
+			<?php
 	}
 
 	public static function echo_generated_header_css_link( $link, $url = false ) {
 		if ( ! $url ) {
 			?>
-			<link href="<?php self::make_assets_uri( $link ); ?>" rel="stylesheet">
+				<link href="<?php self::make_assets_uri( $link ); ?>" rel="stylesheet">
 			<?php
 		} else {
 			?>
-			<link href="<?php echo $link; ?>" rel="stylesheet">
+				<link href="<?php echo $link; ?>" rel="stylesheet">
 			<?php
 		}
 	}
 
 	public static function echo_wp_head() {
-		self::$wp_head = false;
+		 self::$wp_head = false;
 		wp_head();
 	}
 
@@ -64,24 +66,23 @@ class ThemeHeader extends Engine {
 	 * @param [type] $attrs add attributes to the body tag.
 	 * @return void
 	 */
-	public static function bottom_of_the_header( $body_class = '', $attrs ) {
+	public static function bottom_of_the_header( $body_class = '', $attrs = array() ) {
 		if ( self::$wp_head ) {
 			wp_head();
 		}
 		?>
 		</head>
-			<body 
-			<?php
-			echo ' ' . body_class( $body_class ) . ' ';
-			if ( is_array( $attrs ) ) {
-				foreach ( $attrs as $attr => $value ) {
-					echo $attr . '="' . esc_attr( $value ) . '" ';
-				}
+
+		<body 
+		<?php
+		echo ' ' . body_class( $body_class ) . ' ';
+		if ( is_array( $attrs ) && ! empty( $attrs ) ) {
+			foreach ( $attrs as $attr => $value ) {
+				echo $attr . '="' . esc_attr( $value ) . '" ';
 			}
-			?>
-			>
+		}
+		?>
+		>
 		<?php
 	}
-
 }
-

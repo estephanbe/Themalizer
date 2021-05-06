@@ -163,7 +163,7 @@ class Engine {
 		ThemeHeader::echo_wp_head();
 	}
 
-	protected static function echo_close_header( $body_class = '', $attrs ) {
+	protected static function echo_close_header( $body_class = '', $attrs = array()) {
 
 		ThemeHeader::bottom_of_the_header( $body_class, $attrs );
 	}
