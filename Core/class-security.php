@@ -31,7 +31,7 @@ class Security extends Engine {
 
 		if ( ! self::$development ) {
 			$this->security_headers_and_ini_setups();
-			$this->check_php_version();
+			// $this->check_php_version();
 		}
 
 	}
