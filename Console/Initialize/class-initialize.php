@@ -191,12 +191,10 @@ class Initialize extends Core {
 		 * @link $this->theme_author_uri
 		 * @license https://opensource.org/licenses/GPL-2.0 GPL-2.0 License
 		 */
-
+		
 		if ( ! defined( 'ABSPATH' ) ) {
 			exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 		}
-
-		
 		EOD;
 	}
 
@@ -223,9 +221,9 @@ class Initialize extends Core {
 		| file for the application as well as bundling up all the JS files.
 		|
 		*/
-
+		
 		const mix = require('laravel-mix');
-
+		
 		mix
 			.scripts([
 				// Your scripts files path.
