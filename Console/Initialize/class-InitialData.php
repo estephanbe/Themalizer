@@ -72,14 +72,12 @@ class InitialData extends CommandPart {
 		License URI: http://www.gnu.org/licenses/gpl-2.0.html
 		Text Domain: $text_domain
 		Tags: $tags
-
+		
 		This theme, like WordPress, is licensed under the GPL.
 		Use it to make something cool, have fun, and share what you've learned with others.
 		*/
-
-
-
 		EOD;
+
 		file_put_contents( '../style.css', $style_data );
 	}
 
@@ -87,7 +85,6 @@ class InitialData extends CommandPart {
 		$theme_name     = $this->command->theme_name;
 		$theme_prefix   = $this->command->theme_prefix;
 		$settings       = ! $this->command->settings_page ? '' : <<<EOD
-
 		Themalizer::setting(
 			array(
 				'page_title' => 'Your Settings Page Title',
@@ -106,10 +103,9 @@ class InitialData extends CommandPart {
 				),
 			)
 		);
-
 		EOD;
-		$sidebar        = ! $this->command->sidebar ? '' : <<<EOD
 
+		$sidebar        = ! $this->command->sidebar ? '' : <<<EOD
 		Themalizer::sidebar(
 			array(
 				'name'          => 'Sidebar Name',
@@ -120,10 +116,9 @@ class InitialData extends CommandPart {
 		
 			)
 		);
-
 		EOD;
-		$customizer     = <<<EOD
 
+		$customizer     = <<<EOD
 		Themalizer::customizer(
 			'theme_general', // customizer ID (slug) which will be used later to retrive the options.
 			array(
@@ -140,14 +135,13 @@ class InitialData extends CommandPart {
 				),
 			)
 		);
-
 		EOD;
+
 		$functions_data = <<<EOD
-		
 		require_once 'Themalizer/autoload.php';
-
+		
 		Themalizer::\$development = true; // Please remove this in staging/production invironment. 
-
+		
 		Themalizer::init(
 			array(
 				'prefix'           => '$theme_prefix',
@@ -157,34 +151,33 @@ class InitialData extends CommandPart {
 				),
 			)
 		);
-
+		
 		$settings
-
+		
 		$sidebar
-
+		
 		$customizer
-
 		EOD;
+
 		file_put_contents( '../functions.php', $functions_data, FILE_APPEND );
 	}
 
 	private function header_data() {
 
 		$header_data = <<<EOD
-		
 		Themalizer::start_header();
 		Themalizer::wp_head();
 		?>
-
+		
 		<style>
 		/* Dynamic Style */
 		</style>
-
+		
 		<?php
 		Themalizer::close_header();
 		?>
-
-
+		
+		
 		<?php
 		wp_nav_menu(
 			array(
@@ -198,9 +191,8 @@ class InitialData extends CommandPart {
 			)
 		);
 		?>
-
-
 		EOD;
+
 		if ( file_exists( '../header.php' ) ) {
 			file_put_contents( '../header.php', $header_data, FILE_APPEND );
 		}
@@ -211,15 +203,15 @@ class InitialData extends CommandPart {
 
 		$footer_data = <<<EOD
 		?>
-
-
-
-
-
+		
+		
+		
+		
+		
 		<?php
 		Themalizer::footer();
-
 		EOD;
+
 		if ( file_exists( '../footer.php' ) ) {
 			file_put_contents( '../footer.php', $footer_data, FILE_APPEND );
 		}
@@ -229,17 +221,16 @@ class InitialData extends CommandPart {
 	private function header_footer_data( $file_name ) {
 
 		$header_footer_data = <<<EOD
-
 		get_header();
 		?>
-
-
-
-
+		
+		
+		
+		
 		<?php
 		get_footer();
-
 		EOD;
+		
 		if ( file_exists( '../' . $file_name ) ) {
 			file_put_contents( '../' . $file_name, $header_footer_data, FILE_APPEND );
 		}

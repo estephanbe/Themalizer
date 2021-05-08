@@ -233,8 +233,8 @@ class Initialize extends Core {
 			.options({
 				processCssUrls: false
 			});
-
 		EOD;
+		
 		file_put_contents( '../webpack.mix.js', $webpack );
 
 		file_put_contents(
