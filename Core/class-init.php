@@ -11,6 +11,8 @@
 
 namespace  Themalizer\Core;
 
+use Themalizer\Luxury\MailChimp as MailChimp;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Initialize all the necessary actions and processes for any WordPress theme according to the provided arguments.
  */
-class Init extends Engine {
+class Init {
 
 	/**
 	 * The theme object.
@@ -313,8 +315,6 @@ class Init extends Engine {
 	 * @param array $custom_args if there is any amendments.
 	 */
 	public function __construct( $custom_args = array() ) {
-		self::initialize_constants();
-		self::initialize_security();
 		$this->process_args( $custom_args );
 
 		define( 'THEMALIZER_THEME_PREFIX', $this->prefix );
@@ -407,9 +407,9 @@ class Init extends Engine {
 	 */
 	private function make_panel() {
 		if ( ! empty( $this->customizer_panel ) ) {
-			self::empty_test( $this->customizer_panel, 'Make sure args is not empty' );
-			self::empty_isset_test( $this->customizer_panel['title'], 'Make sure panel title is added to the args and is not empty' );
-			self::empty_isset_test( $this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty' );
+			Connector::empty_test( $this->customizer_panel, 'Make sure args is not empty' );
+			Connector::empty_isset_test( $this->customizer_panel['title'], 'Make sure panel title is added to the args and is not empty' );
+			Connector::empty_isset_test( $this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty' );
 
 			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $this->customizer_panel['title'] ) );
 
@@ -484,8 +484,8 @@ class Init extends Engine {
 	public function change_post_object_name() {
 		if ( ! empty( $this->change_post_label_name ) && is_array( $this->change_post_label_name ) ) {
 
-			self::isset_test( $this->change_post_label_name[0], 'Add the Post Lable Single Name' );
-			self::isset_test( $this->change_post_label_name[1], 'Add the Post Lable Plurar Name' );
+			Connector::isset_test( $this->change_post_label_name[0], 'Add the Post Lable Single Name' );
+			Connector::isset_test( $this->change_post_label_name[1], 'Add the Post Lable Plurar Name' );
 			$single = $this->change_post_label_name[0];
 			$plurar = $this->change_post_label_name[1];
 
@@ -509,12 +509,12 @@ class Init extends Engine {
 	}
 
 	public function mailchimp_support() {
-		self::initialize_mailchimp();
+		(new MailChimp());
 
 		add_action(
 			'wp_enqueue_scripts',
 			function() {
-				$url    = self::mailchimp_action_url( false );
+				$url    = Connector::mailchimp_action_url( false );
 				$script = <<<EOD
 				jQuery(document).ready(($) => {
 					window.addEventListener('DOMContentLoaded', function() {

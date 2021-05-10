@@ -1,6 +1,6 @@
 <?php
 /**
- * Class File - Images Class
+ * Class File - ImageHandler Class
  *
  * @package Themalizer
  * @copyright 2019-2020 BoshDev - Bisharah Estephan
@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Handle images.
  */
-class Images extends Engine {
+class ImageHandler extends Connector {
 
 	public $slug                = '';
 	public $width               = '';
@@ -29,9 +29,9 @@ class Images extends Engine {
 	public $human_friendly_name = '';
 
 	public function __construct( $slug, $width, $height, $crop = false ) {
-		self::empty_test( $slug, 'add the image slug.' );
-		self::empty_test( $width, 'add the image slug.' );
-		self::empty_test( $height, 'add the image slug.' );
+		Connector::empty_test( $slug, 'add the image slug.' );
+		Connector::empty_test( $width, 'add the image slug.' );
+		Connector::empty_test( $height, 'add the image slug.' );
 
 		$this->slug                = $slug;
 		$this->width               = $width;
@@ -60,8 +60,8 @@ class Images extends Engine {
 	}
 
 	public static function change_image_size( $url, $size_slug ) {
-		self::empty_test( $url, 'add the image url.' );
-		self::empty_test( $size_slug, 'add the size slug.' );
+		Connector::empty_test( $url, 'add the image url.' );
+		Connector::empty_test( $size_slug, 'add the size slug.' );
 		$attachment_id = $url;
 		if ( gettype( $attachment_id ) !== 'integer' ) {
 			$attachment_id = \attachment_url_to_postid( $url );
@@ -73,8 +73,6 @@ class Images extends Engine {
 	public static function get_logo_uri(){
 		$logo = get_theme_mod( 'custom_logo' );
 		$image = wp_get_attachment_image_src( $logo , 'full' );
-		var_dump($image);
-		die;
 	}
 
 

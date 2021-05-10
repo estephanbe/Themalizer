@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Manage the sharing and social media buttons.
  */
-class Sharing extends Engine {
+class Sharing extends Connector {
 
 	public $sharingAPI = array(
 		'facebook' => 'https://facebook.com/sharer.php?display=page&u=',
@@ -45,9 +45,9 @@ class Sharing extends Engine {
 
 	function socialMediaAccountsTest( $linkingPlatforms = array() ) {
 		if ( ! empty( $linkingPlatforms ) ) {
-			self::empty_isset_test( $linkingPlatforms['themeSettings'], 'Please make sure you add the themeSettings object' );
-			self::is_instanceof_test( $linkingPlatforms['themeSettings'], '\BoshDev\Register\SettingPage' );
-			self::empty_isset_test( $linkingPlatforms['platforms'], 'Please make sure you add the platforms' );
+			Connector::empty_isset_test( $linkingPlatforms['themeSettings'], 'Please make sure you add the themeSettings object' );
+			Connector::is_instanceof_test( $linkingPlatforms['themeSettings'], '\BoshDev\Register\SettingPage' );
+			Connector::empty_isset_test( $linkingPlatforms['platforms'], 'Please make sure you add the platforms' );
 		}
 	}
 
@@ -55,7 +55,7 @@ class Sharing extends Engine {
 		$platforms_options_values = array();
 
 		foreach ( $platforms as $platform ) {
-			// self::dump_this($this->linkingPlatforms);die;
+			// Connector::dump_this($this->linkingPlatforms);die;
 			$option                                = get_option(
 				$this
 				->linkingPlatforms['themeSettings']
@@ -84,7 +84,7 @@ class Sharing extends Engine {
 			}
 
 			$linkingPlatformID = $args[0];
-			self::empty_test( $args[1], 'Please make sure you add the attributes of the linkingPlatforms' );
+			Connector::empty_test( $args[1], 'Please make sure you add the attributes of the linkingPlatforms' );
 			foreach ( $args[1] as $element => $attributes ) { // loop through each structure to open the tags
 				$this->final_html .= '<'; // open element tag
 				$this->final_html .= $element; // add the element
@@ -121,7 +121,7 @@ class Sharing extends Engine {
 	}
 
 	public function echo( $link = '' ) {
-		self::empty_test( $link, 'Make sure the link has value' );
+		Connector::empty_test( $link, 'Make sure the link has value' );
 		$this->sharingAPI['mail'] = str_replace( 'placeholder', $this->mailSubject, $this->sharingAPI['mail'] ); // replace the mail link placeholder with the mailSubject value
 
 		$this->final_html = ''; // build default html holder
@@ -164,12 +164,12 @@ class Sharing extends Engine {
 
 
 	public function override_sharingPlatforms( $args ) {
-		self::empty_test( $args, 'add the overriding arguments' );
+		Connector::empty_test( $args, 'add the overriding arguments' );
 		$this->sharingPlatforms = $args;
 	}
 
 	public function override_linkingPlatforms( $args ) {
-		self::empty_test( $args, 'add the overriding arguments' );
+		Connector::empty_test( $args, 'add the overriding arguments' );
 		foreach ( $args as $platform => $structure ) {
 			$this->linkingPlatforms['platforms'][ $platform ][1] = $structure;
 		}
@@ -177,7 +177,7 @@ class Sharing extends Engine {
 	}
 
 	public function addPublicClass( $args = array() ) {
-		self::empty_test( $args, 'add the additiona classes' );
+		Connector::empty_test( $args, 'add the additiona classes' );
 		foreach ( $this->sharingPlatforms as $platform => $structure ) {
 			foreach ( $args as $element => $value ) {
 				if ( ! is_array( $this->sharingPlatforms[ $platform ][ $element ] ) ) {

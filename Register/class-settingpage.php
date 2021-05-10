@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Create theme setting page with options.
  */
-class SettingPage extends Engine {
+class SettingPage extends Connector {
 
 	/**
 	 * Settings Page Title.
@@ -142,18 +142,18 @@ class SettingPage extends Engine {
 			}
 		}
 
-		$this->theme_prefix  = self::get( 'prefix' );
+		$this->theme_prefix  = Connector::container()->init->get_property( 'prefix' );
 		$this->menu_slug     = $this->theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->menu_title ) ) . '_slug'; // generate the menu_slug.
 		$this->options_group = $this->theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->menu_title ) ) . '_option_group'; // generate the options_group.
 
-		self::empty_test( $this->sections, 'Please add at least one section' );
+		Connector::empty_test( $this->sections, 'Please add at least one section' );
 
 		foreach ( $this->sections as $section => $args ) {
-			self::empty_isset_test( $args['title'], 'Please add the title field for "' . $section . '" section.' );
-			self::empty_isset_test( $args['fields'], 'Please add the section fields and fill its arguments.' );
+			Connector::empty_isset_test( $args['title'], 'Please add the title field for "' . $section . '" section.' );
+			Connector::empty_isset_test( $args['fields'], 'Please add the section fields and fill its arguments.' );
 
 			foreach ( $args['fields'] as $field_name => $field_args ) {
-				self::empty_isset_test( $field_args['title'], 'Please add the title of ' . $field_name . ' field.' );
+				Connector::empty_isset_test( $field_args['title'], 'Please add the title of ' . $field_name . ' field.' );
 			}
 		}
 
@@ -211,7 +211,7 @@ class SettingPage extends Engine {
 		}
 		?>
 		<div id="themalizer_settings_page">
-			<h1><?php echo self::html_sanitization( get_admin_page_title() ); // phpcs:ignore ?></h1>
+			<h1><?php echo Connector::html_sanitization( get_admin_page_title() ); // phpcs:ignore ?></h1>
 
 			<?php settings_errors(); ?>
 
@@ -318,12 +318,12 @@ class SettingPage extends Engine {
 				break;
 			case 'text':
 				if ( isset( $input['text'] ) ) {
-					$new_input['text'] = self::text_field_sanitization( $input['text'] );
+					$new_input['text'] = Connector::text_field_sanitization( $input['text'] );
 				}
 				break;
 			case 'date':
 				if ( isset( $input['date'] ) ) {
-					$new_input['date'] = self::text_field_sanitization( $input['date'] );
+					$new_input['date'] = Connector::text_field_sanitization( $input['date'] );
 				}
 				break;
 			case 'number':
@@ -345,7 +345,7 @@ class SettingPage extends Engine {
 	 * @return void
 	 */
 	public function add_settings_section_description( $args ) {
-		$description = self::html_attr_sanitization( $this->sections[ $args['id'] ]['description'] );
+		$description = Connector::html_attr_sanitization( $this->sections[ $args['id'] ]['description'] );
 
 		// phpcs:disable
 		// echo "<button 
@@ -385,9 +385,9 @@ class SettingPage extends Engine {
 		// } phpcs:ignore.
 
 		/** Sanitize the outputs */
-		$args->type       = self::html_attr_sanitization( $args->type );
-		$args->field_name = self::html_attr_sanitization( $args->field_name );
-		$option_name      = self::html_attr_sanitization( $option_name );
+		$args->type       = Connector::html_attr_sanitization( $args->type );
+		$args->field_name = Connector::html_attr_sanitization( $args->field_name );
+		$option_name      = Connector::html_attr_sanitization( $option_name );
 
 		if ( $args->dependent || $args->switchable_with ) {
 			$switch = $this->process_dependant_and_switchable( $args->dependent, $args->switchable_with );
@@ -486,7 +486,7 @@ class SettingPage extends Engine {
 		echo $html;
 		switch ( $field_type ) {
 			case 'checkbox':
-				$sanitized_option_value = self::html_int_sanitization( isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0 );
+				$sanitized_option_value = Connector::html_int_sanitization( isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0 );
 				echo "<input 
 				class='themalizer-settings-page-input' 
 				style='$switch_styling width:'$width%;'
@@ -499,7 +499,7 @@ class SettingPage extends Engine {
 				echo "<span style='$switch_styling' class='themalizer-settings-page-input-description'>$description</span>";
 				break;
 			default:
-				$sanitized_option_value = self::html_attr_sanitization(
+				$sanitized_option_value = Connector::html_attr_sanitization(
 					isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0
 				);
 				echo "<input 

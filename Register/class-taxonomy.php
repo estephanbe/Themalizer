@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Register new taxonomy.
  */
-class Taxonomy extends Engine {
+class Taxonomy extends Connector {
 
 	/**
 	 * The taxonomy singular label.
@@ -98,9 +98,9 @@ class Taxonomy extends Engine {
 	 * @return void
 	 */
 	private function process_args( $singular, $plural, $posts_scope, $args ) {
-		self::empty_test( $singular, 'Please add the singular name of the taxonomy' );
-		self::empty_test( $plural, 'Please add the plural name of the taxonomy' );
-		self::empty_test( $posts_scope, 'Empty taxonomy posts_scope' );
+		Connector::empty_test( $singular, 'Please add the singular name of the taxonomy' );
+		Connector::empty_test( $plural, 'Please add the plural name of the taxonomy' );
+		Connector::empty_test( $posts_scope, 'Empty taxonomy posts_scope' );
 		$this->singular = $singular;
 		$this->plural   = $plural;
 
@@ -116,7 +116,7 @@ class Taxonomy extends Engine {
 			}
 		}
 
-		$this->slug = self::get( 'prefix' ) . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ) . '_tax'; // create taxonomy slug.
+		$this->slug = Connector::container()->init->get_property( 'prefix' ) . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ) . '_tax'; // create taxonomy slug.
 	}
 
 	/**
@@ -127,7 +127,7 @@ class Taxonomy extends Engine {
 	private function generate_labels() {
 		$singular    = $this->singular;
 		$plural      = $this->plural;
-		$text_domain = self::get( 'text_domain' );
+		$text_domain = Connector::container()->init->get_property( 'text_domain' );
     // phpcs:disable
 		$this->args['labels'] = array(
 			'name'                  => _x( $plural, $plural, $text_domain ),

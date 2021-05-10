@@ -16,12 +16,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Register the theme header.
  */
-class ThemeHeader extends Engine {
+class ThemeHeader extends Connector {
 
 
 	public static $wp_head = true;

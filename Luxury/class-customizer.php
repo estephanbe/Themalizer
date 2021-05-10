@@ -15,14 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Manage the theme customizations.
  *
  * @todo make each setting slug uniqe with its section in order to avoid duplication between sections by prepending the section_id to the setting_slug.
  */
-class Customizer extends Engine {
+class Customizer {
 
 	/**
 	 * Setting arguments which will be overriden with the defult arguments.
@@ -102,7 +102,7 @@ class Customizer extends Engine {
 					array_merge(
 						array(
 							'description_hidden' => true,
-							'panel'              => self::get( 'panel_id' ),
+							'panel'              => Connector::container()->init->get_property( 'panel_id' ),
 							'title'              => __( $this->title, $this->text_domain ), // phpcs:ignore WordPress
 							'description'        => __( $this->description, $this->text_domain ), // phpcs:ignore WordPress
 						),
@@ -124,8 +124,8 @@ class Customizer extends Engine {
 	private function process_args( $args ) {
 		$this->test_the_args( $args ); // test the arguments.
 
-		$this->text_domain  = self::get( 'text_domain' );
-		$this->theme_prefix = self::get( 'prefix' );
+		$this->text_domain  = Connector::container()->init->get_property( 'text_domain' );
+		$this->theme_prefix = Connector::container()->init->get_property( 'prefix' );
 		$this->title        = $args['title'];
 		$this->description  = $args['description'];
 		$this->extra_args   = isset( $args['args'] ) ? $args['args'] : array(); // check if there is extra arguments to overide the default settings arguments.
@@ -145,7 +145,7 @@ class Customizer extends Engine {
 				array(
 					'type'              => 'option',
 					'transport'         => 'postMessage',
-					'sanitize_callback' => array( $this, self::get_sanitizing_method( $setting_args['control']['type'] ) ),
+					'sanitize_callback' => array( $this, Connector::get_sanitizing_method( $setting_args['control']['type'] ) ),
 				),
 				$setting_args
 			);
@@ -160,15 +160,15 @@ class Customizer extends Engine {
 	 */
 	private function test_the_args( $args ) {
 		$this->args = (object) $args;
-		self::empty_test( self::get( 'panel_id' ), 'Add the panel ID in the initialization class.' ); // test if the panel id was initiated.
-		self::empty_test( $this->args, 'Add the arguments of the section' ); // test if the section is not empty.
-		self::empty_isset_test( $this->args->title, 'Add the section name' ); // test if the section name is set.
-		self::empty_isset_test( $this->args->description, 'Add the section description' ); // test if the section description is set.
-		self::empty_isset_test( $this->args->settings, 'Add the section settings' ); // test if the settings are set.
+		Connector::empty_test( Connector::container()->init->get_property( 'panel_id' ), 'Add the panel ID in the initialization class.' ); // test if the panel id was initiated.
+		Connector::empty_test( $this->args, 'Add the arguments of the section' ); // test if the section is not empty.
+		Connector::empty_isset_test( $this->args->title, 'Add the section name' ); // test if the section name is set.
+		Connector::empty_isset_test( $this->args->description, 'Add the section description' ); // test if the section description is set.
+		Connector::empty_isset_test( $this->args->settings, 'Add the section settings' ); // test if the settings are set.
 		foreach ( $this->args->settings as $setting_slug => $args ) { // test the settings args.
-			self::empty_test( $args, 'Add "' . $setting_slug . '"" setting args' ); // test if the settings args array is not empty.
-			self::empty_isset_test( $args['control'], 'Add the control of the "' . $setting_slug . '" setting' ); // test if the control section is set inside the settings args.
-			self::empty_isset_test( $args['control']['label'], 'Add the label of the "' . $setting_slug . '" control' ); // test if the contol args array is not empty.
+			Connector::empty_test( $args, 'Add "' . $setting_slug . '"" setting args' ); // test if the settings args array is not empty.
+			Connector::empty_isset_test( $args['control'], 'Add the control of the "' . $setting_slug . '" setting' ); // test if the control section is set inside the settings args.
+			Connector::empty_isset_test( $args['control']['label'], 'Add the label of the "' . $setting_slug . '" control' ); // test if the contol args array is not empty.
 		}
 		if ( isset( $this->args->args['title'] ) ) { // to make sure that it is only taking the main input.
 			unset( $this->args->args['title'] );
@@ -266,21 +266,21 @@ class Customizer extends Engine {
 	 * @return void
 	 */
 	public function selector( $setting_id, $selector = 'd' ) {
-		self::empty_test( $setting_id, 'Please add the setting id.' );
+		Connector::empty_test( $setting_id, 'Please add the setting id.' );
 		$html = '';
 		switch ( $selector ) {
 			case 'd':
 				$html  = ' id="';
-				$html .= self::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
+				$html .= Connector::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
 				$html .= '" ';
 				break;
 			case 'c':
 				$html  = ' class="';
-				$html .= self::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
+				$html .= Connector::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
 				$html .= '" ';
 				break;
 			case 'v':
-				$html = self::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
+				$html = Connector::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
 				break;
 		}
 		echo $html; // phpcs:ignore
@@ -294,19 +294,19 @@ class Customizer extends Engine {
 	 * @return string if $echo is false.
 	 */
 	public function setting( $setting_id, $echo = true ) {
-		self::empty_test( $setting_id, 'Please add the setting id.' );
+		Connector::empty_test( $setting_id, 'Please add the setting id.' );
 		$setting = get_option( $this->settings_processed_ids[ $setting_id ] );
 		$type    = isset( $this->settings[ $setting_id ]['control']['type'] ) ? $this->settings[ $setting_id ]['control']['type'] : 'text';
 		switch ( $type ) {
 			case 'url':
 			case 'image':
-				$setting = self::html_url_sanitization( $setting );
+				$setting = Connector::html_url_sanitization( $setting );
 				break;
 			case 'color':
-				$setting = self::html_attr_sanitization( $setting );
+				$setting = Connector::html_attr_sanitization( $setting );
 				break;
 			default:
-				$setting = self::html_sanitization( $setting );
+				$setting = Connector::html_sanitization( $setting );
 				break;
 		}
 

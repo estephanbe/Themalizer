@@ -38,7 +38,7 @@ spl_autoload_register(
 
 
 $GLOBALS['BoshDev\Themalizer'] = new Themalizer();
-Themalizer::check_framework();
+Themalizer\Core\Connector::check_framework();
 
 /**
  * Return the class URI to load the class

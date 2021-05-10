@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Manage the mailchimp.
  */
-class Mailchimp extends Engine {
+class Mailchimp extends Connector {
 
 	/**
 	 * API key.
@@ -149,7 +149,7 @@ class Mailchimp extends Engine {
 		}
 		?>
 		<div id="themalizer_settings_page">
-			<h1><?php echo self::html_sanitization( \get_admin_page_title() ); // phpcs:ignore ?></h1>
+			<h1><?php echo Connector::html_sanitization( \get_admin_page_title() ); // phpcs:ignore ?></h1>
 
 			<?php \settings_errors(); ?>
 
@@ -242,7 +242,7 @@ class Mailchimp extends Engine {
 		switch ( $key ) {
 			case 'text':
 				if ( isset( $input['text'] ) ) {
-					$new_input['text'] = self::text_field_sanitization( $input['text'] );
+					$new_input['text'] = Connector::text_field_sanitization( $input['text'] );
 				}
 				break;
 			default:
@@ -275,9 +275,9 @@ class Mailchimp extends Engine {
 		$option_name  = 'themalizer_plugin_' . $args->field_name; // generate the option name.
 		$option_value = \get_option( $option_name ); // retrive the option value.
 
-		$args->type       = self::html_attr_sanitization( $args->type );
-		$args->field_name = self::html_attr_sanitization( $args->field_name );
-		$option_name      = self::html_attr_sanitization( $option_name );
+		$args->type       = Connector::html_attr_sanitization( $args->type );
+		$args->field_name = Connector::html_attr_sanitization( $args->field_name );
+		$option_name      = Connector::html_attr_sanitization( $option_name );
 
 		$this->echo_field(
 			array(
@@ -308,7 +308,7 @@ class Mailchimp extends Engine {
 
 		$input_name = $option_name . "[$field_type]";
 
-		$sanitized_option_value = self::html_attr_sanitization(
+		$sanitized_option_value = Connector::html_attr_sanitization(
 			isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0
 		);
 		echo "<input 

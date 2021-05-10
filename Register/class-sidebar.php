@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Register sidebar class.
  */
-class Sidebar extends Engine {
+class Sidebar extends Connector {
 
 	/**
 	 * Sidebar name.
@@ -125,7 +125,7 @@ class Sidebar extends Engine {
 				$this->{$property} = $value;
 			}
 		}
-		$this->id = self::get( 'prefix' ) . '_' . strtolower( str_replace( ' ', '_', $this->name ) ) . '_sidebar';
+		$this->id = Connector::container()->init->get_property( 'prefix' ) . '_' . strtolower( str_replace( ' ', '_', $this->name ) ) . '_sidebar';
 	}
 
 	/**

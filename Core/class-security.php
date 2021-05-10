@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Security Class:
  * Handles all the security issues
  */
-class Security extends Engine {
+class Security {
 
 	private $most_recent_php_version = '';
 	private $server_php_version      = '';
@@ -29,7 +29,7 @@ class Security extends Engine {
 	public function __construct() {
 		$this->security_practices();
 
-		if ( ! self::$development ) {
+		if ( ! Connector::$development ) {
 			$this->security_headers_and_ini_setups();
 			// $this->check_php_version();
 		}

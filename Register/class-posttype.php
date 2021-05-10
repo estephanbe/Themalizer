@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Engine;
+use Themalizer\Core\Connector;
 
 /**
  * Post Type class for registering custom post type.
  */
-class PostType extends Engine {
+class PostType extends Connector {
 
 	/**
 	 * The post type singular label.
@@ -119,8 +119,8 @@ class PostType extends Engine {
 	 * @return void
 	 */
 	private function process_args( $singular, $plural, $description, $args ) {
-		self::empty_test( $singular, 'Please add the singular name of the post' );
-		self::empty_test( $plural, 'Please add the plural name of the post' );
+		Connector::empty_test( $singular, 'Please add the singular name of the post' );
+		Connector::empty_test( $plural, 'Please add the plural name of the post' );
 		$this->singular     = $singular;
 		$this->plural       = $plural;
 		$default_taxonomies = $this->args['taxonomies']; // save the default taxonomies to add them later on again so it want be overided.
@@ -136,9 +136,9 @@ class PostType extends Engine {
 
 		$this->args['description'] = empty( $description ) ? 'The description is not available.' : $description;
 
-		$this->slug = self::get( 'prefix' ) . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ); // create post slug.
+		$this->slug = Connector::container()->init->get_property( 'prefix' ) . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ); // create post slug.
 
-		$this->text_domain = self::get( 'text_domain' );
+		$this->text_domain = Connector::container()->init->get_property( 'text_domain' );
 	}
 
 	/**
