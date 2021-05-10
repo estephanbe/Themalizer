@@ -102,7 +102,7 @@ class Customizer {
 					array_merge(
 						array(
 							'description_hidden' => true,
-							'panel'              => Connector::container()->init->get_property( 'panel_id' ),
+							'panel'              => Connector::$theme_panel_id,
 							'title'              => __( $this->title, $this->text_domain ), // phpcs:ignore WordPress
 							'description'        => __( $this->description, $this->text_domain ), // phpcs:ignore WordPress
 						),
@@ -124,8 +124,8 @@ class Customizer {
 	private function process_args( $args ) {
 		$this->test_the_args( $args ); // test the arguments.
 
-		$this->text_domain  = Connector::container()->init->get_property( 'text_domain' );
-		$this->theme_prefix = Connector::container()->init->get_property( 'prefix' );
+		$this->text_domain  = Connector::$theme_text_domain;
+		$this->theme_prefix = Connector::$theme_prefix;;
 		$this->title        = $args['title'];
 		$this->description  = $args['description'];
 		$this->extra_args   = isset( $args['args'] ) ? $args['args'] : array(); // check if there is extra arguments to overide the default settings arguments.
@@ -160,7 +160,7 @@ class Customizer {
 	 */
 	private function test_the_args( $args ) {
 		$this->args = (object) $args;
-		Connector::empty_test( Connector::container()->init->get_property( 'panel_id' ), 'Add the panel ID in the initialization class.' ); // test if the panel id was initiated.
+		Connector::empty_test( Connector::$theme_panel_id, 'Add the panel ID in the initialization class.' ); // test if the panel id was initiated.
 		Connector::empty_test( $this->args, 'Add the arguments of the section' ); // test if the section is not empty.
 		Connector::empty_isset_test( $this->args->title, 'Add the section name' ); // test if the section name is set.
 		Connector::empty_isset_test( $this->args->description, 'Add the section description' ); // test if the section description is set.

@@ -142,7 +142,7 @@ class SettingPage extends Connector {
 			}
 		}
 
-		$this->theme_prefix  = Connector::container()->init->get_property( 'prefix' );
+		$this->theme_prefix  = Connector::$theme_prefix;
 		$this->menu_slug     = $this->theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->menu_title ) ) . '_slug'; // generate the menu_slug.
 		$this->options_group = $this->theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->menu_title ) ) . '_option_group'; // generate the options_group.
 

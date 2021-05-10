@@ -385,6 +385,9 @@ class Init {
 		$this->admin_css_src          = $this->assets_dir_uri . 'css/admin.css'; // compose the admin stylesheet source.
 		$this->admin_js_src           = $this->script_dir . $this->admin_script_file_name; // compose the admin script source.
 
+		Connector::$theme_text_domain = $this->text_domain;
+		Connector::$theme_prefix = $this->prefix;
+
 	}
 
 	/**
@@ -412,7 +415,7 @@ class Init {
 			Connector::empty_isset_test( $this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty' );
 
 			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $this->customizer_panel['title'] ) );
-
+			Connector::$theme_panel_id = $this->panel_id;
 			add_action(
 				'customize_register',
 				function( $wp_customize ) {
@@ -447,6 +450,7 @@ class Init {
 	 */
 	public function theme_nav_menus() {
 		$nav_menus = array_merge( array( 'primary' => 'Header Menu' ), $this->nav_menus );
+		Connector::$theme_nav_menus = $nav_menus;
 		foreach ( $nav_menus as $location => $description ) {
 			register_nav_menu( $location, __( $description, $this->text_domain ) ); // phpcs:ignore
 		}

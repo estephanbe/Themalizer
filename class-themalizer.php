@@ -44,6 +44,23 @@ use Themalizer\Custom\NavWalker;
 class Themalizer
 {
 
+	/**
+	 * Call the shared static properties from other classes as a static methods.
+	 *
+	 * @param string $name
+	 * @param array $args
+	 * @return void
+	 */
+	public static function __callStatic($method, $args){
+		$available_static_props = array(
+			'panel_id', 'text_domain', 'prefix', 'nav_menus'
+		);
+		if (in_array($method, $available_static_props))
+			return Connector::${'theme_' . $method};
+		else
+			throw new \Exception('Unavailable static method!');
+	}
+
 	/** =================================== INITIALIZATIONS ===================================== */
 
 	/**
@@ -385,7 +402,7 @@ class Themalizer
 	 */
 	public static function get_menus_locations()
 	{
-		$nav_menus = array_merge(array('primary' => 'Header Menu'), Connector::container()->init->get_property('nav_menus'));
+		$nav_menus = array_merge(array('primary' => 'Header Menu'), Connector::$theme_nav_menus);
 		$locations = array();
 		foreach ($nav_menus as $location => $desc) {
 			array_push($locations, $location);

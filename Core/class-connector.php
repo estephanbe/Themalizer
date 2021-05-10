@@ -35,6 +35,34 @@ class Connector {
 	public static $development = false;
 
 	/**
+	 * The theme panel id.
+	 *
+	 * @var string
+	 */
+	public static $theme_panel_id = '';
+
+	/**
+	 * The theme panel id.
+	 *
+	 * @var string
+	 */
+	public static $theme_text_domain = '';
+
+	/**
+	 * The theme prefix.
+	 *
+	 * @var string
+	 */
+	public static $theme_prefix = '';
+
+	/**
+	 * The theme navagation menus.
+	 *
+	 * @var array
+	 */
+	public static $theme_nav_menus = array();
+
+	/**
 	 * Get the global object of the framework.
 	 *
 	 * @return object Themalizer container in $GLOBALS.

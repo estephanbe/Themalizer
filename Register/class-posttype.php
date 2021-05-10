@@ -136,9 +136,9 @@ class PostType extends Connector {
 
 		$this->args['description'] = empty( $description ) ? 'The description is not available.' : $description;
 
-		$this->slug = Connector::container()->init->get_property( 'prefix' ) . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ); // create post slug.
+		$this->slug = Connector::$theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ); // create post slug.
 
-		$this->text_domain = Connector::container()->init->get_property( 'text_domain' );
+		$this->text_domain = Connector::$theme_text_domain;
 	}
 
 	/**

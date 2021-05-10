@@ -116,7 +116,7 @@ class Taxonomy extends Connector {
 			}
 		}
 
-		$this->slug = Connector::container()->init->get_property( 'prefix' ) . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ) . '_tax'; // create taxonomy slug.
+		$this->slug = Connector::$theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ) . '_tax'; // create taxonomy slug.
 	}
 
 	/**
@@ -127,7 +127,7 @@ class Taxonomy extends Connector {
 	private function generate_labels() {
 		$singular    = $this->singular;
 		$plural      = $this->plural;
-		$text_domain = Connector::container()->init->get_property( 'text_domain' );
+		$text_domain = Connector::$theme_text_domain;
     // phpcs:disable
 		$this->args['labels'] = array(
 			'name'                  => _x( $plural, $plural, $text_domain ),

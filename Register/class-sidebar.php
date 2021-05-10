@@ -125,7 +125,7 @@ class Sidebar extends Connector {
 				$this->{$property} = $value;
 			}
 		}
-		$this->id = Connector::container()->init->get_property( 'prefix' ) . '_' . strtolower( str_replace( ' ', '_', $this->name ) ) . '_sidebar';
+		$this->id = Connector::$theme_prefix . '_' . strtolower( str_replace( ' ', '_', $this->name ) ) . '_sidebar';
 	}
 
 	/**
