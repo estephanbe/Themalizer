@@ -207,7 +207,7 @@ class Initialize extends Core {
 
 		if ( ! is_dir( '../assets/' . $preprocessor ) ) {
 			mkdir( '../assets/' . $preprocessor, 0755, true );
-			file_put_contents( '../assets/' . $preprocessor . '/main.' . $preprocessor, '' );
+			file_put_contents( '../assets/' . $preprocessor . '/style.' . $preprocessor, '' );
 		}
 
 		$webpack = <<<EOD

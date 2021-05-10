@@ -29,7 +29,7 @@ use Themalizer\Register\ThemeHeader as ThemeHeader;
 use Themalizer\Luxury\Customizer as Customizer;
 use Themalizer\Luxury\MailChimp as MailChimp;
 use Themalizer\Luxury\Sharing as Sharing;
-use Themalizer\Luxury\ImageSize as ImageSize;
+use Themalizer\Luxury\Images as Images;
 
 /** Customized Classes */
 use Themalizer\Custom\NavWalker as NavWalker;
@@ -151,8 +151,8 @@ class Engine {
 		ThemeHeader::simple_header();
 	}
 
-	protected static function echo_start_header( $html_classes = '', $title_seperator = '' ) {
-		ThemeHeader::top_of_the_header( $html_classes, $title_seperator );
+	protected static function echo_start_header( $html_classes = '', $html_attrs = array(), $title_seperator = '' ) {
+		ThemeHeader::top_of_the_header( $html_classes, $html_attrs, $title_seperator );
 	}
 
 	protected static function generate_header_css_link( $link, $url = false ) {
@@ -169,11 +169,11 @@ class Engine {
 	}
 
 	protected static function generate_new_image_size( $slug, $width, $height, $crop = false ) {
-		$new_image = new ImageSize( $slug, $width, $height, $crop );
+		$new_image = new Images( $slug, $width, $height, $crop );
 	}
 
 	protected static function customized_image_size( $url, $size_slug ) {
-		return ImageSize::change_image_size( $url, $size_slug );
+		return Images::change_image_size( $url, $size_slug );
 	}
 
 

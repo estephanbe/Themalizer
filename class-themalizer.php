@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Themalizer\Core\Engine as Engine;
 
+use Themalizer\Luxury\Images;
+
+
 /**
  * Provides direct access to all methods in the framework through static calls
  */
@@ -71,8 +74,8 @@ class Themalizer extends Engine {
 		self::echo_simple_header();
 	}
 
-	public static function start_header( $html_classes = '', $title_seperator = '' ) {
-		self::echo_start_header( $html_classes, $title_seperator );
+	public static function start_header( $html_classes = '', $html_attrs = array(), $title_seperator = '' ) {
+		self::echo_start_header( $html_classes, $html_attrs, $title_seperator );
 	}
 
 	public static function header_css_link( $link, $url = false ) {
@@ -209,6 +212,10 @@ class Themalizer extends Engine {
 
 	public static function change_image_size( $url, $size_slug ) {
 		return self::customized_image_size( $url, $size_slug );
+	}
+
+	public static function get_logo(){
+		return Images::get_logo_uri();
 	}
 
 	public static function mailchimp_form( $args ) {

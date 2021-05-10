@@ -1,6 +1,6 @@
 <?php
 /**
- * Class File - ImageSize Class
+ * Class File - Images Class
  *
  * @package Themalizer
  * @copyright 2019-2020 BoshDev - Bisharah Estephan
@@ -17,12 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Themalizer\Core\Engine;
 
-use function PHPSTORM_META\type;
-
 /**
- * Manage the theme customizations.
+ * Handle images.
  */
-class ImageSize extends Engine {
+class Images extends Engine {
 
 	public $slug                = '';
 	public $width               = '';
@@ -70,6 +68,13 @@ class ImageSize extends Engine {
 		}
 
 		return \esc_url( \wp_get_attachment_image_src( $attachment_id, $size_slug )[0] );
+	}
+
+	public static function get_logo_uri(){
+		$logo = get_theme_mod( 'custom_logo' );
+		$image = wp_get_attachment_image_src( $logo , 'full' );
+		var_dump($image);
+		die;
 	}
 
 

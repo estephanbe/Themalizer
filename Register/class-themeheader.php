@@ -31,9 +31,16 @@ class ThemeHeader extends Engine {
 		self::bottom_of_the_header();
 	}
 
-	public static function top_of_the_header( $html_classes = '', $title_seperator = '>' ) {    ?>
+	public static function top_of_the_header( $html_classes = '', $html_attrs = array(), $title_seperator = '>' ) {    
+		$attrs = '';
+		if (!empty($html_attrs)){
+			foreach ($html_attrs as $attr => $value) {
+				$attrs .= $attr . '="' . $value . '"';
+			}
+		}
+		?>
 		<!DOCTYPE html>
-		<html class="<?php echo $html_classes; ?>" <?php language_attributes(); ?>>
+		<html <?php echo !empty($html_classes) ? 'class="' . $html_classes . '"' : ''; ?> <?php echo ' ' . $attrs . ' '; language_attributes(); ?>>
 
 		<head>
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -78,7 +85,8 @@ class ThemeHeader extends Engine {
 		echo ' ' . body_class( $body_class ) . ' ';
 		if ( is_array( $attrs ) && ! empty( $attrs ) ) {
 			foreach ( $attrs as $attr => $value ) {
-				echo $attr . '="' . esc_attr( $value ) . '" ';
+				$echo_val = $value !== null ? $attr . '="' . esc_attr( $value ) . '" ' : $attr;
+				echo ' ' . $echo_val . ' ';
 			}
 		}
 		?>
