@@ -158,6 +158,9 @@ class Initialize extends Core
 
 	private function create_skeleton()
 	{
+		// To add the custom theme functions and other custom files
+		if (!is_dir('../includes'))
+			mkdir('../includes', 0755, true);
 
 		foreach ($this->skeleton as $element) {
 			if (!is_dir('../' . $element['value']) && $element['type'] === 'dir') {
@@ -178,6 +181,9 @@ class Initialize extends Core
 		$this->create_file('index.php');
 		$this->create_file('functions.php');
 		$this->create_file('style.css');
+
+		// Default Themalizer files
+		$this->create_file('includes/custom_theme_functions.php');
 	}
 
 	private function create_file($file_name)
@@ -209,6 +215,7 @@ class Initialize extends Core
 		if ( ! defined( 'ABSPATH' ) ) {
 			exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 		}
+		
 		EOD;
 	}
 
@@ -224,6 +231,19 @@ class Initialize extends Core
 			mkdir('../assets/' . $preprocessor, 0755, true);
 			file_put_contents('../assets/' . $preprocessor . '/style.' . $preprocessor, '');
 		}
+
+		// Create custom JS file to add the JS theme's functions.
+		if (!is_dir('../assets/js')) 
+			mkdir('../assets/js', 0755, true);
+
+		file_put_contents(
+			'../assets/js/custom.js',
+			<<<EOD
+			$(document).ready(function () {
+				// your code goes here..
+			});
+			EOD
+		);
 
 		$webpack = <<<EOD
 		/*
@@ -293,10 +313,6 @@ class Initialize extends Core
 	{
 		if (!$this->nav_walker) {
 			return;
-		}
-
-		if (!is_dir('../includes')) {
-			mkdir('../includes', 0755, true);
 		}
 
 		file_put_contents('../includes/nav_walker.php', $this->starting_of_file('nav_walker.php'));

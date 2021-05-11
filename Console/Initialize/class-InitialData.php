@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Initial Data Class File
  *
@@ -8,23 +9,26 @@
  * @link https://boshdev.com/ BoshDev
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
+
 namespace Themalizer\Console\Initialize;
 
 use Themalizer\Console\CommandPart;
 
-if ( ! defined( 'THEMALIZER_CLI' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('THEMALIZER_CLI')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
-class InitialData extends CommandPart {
+class InitialData extends CommandPart
+{
 
 	private $skeleton_for_header_footer = array();
 
-	protected function init() {
+	protected function init()
+	{
 
 		$this->skeleton_for_header_footer = array_map(
-			function( $item ) {
-				if ( 'file' === $item['type'] ) {
+			function ($item) {
+				if ('file' === $item['type']) {
 					return $item['value'];
 				}
 			},
@@ -33,10 +37,10 @@ class InitialData extends CommandPart {
 
 		$this->skeleton_for_header_footer = array_filter(
 			$this->skeleton_for_header_footer,
-			function( $item ) {
-				$processed_element = explode( '/', $item );
-				$file              = end( $processed_element );
-				return ! empty( $item ) && '.php' === substr( $item, -4 ) && 'header.php' !== $file && 'footer.php' !== $file && 'search.php' !== $file;
+			function ($item) {
+				$processed_element = explode('/', $item);
+				$file              = end($processed_element);
+				return !empty($item) && '.php' === substr($item, -4) && 'header.php' !== $file && 'footer.php' !== $file && 'search.php' !== $file;
 			}
 		);
 
@@ -44,21 +48,21 @@ class InitialData extends CommandPart {
 		$this->functions_data();
 		$this->header_data();
 		$this->footer_data();
-		foreach ( $this->skeleton_for_header_footer as $filename ) {
-			$this->header_footer_data( $filename );
+		foreach ($this->skeleton_for_header_footer as $filename) {
+			$this->header_footer_data($filename);
 		}
 
 		$this->nav_walker_data();
-
 	}
 
-	private function style_data() {
+	private function style_data()
+	{
 		$theme_name           = $this->command->theme_name;
 		$theme_author         = $this->command->theme_author;
-		$theme_author_company = empty( $this->command->theme_author_company ) ? '' : ' - ' . $this->command->theme_author_company;
+		$theme_author_company = empty($this->command->theme_author_company) ? '' : ' - ' . $this->command->theme_author_company;
 		$theme_author_uri     = $this->command->theme_author_uri;
 		$description          = $this->command->description;
-		$tags                 = empty( $this->command->tags ) ? '' : implode( ',', $this->command->tags );
+		$tags                 = empty($this->command->tags) ? '' : implode(',', $this->command->tags);
 		$text_domain          = $this->command->text_domain;
 
 		$style_data = <<<EOD
@@ -80,13 +84,14 @@ class InitialData extends CommandPart {
 		*/
 		EOD;
 
-		file_put_contents( '../style.css', $style_data );
+		file_put_contents('../style.css', $style_data);
 	}
 
-	private function functions_data() {
+	private function functions_data()
+	{
 		$theme_name     = $this->command->theme_name;
 		$theme_prefix   = $this->command->theme_prefix;
-		$settings       = ! $this->command->settings_page ? '' : <<<EOD
+		$settings       = !$this->command->settings_page ? '' : <<<EOD
 		Themalizer::setting(
 			array(
 				'page_title' => 'Your Settings Page Title',
@@ -107,7 +112,7 @@ class InitialData extends CommandPart {
 		);
 		EOD;
 
-		$sidebar        = ! $this->command->sidebar ? '' : <<<EOD
+		$sidebar        = !$this->command->sidebar ? '' : <<<EOD
 		Themalizer::sidebar(
 			array(
 				'name'          => 'Sidebar Name',
@@ -115,7 +120,6 @@ class InitialData extends CommandPart {
 				'before_widget' => '<div class="example-class">',
 				'before_title'  => '<h5 class="example-class">',
 				'after_title'   => '</h5>',
-		
 			)
 		);
 		EOD;
@@ -140,9 +144,14 @@ class InitialData extends CommandPart {
 		EOD;
 
 		$functions_data = <<<EOD
+		
+		
+		/**
+		 * =============================== Themalizer =================================
+		 */
 		require_once 'Themalizer/autoload.php';
 		
-		Themalizer::\$development = true; // Please remove this in staging/production invironment. 
+		Themalizer::development(true); // Please remove this in staging/production invironment. 
 		
 		Themalizer::init(
 			array(
@@ -159,12 +168,32 @@ class InitialData extends CommandPart {
 		$sidebar
 		
 		$customizer
+		
+		
+		/**
+		 * ======================= Theme Custom Configarations ==========================
+		 */
+		
+		
+		
+		 // Your custom configarations goes here..
+		
+		
+		
+		/**
+		 * ================================== END =======================================
+		 * NOTE: To keep everthing organized, please add your theme's custom functions 
+		 * 		 in the below file and leave functions.php for only Themalizer and the 
+		 * 		 theme's general configarations.
+		 */
+		include_once 'includes/custom_theme_functions.php';
 		EOD;
 
-		file_put_contents( '../functions.php', $functions_data, FILE_APPEND );
+		file_put_contents('../functions.php', $functions_data, FILE_APPEND);
 	}
 
-	private function header_data() {
+	private function header_data()
+	{
 
 		$header_data = <<<EOD
 		Themalizer::start_header();
@@ -195,13 +224,13 @@ class InitialData extends CommandPart {
 		?>
 		EOD;
 
-		if ( file_exists( '../header.php' ) ) {
-			file_put_contents( '../header.php', $header_data, FILE_APPEND );
+		if (file_exists('../header.php')) {
+			file_put_contents('../header.php', $header_data, FILE_APPEND);
 		}
-
 	}
 
-	private function footer_data() {
+	private function footer_data()
+	{
 
 		$footer_data = <<<EOD
 		?>
@@ -214,13 +243,13 @@ class InitialData extends CommandPart {
 		Themalizer::footer();
 		EOD;
 
-		if ( file_exists( '../footer.php' ) ) {
-			file_put_contents( '../footer.php', $footer_data, FILE_APPEND );
+		if (file_exists('../footer.php')) {
+			file_put_contents('../footer.php', $footer_data, FILE_APPEND);
 		}
-
 	}
 
-	private function header_footer_data( $file_name ) {
+	private function header_footer_data($file_name)
+	{
 
 		$header_footer_data = <<<EOD
 		get_header();
@@ -232,24 +261,42 @@ class InitialData extends CommandPart {
 		<?php
 		get_footer();
 		EOD;
-		
-		if ( file_exists( '../' . $file_name ) ) {
-			file_put_contents( '../' . $file_name, $header_footer_data, FILE_APPEND );
+
+		if (file_exists('../' . $file_name)) {
+			file_put_contents('../' . $file_name, $header_footer_data, FILE_APPEND);
 		}
 	}
 
-	private function nav_walker_data(){
-		if ( ! $this->command->nav_walker ) {
+	private function nav_walker_data()
+	{
+		if (!$this->command->nav_walker) {
 			return;
 		}
 
 		$nav_walker_data = <<<EOD
-		
+			
+		/**
+		 * Customizer class for nav menus which called in wp_nav_menu.
+		 */
+		class NavWalker extends \Walker_Nav_Menu {
+			
+			// function start_el( &\$output, \$item, \$depth = 0, \$args = array(), \$id = 0 ) {
+			// }
+				
+			// function end_el( &\$output, \$depth = 0, \$args = array() ) {
+			// }
+				
+			// function start_lvl( &\$output, \$depth = 0, \$args = array() ) {
+			// }
+			
+			// function end_lvl( &\$output, \$depth = 0, \$args = array() ) {
+			// }
+				
+		}
 		EOD;
 
-		if ( file_exists( '../includes/nav_walker.php' ) ) {
-			file_put_contents( '../includes/nav_walker.php', $nav_walker_data, FILE_APPEND );
+		if (file_exists('../includes/nav_walker.php')) {
+			file_put_contents('../includes/nav_walker.php', $nav_walker_data, FILE_APPEND);
 		}
 	}
-
 }
