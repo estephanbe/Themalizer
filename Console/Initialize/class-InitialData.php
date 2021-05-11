@@ -48,6 +48,8 @@ class InitialData extends CommandPart {
 			$this->header_footer_data( $filename );
 		}
 
+		$this->nav_walker_data();
+
 	}
 
 	private function style_data() {
@@ -233,6 +235,20 @@ class InitialData extends CommandPart {
 		
 		if ( file_exists( '../' . $file_name ) ) {
 			file_put_contents( '../' . $file_name, $header_footer_data, FILE_APPEND );
+		}
+	}
+
+	private function nav_walker_data(){
+		if ( ! $this->command->nav_walker ) {
+			return;
+		}
+
+		$nav_walker_data = <<<EOD
+		
+		EOD;
+
+		if ( file_exists( '../includes/nav_walker.php' ) ) {
+			file_put_contents( '../includes/nav_walker.php', $nav_walker_data, FILE_APPEND );
 		}
 	}
 

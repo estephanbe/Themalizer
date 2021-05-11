@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Create theme setting page with options.
  */
-class SettingPage extends Connector {
+class SettingPage {
 
 	/**
 	 * Settings Page Title.

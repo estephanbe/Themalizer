@@ -24,7 +24,7 @@ use Themalizer\Core\Constants;
 use Themalizer\Core\Init as Initialization;
 use Themalizer\Core\Security;
 use Themalizer\Register\PostType;
-use Themalizer\Register\SettingPage as Setting;
+use Themalizer\Register\SettingPage;
 use Themalizer\Register\Sidebar;
 use Themalizer\Register\Taxonomy;
 use Themalizer\Register\ThemeHeader;
@@ -51,14 +51,23 @@ class Themalizer
 	 * @param array $args
 	 * @return void
 	 */
+	
 	public static function __callStatic($method, $args){
-		$available_static_props = array(
-			'panel_id', 'text_domain', 'prefix', 'nav_menus'
-		);
-		if (in_array($method, $available_static_props))
-			return Connector::${'theme_' . $method};
-		else
-			throw new \Exception('Unavailable static method!');
+		
+		switch ($method) {
+			case 'panel_id':
+			case 'text_domain':
+			case 'prefix':
+			case 'nav_menus':
+				return Connector::${'theme_' . $method};
+				break;
+			case 'development':
+				Connector::$development = $args[0];
+				break;
+			default:
+				throw new \Exception('Unavailable static method!');
+				break;
+		}			
 	}
 
 	/** =================================== INITIALIZATIONS ===================================== */
@@ -86,7 +95,7 @@ class Themalizer
 	{
 		Connector::empty_test($args, 'Please fill out the settings arguments array.');
 
-		Connector::container()->settings = new Setting($args);
+		Connector::container()->settings = new SettingPage($args);
 	}
 
 	/**
@@ -444,7 +453,7 @@ class Themalizer
 	 */
 	public static function logo_uri($echo = false)
 	{
-		$logo_uri = ImageHandler::get_logo_uri();
+		$logo_uri = ImageHandler::get_logo()[0];
 		if ($echo)
 			echo $logo_uri;
 		return $logo_uri;

@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Register new taxonomy.
  */
-class Taxonomy extends Connector {
+class Taxonomy {
 
 	/**
 	 * The taxonomy singular label.

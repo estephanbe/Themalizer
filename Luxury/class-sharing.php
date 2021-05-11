@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Manage the sharing and social media buttons.
  */
-class Sharing extends Connector {
+class Sharing {
 
 	public $sharingAPI = array(
 		'facebook' => 'https://facebook.com/sharer.php?display=page&u=',

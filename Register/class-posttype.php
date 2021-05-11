@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Post Type class for registering custom post type.
  */
-class PostType extends Connector {
+class PostType {
 
 	/**
 	 * The post type singular label.

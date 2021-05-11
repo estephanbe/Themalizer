@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Manage the mailchimp.
  */
-class Mailchimp extends Connector {
+class Mailchimp {
 
 	/**
 	 * API key.

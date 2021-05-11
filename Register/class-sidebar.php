@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Register sidebar class.
  */
-class Sidebar extends Connector {
+class Sidebar {
 
 	/**
 	 * Sidebar name.

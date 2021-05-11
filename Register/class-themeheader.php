@@ -12,16 +12,16 @@
 
 namespace Themalizer\Register;
 
+use Themalizer\Core\Connector;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
 }
 
-use Themalizer\Core\Connector;
-
 /**
  * Register the theme header.
  */
-class ThemeHeader extends Connector {
+class ThemeHeader {
 
 
 	public static $wp_head = true;
@@ -52,7 +52,7 @@ class ThemeHeader extends Connector {
 	public static function echo_generated_header_css_link( $link, $url = false ) {
 		if ( ! $url ) {
 			?>
-				<link href="<?php self::make_assets_uri( $link ); ?>" rel="stylesheet">
+				<link href="<?php Connector::make_assets_uri( $link ); ?>" rel="stylesheet">
 			<?php
 		} else {
 			?>

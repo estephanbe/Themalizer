@@ -20,7 +20,7 @@ use Themalizer\Core\Connector;
 /**
  * Handle images.
  */
-class ImageHandler extends Connector {
+class ImageHandler {
 
 	public $slug                = '';
 	public $width               = '';
@@ -70,9 +70,9 @@ class ImageHandler extends Connector {
 		return \esc_url( \wp_get_attachment_image_src( $attachment_id, $size_slug )[0] );
 	}
 
-	public static function get_logo_uri(){
+	public static function get_logo(){
 		$logo = get_theme_mod( 'custom_logo' );
-		$image = wp_get_attachment_image_src( $logo , 'full' );
+		return wp_get_attachment_image_src( $logo , 'full' );
 	}
 
 
