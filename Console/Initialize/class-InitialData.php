@@ -279,16 +279,47 @@ class InitialData extends CommandPart
 		 * Customizer class for nav menus which called in wp_nav_menu.
 		 */
 		class NavWalker extends \Walker_Nav_Menu {
-			
+			/**
+			* Starts the element output. (the <li>)
+			*
+			* @param string \$output the 
+			* @param object \$item the post object (nav_element) and contains props such as title, url, classes[], current:bool.
+			* @param integer \$depth
+			* @param object \$args the main menu arguments such as walker->has_children, container, container_class
+			* @param integer \$id
+			* @return void
+			*/
 			// function start_el( &\$output, \$item, \$depth = 0, \$args = array(), \$id = 0 ) {
 			// }
-				
-			// function end_el( &\$output, \$depth = 0, \$args = array() ) {
+			
+			/**
+			* Closes the <li>
+			*
+			* same arguments description
+			* @return void
+			*/
+			// function end_el(&\$output, \$item, \$depth = 0, \$args = null) {
 			// }
 				
+			/**
+			* Starts the list (<ul>). It will be invoked only if the \$depth is greater than 1.
+			*
+			* @param string \$output
+			* @param integer \$depth
+			* @param object \$args the main menu arguments such as walker->has_children, container, container_class
+			* @return void
+			*/
 			// function start_lvl( &\$output, \$depth = 0, \$args = array() ) {
 			// }
-			
+							
+			/**
+			* Closes the list (<ul>). It will be invoked only if the \$depth is greater than 1.
+			*
+			* @param string \$output
+			* @param integer \$depth
+			* @param object \$args the main menu arguments such as walker->has_children, container, container_class
+			* @return void
+			*/
 			// function end_lvl( &\$output, \$depth = 0, \$args = array() ) {
 			// }
 				

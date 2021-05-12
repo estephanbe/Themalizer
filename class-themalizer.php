@@ -32,11 +32,6 @@ use Themalizer\Luxury\Customizer;
 use Themalizer\Luxury\Sharing;
 use Themalizer\Luxury\ImageHandler;
 
-/** Customized Classes */
-
-use Themalizer\Custom\NavWalker;
-
-
 /**
  * Provides direct access to all methods in the framework through static calls. 
  * Any data is being saved in $GLOBALS['BoshDev\Themalizer']
@@ -468,7 +463,7 @@ class Themalizer
 	 */
 	public static function make_assets_uri($path = '', $echo = true)
 	{
-		Connector::make_assets_uri($path, $echo);
+		return Connector::make_assets_uri($path, $echo);
 	}
 
 	/**
