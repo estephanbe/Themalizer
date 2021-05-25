@@ -145,7 +145,7 @@ class Customizer {
 				array(
 					'type'              => 'option',
 					'transport'         => 'postMessage',
-					'sanitize_callback' => array( $this, Connector::get_sanitizing_method( $setting_args['control']['type'] ) ),
+					'sanitize_callback' => array( Connector::class, Connector::get_sanitizing_method( $setting_args['control']['type'] ) ),
 				),
 				$setting_args
 			);

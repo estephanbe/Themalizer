@@ -118,6 +118,11 @@ class Connector {
 		return $url;
 	}
 
+	public static function recursive_iterator(array $arr) : \RecursiveIteratorIterator {
+		$arrayIterator = new \RecursiveArrayIterator($arr);
+		return new \RecursiveIteratorIterator($arrayIterator, \RecursiveIteratorIterator::SELF_FIRST);
+	}
+
 
 
 }

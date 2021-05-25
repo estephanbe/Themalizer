@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Init
  *
@@ -12,15 +13,19 @@
 namespace  Themalizer\Core;
 
 use Themalizer\Luxury\MailChimp as MailChimp;
+use Themalizer\Register\RestRoute;
+use WP_REST_Request;
+use WP_REST_Response;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 /**
  * Initialize all the necessary actions and processes for any WordPress theme according to the provided arguments.
  */
-class Init {
+class Init
+{
 
 	/**
 	 * The theme object.
@@ -314,27 +319,30 @@ class Init {
 	 *
 	 * @param array $custom_args if there is any amendments.
 	 */
-	public function __construct( $custom_args = array() ) {
-		$this->process_args( $custom_args );
+	public function __construct($custom_args = array())
+	{
+		$this->process_args($custom_args);
 
-		define( 'THEMALIZER_THEME_PREFIX', $this->prefix );
-		define( 'THEMALIZER_STYLE_NAME', $this->stylesheet_name );
-		define( 'THEMALIZER_SCRIPT_NAME', $this->script_name );
-		define( 'THEMALIZER_THEME_VERSION', $this->version );
-		define( 'THEMALIZER_ENQ_PRIORITY', 100 );
+		define('THEMALIZER_THEME_PREFIX', $this->prefix);
+		define('THEMALIZER_STYLE_NAME', $this->stylesheet_name);
+		define('THEMALIZER_SCRIPT_NAME', $this->script_name);
+		define('THEMALIZER_THEME_VERSION', $this->version);
+		define('THEMALIZER_ENQ_PRIORITY', 100);
 
 		$this->make_panel();
 		$this->add_initial_actions();
 
-		if ( $this->mailchimp ) {
+		if ($this->mailchimp) {
 			$this->mailchimp_support();
 		}
 
-		if ( class_exists( 'WooCommerce' ) ) {
+		$this->initiate_helpers_endpoints();
+
+		if (class_exists('WooCommerce')) {
 			add_action(
 				'after_setup_theme',
-				function() {
-					add_theme_support( 'woocommerce' );
+				function () {
+					add_theme_support('woocommerce');
 				}
 			);
 		}
@@ -346,7 +354,8 @@ class Init {
 	 * @param String $property the needed property.
 	 * @return mixed The property value
 	 */
-	public function get_property( $property ) {
+	public function get_property($property)
+	{
 		return $this->{$property};
 	}
 
@@ -356,11 +365,12 @@ class Init {
 	 * @param array $custom_args array of customizable properties values.
 	 * @return void
 	 */
-	private function process_args( $custom_args ) {
+	private function process_args($custom_args)
+	{
 
-		if ( ! empty( $custom_args ) ) {
-			foreach ( $custom_args as $property => $value ) {
-				if ( in_array( $property, $this->customizable_properties, true ) ) {
+		if (!empty($custom_args)) {
+			foreach ($custom_args as $property => $value) {
+				if (in_array($property, $this->customizable_properties, true)) {
 					$this->{$property} = $value;
 				}
 			}
@@ -369,9 +379,9 @@ class Init {
 		$this->theme                  = wp_get_theme(); // add the theme object.
 		$this->dir                    = get_template_directory() . '/'; // get the theme directory.
 		$this->dir_uri                = get_template_directory_uri() . '/'; // get the theme directory URI.
-		$this->posts_per_page         = get_option( 'posts_per_page' ); // get the theme posts_per_page_option.
-		$this->version                = $this->theme->get( 'Version' ); // get the theme version.
-		$this->text_domain            = $this->theme->get( 'TextDomain' ); // get the theme textDomain.
+		$this->posts_per_page         = get_option('posts_per_page'); // get the theme posts_per_page_option.
+		$this->version                = $this->theme->get('Version'); // get the theme version.
+		$this->text_domain            = $this->theme->get('TextDomain'); // get the theme textDomain.
 		$this->assets_directory       = $this->dir . $this->assets_dir_name . '/'; // compose the assets directory.
 		$this->assets_dir_uri         = $this->dir_uri . $this->assets_dir_name . '/'; // compose the assets directory URI.
 		$this->stylesheet_name        = $this->prefix . '_style'; // compose the stylesheet name.
@@ -380,14 +390,13 @@ class Init {
 		$this->admin_script_name      = $this->prefix . '_admin_script'; // compose the admint script name.
 		$this->main_script_file_name  = $this->script_file_name . '.js'; // compose the scipt file name.
 		$this->admin_script_file_name = $this->script_file_name . '_admin.js'; // compose the admin script file name.
-		$this->script_dir             = empty( $this->script_dir ) ? $this->assets_dir_uri : $this->dir_uri . $this->script_dir; // compose the script dir URI.
+		$this->script_dir             = empty($this->script_dir) ? $this->assets_dir_uri : $this->dir_uri . $this->script_dir; // compose the script dir URI.
 		$this->js_src                 = $this->script_dir . $this->main_script_file_name; // compose the js file URI source.
 		$this->admin_css_src          = $this->assets_dir_uri . 'css/admin.css'; // compose the admin stylesheet source.
 		$this->admin_js_src           = $this->script_dir . $this->admin_script_file_name; // compose the admin script source.
 
 		Connector::$theme_text_domain = $this->text_domain;
 		Connector::$theme_prefix = $this->prefix;
-
 	}
 
 	/**
@@ -395,12 +404,13 @@ class Init {
 	 *
 	 * @return void
 	 */
-	private function add_initial_actions() {
-		add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );
-		add_action( 'after_setup_theme', array( $this, 'theme_nav_menus' ) );
-		add_action( 'init', array( $this, 'change_post_object_name' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'add_basic_theme_scripts' ), THEMALIZER_ENQ_PRIORITY );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_theme_scripts' ), THEMALIZER_ENQ_PRIORITY );
+	private function add_initial_actions()
+	{
+		add_action('after_setup_theme', array($this, 'theme_supports'));
+		add_action('after_setup_theme', array($this, 'theme_nav_menus'));
+		add_action('init', array($this, 'change_post_object_name'));
+		add_action('wp_enqueue_scripts', array($this, 'add_basic_theme_scripts'), THEMALIZER_ENQ_PRIORITY);
+		add_action('admin_enqueue_scripts', array($this, 'add_admin_theme_scripts'), THEMALIZER_ENQ_PRIORITY);
 	}
 
 	/**
@@ -408,17 +418,18 @@ class Init {
 	 *
 	 * @return void
 	 */
-	private function make_panel() {
-		if ( ! empty( $this->customizer_panel ) ) {
-			Connector::empty_test( $this->customizer_panel, 'Make sure args is not empty' );
-			Connector::empty_isset_test( $this->customizer_panel['title'], 'Make sure panel title is added to the args and is not empty' );
-			Connector::empty_isset_test( $this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty' );
+	private function make_panel()
+	{
+		if (!empty($this->customizer_panel)) {
+			Connector::empty_test($this->customizer_panel, 'Make sure args is not empty');
+			Connector::empty_isset_test($this->customizer_panel['title'], 'Make sure panel title is added to the args and is not empty');
+			Connector::empty_isset_test($this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty');
 
-			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace( ' ', '_', strtolower( $this->customizer_panel['title'] ) );
+			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace(' ', '_', strtolower($this->customizer_panel['title']));
 			Connector::$theme_panel_id = $this->panel_id;
 			add_action(
 				'customize_register',
-				function( $wp_customize ) {
+				function ($wp_customize) {
 					$wp_customize->add_panel(
 						$this->panel_id,
 						$this->customizer_panel
@@ -433,14 +444,15 @@ class Init {
 	 *
 	 * @return void
 	 */
-	public function theme_supports() {
-		! empty( $this->post_formats ) ? add_theme_support( 'post-formats', $this->post_formats ) : '';
-		$this->post_thumbnails ? add_theme_support( 'post-thumbnails' ) : '';
-		$this->automatic_feed_links ? add_theme_support( 'automatic-feed-links' ) : '';
-		$this->html5 ? add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) ) : '';
-		$this->title_tag ? add_theme_support( 'title-tag' ) : '';
-		$this->customize_selective_refresh_widgets ? add_theme_support( 'customize-selective-refresh-widgets' ) : '';
-		$this->custom_logo ? add_theme_support( 'custom-logo' ) : '';
+	public function theme_supports()
+	{
+		!empty($this->post_formats) ? add_theme_support('post-formats', $this->post_formats) : '';
+		$this->post_thumbnails ? add_theme_support('post-thumbnails') : '';
+		$this->automatic_feed_links ? add_theme_support('automatic-feed-links') : '';
+		$this->html5 ? add_theme_support('html5', array('comment-list', 'comment-form', 'search-form', 'gallery', 'caption')) : '';
+		$this->title_tag ? add_theme_support('title-tag') : '';
+		$this->customize_selective_refresh_widgets ? add_theme_support('customize-selective-refresh-widgets') : '';
+		$this->custom_logo ? add_theme_support('custom-logo') : '';
 	}
 
 	/**
@@ -448,11 +460,12 @@ class Init {
 	 *
 	 * @return void
 	 */
-	public function theme_nav_menus() {
-		$nav_menus = array_merge( array( 'primary' => 'Header Menu' ), $this->nav_menus );
+	public function theme_nav_menus()
+	{
+		$nav_menus = array_merge(array('primary' => 'Header Menu'), $this->nav_menus);
 		Connector::$theme_nav_menus = $nav_menus;
-		foreach ( $nav_menus as $location => $description ) {
-			register_nav_menu( $location, __( $description, $this->text_domain ) ); // phpcs:ignore
+		foreach ($nav_menus as $location => $description) {
+			register_nav_menu($location, __($description, $this->text_domain)); // phpcs:ignore
 		}
 	}
 
@@ -461,9 +474,10 @@ class Init {
 	 *
 	 * @return void
 	 */
-	public function add_basic_theme_scripts() {
-		wp_enqueue_style( $this->stylesheet_name, get_stylesheet_uri(), array(), $this->version );
-		wp_enqueue_script( THEMALIZER_SCRIPT_NAME, $this->js_src, array( 'jquery' ), $this->version, true );
+	public function add_basic_theme_scripts()
+	{
+		wp_enqueue_style($this->stylesheet_name, get_stylesheet_uri(), array(), $this->version);
+		wp_enqueue_script(THEMALIZER_SCRIPT_NAME, $this->js_src, array('jquery'), $this->version, true);
 	}
 
 	/**
@@ -472,11 +486,12 @@ class Init {
 	 * @param [type] $hook_suffix @ticket To be checked later.
 	 * @return void
 	 */
-	public function add_admin_theme_scripts( $hook_suffix ) {
-		if ( $this->support_admin_script ) {
+	public function add_admin_theme_scripts($hook_suffix)
+	{
+		if ($this->support_admin_script) {
 			wp_enqueue_media();
-			wp_enqueue_style( $this->admin_stylesheet_name, $this->admin_css_src, array(), $this->version );
-			wp_enqueue_script( $this->admin_script_name, $this->admin_js_src, array(), $this->version, true );
+			wp_enqueue_style($this->admin_stylesheet_name, $this->admin_css_src, array(), $this->version);
+			wp_enqueue_script($this->admin_script_name, $this->admin_js_src, array(), $this->version, true);
 		}
 	}
 
@@ -485,15 +500,16 @@ class Init {
 	 *
 	 * @return void
 	 */
-	public function change_post_object_name() {
-		if ( ! empty( $this->change_post_label_name ) && is_array( $this->change_post_label_name ) ) {
+	public function change_post_object_name()
+	{
+		if (!empty($this->change_post_label_name) && is_array($this->change_post_label_name)) {
 
-			Connector::isset_test( $this->change_post_label_name[0], 'Add the Post Lable Single Name' );
-			Connector::isset_test( $this->change_post_label_name[1], 'Add the Post Lable Plurar Name' );
+			Connector::isset_test($this->change_post_label_name[0], 'Add the Post Lable Single Name');
+			Connector::isset_test($this->change_post_label_name[1], 'Add the Post Lable Plurar Name');
 			$single = $this->change_post_label_name[0];
 			$plurar = $this->change_post_label_name[1];
 
-			$get_post_type = get_post_type_object( 'post' );
+			$get_post_type = get_post_type_object('post');
 			$labels        = $get_post_type->labels;
 
 			$labels->name               = "$plurar";
@@ -512,13 +528,14 @@ class Init {
 		}
 	}
 
-	public function mailchimp_support() {
+	public function mailchimp_support()
+	{
 		(new MailChimp());
 
 		add_action(
 			'wp_enqueue_scripts',
-			function() {
-				$url    = Connector::mailchimp_action_url( false );
+			function () {
+				$url    = Connector::mailchimp_action_url(false);
 				$script = <<<EOD
 				jQuery(document).ready(($) => {
 					window.addEventListener('DOMContentLoaded', function() {
@@ -567,9 +584,36 @@ class Init {
 					});
 				});
 				EOD;
-				\wp_add_inline_script( THEMALIZER_SCRIPT_NAME, $script );
-				\wp_add_inline_style( THEMALIZER_STYLE_NAME, '#themalizer-mailchimp-form .modal{display:none;position:fixed;z-index:1;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:#000;background-color:rgba(0,0,0,.4)}#themalizer-mailchimp-form .modal-content{background-color:#fefefe;margin:15% auto;padding:20px;border:1px solid #888;width:20%}#themalizer-mailchimp-form .modal-content p{text-align:center}#themalizer-mailchimp-form .close{color:#aaa;float:right;font-size:28px;font-weight:700}#themalizer-mailchimp-form .close:focus,#themalizer-mailchimp-form .close:hover{color:#000;text-decoration:none;cursor:pointer}' );
+				\wp_add_inline_script(THEMALIZER_SCRIPT_NAME, $script);
+				\wp_add_inline_style(THEMALIZER_STYLE_NAME, '#themalizer-mailchimp-form .modal{display:none;position:fixed;z-index:1;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:#000;background-color:rgba(0,0,0,.4)}#themalizer-mailchimp-form .modal-content{background-color:#fefefe;margin:15% auto;padding:20px;border:1px solid #888;width:20%}#themalizer-mailchimp-form .modal-content p{text-align:center}#themalizer-mailchimp-form .close{color:#aaa;float:right;font-size:28px;font-weight:700}#themalizer-mailchimp-form .close:focus,#themalizer-mailchimp-form .close:hover{color:#000;text-decoration:none;cursor:pointer}');
 			}
+		);
+	}
+
+	private function initiate_helpers_endpoints()
+	{
+		Connector::container()->custom_rest_routes['check_existed_url'] = new RestRoute(
+			'check_existed_url',
+			array(
+				'route' => 'check_existed_url', // add pregmatch for url to pass to the checker
+				'callback' => function (\WP_REST_Request $request) {
+					$url_to_be_tested = $request->get_param('url');
+					if (empty($url_to_be_tested))
+						return new \WP_Error('missing_url_param','Please addd "url" query parameter to the route!', array('success' => false));
+					
+					if (strpos($url_to_be_tested, "http://") !== 0 && strpos($url_to_be_tested, "https://") !== 0 ) {
+						$url_to_be_tested = 'http://' . $url_to_be_tested;
+					}
+
+					return new \WP_REST_Response(
+						array(
+							'valid_url' => Connector::existed_url_test($url_to_be_tested),
+							'url' => $url_to_be_tested,
+							'success' => true
+						)
+					);
+				}
+			)
 		);
 	}
 }

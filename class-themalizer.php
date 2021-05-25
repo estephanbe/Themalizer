@@ -31,6 +31,7 @@ use Themalizer\Register\ThemeHeader;
 use Themalizer\Luxury\Customizer;
 use Themalizer\Luxury\Sharing;
 use Themalizer\Luxury\ImageHandler;
+use Themalizer\Register\RestRoute;
 
 /**
  * Provides direct access to all methods in the framework through static calls. 
@@ -46,9 +47,10 @@ class Themalizer
 	 * @param array $args
 	 * @return void
 	 */
-	
-	public static function __callStatic($method, $args){
-		
+
+	public static function __callStatic($method, $args)
+	{
+
 		switch ($method) {
 			case 'panel_id':
 			case 'text_domain':
@@ -62,7 +64,7 @@ class Themalizer
 			default:
 				throw new \Exception('Unavailable static method!');
 				break;
-		}			
+		}
 	}
 
 	/** =================================== INITIALIZATIONS ===================================== */
@@ -100,7 +102,7 @@ class Themalizer
 	 * @param string $plural The plural name of the post.
 	 * @param string $description the description of the post.
 	 * @param array $args the rest of the post arguments.
-	 * @return void
+	 * @return object
 	 */
 	public static function custom_post_type($singular, $plural, $description = '', $args = array())
 	{
@@ -109,6 +111,7 @@ class Themalizer
 		}
 
 		Connector::container()->custom_post_types[$singular] = new PostType($singular, $plural, $description, $args);
+		return Connector::container()->custom_post_types[$singular];
 	}
 
 	/**
@@ -199,6 +202,11 @@ class Themalizer
 	// 	(new NavWalker());
 	// }
 
+	public static function register_rest_route(string $endpoint_name, array $class_arguments)
+	{
+		return new RestRoute($endpoint_name, $class_arguments);
+	}
+
 
 	/** =================================== Getters ===================================== */
 
@@ -238,6 +246,15 @@ class Themalizer
 			throw new \Exception('custom post type is not existed');
 		}
 		return Connector::container()->custom_post_types[$singular]->get_slug();
+	}
+
+	public static function get_custom_meta(WP_Post $post_object, string $meta_id, $single = true)
+	{
+		$post_type = $post_object->post_type;
+		if (!isset(Connector::container()->custom_post_types[$post_type])) {
+			throw new \Exception('custom post type is not existed');
+		}
+		return Connector::container()->custom_post_types[$post_type]->get_post_meta($post_object->ID, $meta_id, $single);
 	}
 
 	public static function taxonomy_slug($singular)
@@ -476,5 +493,14 @@ class Themalizer
 	public static function make_dir_uri($path = '', $echo = true)
 	{
 		Connector::make_dir_uri($path, $echo);
+	}
+
+	public static function get_endpoint(string $endpoint_name, bool $echo = true)
+	{
+		$endpoint = RestRoute::get_route_url($endpoint_name);
+		if (!$echo)
+			return $endpoint;
+		
+		echo $endpoint;
 	}
 }

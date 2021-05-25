@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tests.php
  *
@@ -10,7 +11,8 @@ namespace Themalizer\Helper;
 /**
  * Contain testing methods
  */
-trait Tests {
+trait Tests
+{
 
 	/**
 	 * Use var_dump php function to dump any $var and stop excuting the code.
@@ -18,8 +20,9 @@ trait Tests {
 	 * @param mixed $var the dumped variable.
 	 * @return void
 	 */
-	public static function dump_this( $var ) {
-		var_dump( $var ); // phpcs:ignore
+	public static function dump_this($var)
+	{
+		var_dump($var); // phpcs:ignore
 		die;
 	}
 
@@ -31,12 +34,13 @@ trait Tests {
 	 * @return Exception
 	 * @throws \Exception Variable message.
 	 */
-	public static function isset_test( $var, $msg ) {
+	public static function isset_test($var, $msg)
+	{
 		try {
-			if ( ! isset( $var ) ) {
-				throw new \Exception( $msg );
+			if (!isset($var)) {
+				throw new \Exception($msg);
 			}
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -49,12 +53,13 @@ trait Tests {
 	 * @return Exception
 	 * @throws \Exception Variable message.
 	 */
-	public static function empty_test( $var, $msg ) {
+	public static function empty_test($var, $msg)
+	{
 		try {
-			if ( empty( $var ) ) {
-				throw new \Exception( $msg );
+			if (empty($var)) {
+				throw new \Exception($msg);
 			}
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -67,9 +72,10 @@ trait Tests {
 	 * @return void as it depends on the methods returns.
 	 * @throws \Exception Variable message.
 	 */
-	public static function empty_isset_test( $var, $msg ) {
-		self::isset_test( $var, $msg );
-		self::empty_test( $var, $msg );
+	public static function empty_isset_test($var, $msg)
+	{
+		self::isset_test($var, $msg);
+		self::empty_test($var, $msg);
 	}
 
 	/**
@@ -80,13 +86,14 @@ trait Tests {
 	 * @return Exception
 	 * @throws \Exception Please make sure the object is instance of INIT class.
 	 */
-	public static function is_init_test( $obj, $msg = '' ) {
-		$message = empty( $msg ) ? 'Please make sure the object is instance of INIT class.' : $msg;
+	public static function is_init_test($obj, $msg = '')
+	{
+		$message = empty($msg) ? 'Please make sure the object is instance of INIT class.' : $msg;
 		try {
-			if ( ! $obj instanceof \BoshDev\Core\Init ) {
-				throw new \Exception( $message );
+			if (!$obj instanceof \BoshDev\Core\Init) {
+				throw new \Exception($message);
 			}
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			return $e->getMassege();
 		}
 	}
@@ -99,12 +106,13 @@ trait Tests {
 	 * @return Exception
 	 * @throws \Exception "Please make sure that the object is an instance of $class".
 	 */
-	public static function is_instanceof_test( $obj, $class ) {
+	public static function is_instanceof_test($obj, $class)
+	{
 		try {
-			if ( ! $obj instanceof $class ) {
-				throw new \Exception( "Please make sure that the object is an instance of $class" );
+			if (!$obj instanceof $class) {
+				throw new \Exception("Please make sure that the object is an instance of $class");
 			}
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			return $e->getMassege();
 		}
 	}
@@ -117,14 +125,25 @@ trait Tests {
 	 * @return Exception
 	 * @throws \Exception 'Please make sure the variable value is equal to "' . $str . '"'.
 	 */
-	public static function string_test( $var, $str ) {
+	public static function string_test($var, $str)
+	{
 		try {
-			if ( $var !== $str ) {
-				throw new \Exception( 'Please make sure the variable value is equal to "' . $str . '"' );
+			if ($var !== $str) {
+				throw new \Exception('Please make sure the variable value is equal to "' . $str . '"');
 			}
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			return $e->getMassege();
 		}
 	}
 
+	public static function existed_url_test(string $url)
+	{
+		$file_headers = @get_headers($url);
+		if (!$file_headers || $file_headers[0] == 'HTTP/1.1 404 Not Found') {
+			$exists = false;
+		} else {
+			$exists = true;
+		}
+		return $exists;
+	}
 }
