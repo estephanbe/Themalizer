@@ -353,6 +353,16 @@ class Themalizer
 	}
 
 	/**
+	 * Echo MailChimp Action URL.
+	 *
+	 * @param bool $echo
+	 * @return void
+	 */
+	public static function mailchimp_action_url( $echo = true ) {
+		return Connector::mailchimp_action_url($echo);
+	}
+
+	/**
 	 * Echo MailChimp form.
 	 *
 	 * @param array $args
@@ -463,11 +473,11 @@ class Themalizer
 	 * @param boolean $echo
 	 * @return void
 	 */
-	public static function logo_uri($echo = false)
+	public static function logo_uri( $echo = false, $attrs = array(), $main_size = 'full')
 	{
-		$logo_uri = ImageHandler::get_logo()[0];
+		$logo_uri = ImageHandler::get_logo($attrs, $main_size);
 		if ($echo)
-			echo $logo_uri;
+			echo $logo_uri['src'];
 		return $logo_uri;
 	}
 

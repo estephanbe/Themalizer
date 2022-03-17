@@ -70,9 +70,19 @@ class ImageHandler {
 		return \esc_url( \wp_get_attachment_image_src( $attachment_id, $size_slug )[0] );
 	}
 
-	public static function get_logo(){
+	public static function get_logo($attrs = array(), $main_size = 'full'){
 		$logo = get_theme_mod( 'custom_logo' );
-		return wp_get_attachment_image_src( $logo , 'full' );
+		if(!empty($logo)){
+			$logo_res = array(
+				'src' => wp_get_attachment_image_src( $logo , $main_size )[0]
+			);
+			if( in_array('srcset', $attrs) ){
+				$logo_res['srcset'] = wp_get_attachment_image_srcset($logo, $main_size);
+			}
+		} else {
+			$logo_res = array();
+		}
+		return $logo_res;
 	}
 
 

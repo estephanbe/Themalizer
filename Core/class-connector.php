@@ -113,7 +113,7 @@ class Connector {
 	public static function mailchimp_action_url( $echo = true ) {
 		$url = \esc_url( \get_rest_url() . THEMALIZER_REST_API_NAMESPACE . THEMALIZER_REST_API_MAILCHIMP_ENDPOINT );
 		if ( $echo ) {
-			return $url;
+			echo $url;
 		}
 		return $url;
 	}
