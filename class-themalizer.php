@@ -358,7 +358,8 @@ class Themalizer
 	 * @param bool $echo
 	 * @return void
 	 */
-	public static function mailchimp_action_url( $echo = true ) {
+	public static function mailchimp_action_url($echo = true)
+	{
 		return Connector::mailchimp_action_url($echo);
 	}
 
@@ -473,7 +474,7 @@ class Themalizer
 	 * @param boolean $echo
 	 * @return void
 	 */
-	public static function logo_uri( $echo = false, $attrs = array(), $main_size = 'full')
+	public static function logo_uri($echo = false, $attrs = array(), $main_size = 'full')
 	{
 		$logo_uri = ImageHandler::get_logo($attrs, $main_size);
 		if ($echo)
@@ -510,7 +511,7 @@ class Themalizer
 		$endpoint = RestRoute::get_route_url($endpoint_name);
 		if (!$echo)
 			return $endpoint;
-		
+
 		echo $endpoint;
 	}
 }

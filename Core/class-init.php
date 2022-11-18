@@ -596,12 +596,13 @@ class Init
 			'check_existed_url',
 			array(
 				'route' => 'check_existed_url', // add pregmatch for url to pass to the checker
+				'permission_callback' => '__return_true',
 				'callback' => function (\WP_REST_Request $request) {
 					$url_to_be_tested = $request->get_param('url');
 					if (empty($url_to_be_tested))
-						return new \WP_Error('missing_url_param','Please addd "url" query parameter to the route!', array('success' => false));
-					
-					if (strpos($url_to_be_tested, "http://") !== 0 && strpos($url_to_be_tested, "https://") !== 0 ) {
+						return new \WP_Error('missing_url_param', 'Please addd "url" query parameter to the route!', array('success' => false));
+
+					if (strpos($url_to_be_tested, "http://") !== 0 && strpos($url_to_be_tested, "https://") !== 0) {
 						$url_to_be_tested = 'http://' . $url_to_be_tested;
 					}
 
