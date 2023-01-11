@@ -233,7 +233,7 @@ class Initialize extends Core
 		}
 
 		// Create custom JS file to add the JS theme's functions.
-		if (!is_dir('../assets/js')) 
+		if (!is_dir('../assets/js'))
 			mkdir('../assets/js', 0755, true);
 
 		file_put_contents(

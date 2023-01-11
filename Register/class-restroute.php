@@ -73,6 +73,7 @@ class RestRoute extends WP_REST_Controller
 		add_action('rest_api_init', function () use ($route, $methods, $callback, $args) {
 			register_rest_route(THEMALIZER_REST_API_NAMESPACE, $route, array(
 				'methods' => self::get_method($methods),
+				'permission_callback' => '__return_true',
 				'callback' => $callback,
 				'args' => $args
 			));
@@ -107,9 +108,9 @@ class RestRoute extends WP_REST_Controller
 
 	public static function get_route_object(string $endpoint_name)
 	{
-		if (! isset(Connector::container()->custom_rest_routes)){
+		if (!isset(Connector::container()->custom_rest_routes)) {
 			throw new Exception('There is no endpoint was registered yet');
-		} elseif (! isset(Connector::container()->custom_rest_routes[$endpoint_name])){
+		} elseif (!isset(Connector::container()->custom_rest_routes[$endpoint_name])) {
 			throw new Exception('No route was registered for "' . $endpoint_name . '" endpoint yet!');
 		}
 
@@ -119,12 +120,13 @@ class RestRoute extends WP_REST_Controller
 
 	public static function get_route_url(string $endpoint_name)
 	{
-		if (! isset(Connector::container()->custom_rest_routes)){
+		if (!isset(Connector::container()->custom_rest_routes)) {
 			throw new Exception('There is no endpoint was registered yet');
-		} elseif (! isset(Connector::container()->custom_rest_routes[$endpoint_name])){
+		} elseif (!isset(Connector::container()->custom_rest_routes[$endpoint_name])) {
 			throw new Exception('No route was registered for "' . $endpoint_name . '" endpoint yet!');
 		}
-
+		var_dump(Connector::container()->custom_rest_routes);
+		die;
 		$endpoint = Connector::container()->custom_rest_routes[$endpoint_name]->route;
 		return get_rest_url() . THEMALIZER_REST_API_NAMESPACE . $endpoint;
 	}

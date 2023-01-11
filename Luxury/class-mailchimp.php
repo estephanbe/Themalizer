@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Customizer Class
  *
@@ -11,8 +12,8 @@
 
 namespace Themalizer\Luxury;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 use Themalizer\Core\Connector;
@@ -20,7 +21,8 @@ use Themalizer\Core\Connector;
 /**
  * Manage the mailchimp.
  */
-class Mailchimp {
+class Mailchimp
+{
 
 	/**
 	 * API key.
@@ -42,13 +44,14 @@ class Mailchimp {
 	 *
 	 * @return void
 	 */
-	function __construct() {
+	function __construct()
+	{
 		// Create MailChimp setting page.
-		if ( \is_admin() ) {
-			\add_action( 'admin_menu', array( $this, 'create_settings_page' ) );
-			\add_action( 'admin_menu', array( $this, 'initialize_options' ) );
-			if ( isset( $_GET['page'] ) && THEMALIZER_MAILCHIMP_MENU_SLUG === $_GET['page'] ) { // phpcs:ignore
-				\add_action( 'admin_head', array( $this, 'add_setting_page_style' ) ); // phpcs:ignore
+		if (\is_admin()) {
+			\add_action('admin_menu', array($this, 'create_settings_page'));
+			\add_action('admin_menu', array($this, 'initialize_options'));
+			if (isset($_GET['page']) && THEMALIZER_MAILCHIMP_MENU_SLUG === $_GET['page']) { // phpcs:ignore
+				\add_action('admin_head', array($this, 'add_setting_page_style')); // phpcs:ignore
 			}
 		}
 
@@ -61,7 +64,7 @@ class Mailchimp {
 					THEMALIZER_REST_API_MAILCHIMP_ENDPOINT,
 					array(
 						'methods'  => 'POST',
-						'callback' => array( $this, 'add_subscriber' ),
+						'callback' => array($this, 'add_subscriber'),
 					)
 				);
 			}
@@ -69,8 +72,8 @@ class Mailchimp {
 
 		// Handle the MailChimp submitted emails.
 
-		$this->api_key = \get_option( THEMALIZER_MAILCHIMP_API_KEY_OPTION_NAME );
-		$this->list_id = \get_option( THEMALIZER_MAILCHIMP_LIST_ID_OPTION_NAME );
+		$this->api_key = \get_option(THEMALIZER_MAILCHIMP_API_KEY_OPTION_NAME);
+		$this->list_id = \get_option(THEMALIZER_MAILCHIMP_LIST_ID_OPTION_NAME);
 	}
 
 	/**
@@ -79,10 +82,11 @@ class Mailchimp {
 	 * @param WP_REST_Request $request request object.
 	 * @return void
 	 */
-	public function add_subscriber( \WP_REST_Request $request ) {
+	public function add_subscriber(\WP_REST_Request $request)
+	{
 
-		if ( ! $request['email'] && ! \is_email( $request['email'] ) ) {
-			return new \WP_Error( 'invalid_data_submission', 'Invalid Data Submission', array( 'status' => 422 ) );
+		if (!$request['email'] && !\is_email($request['email'])) {
+			return new \WP_Error('invalid_data_submission', 'Invalid Data Submission', array('status' => 422));
 		}
 
 		$api_key = $this->api_key['text'];
@@ -93,7 +97,7 @@ class Mailchimp {
 		$args     = array(
 			'method'  => 'PUT',
 			'headers' => array(
-				'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
+				'Authorization' => 'Basic ' . base64_encode('user:' . $api_key),
 			),
 			'body'    => \wp_json_encode(
 				array(
@@ -102,18 +106,18 @@ class Mailchimp {
 				)
 			),
 		);
-		$api_url  = 'https://' . substr( $api_key, strpos( $api_key, '-' ) + 1 ) . '.api.mailchimp.com/3.0/lists/' . $list_id . '/members/' . md5( strtolower( $email ) );
-		$response = \wp_remote_post( $api_url, $args );
-		$body     = json_decode( $response['body'] );
+		$api_url  = 'https://' . substr($api_key, strpos($api_key, '-') + 1) . '.api.mailchimp.com/3.0/lists/' . $list_id . '/members/' . md5(strtolower($email));
+		$response = \wp_remote_post($api_url, $args);
+		$body     = json_decode($response['body']);
 
-		if ( $response['response']['code'] == 200 && $body->status == $status ) {
+		if ($response['response']['code'] == 200 && $body->status == $status) {
 			return array(
 				'code'    => 'successful_subscription',
 				'message' => 'Subscriber was added successfully',
 				'status'  => 200,
 			);
 		} else {
-			return new \WP_Error( 'invalid_mailchimp_response', 'Invalid MailChimp Response', array( 'status' => 422 ) );
+			return new \WP_Error('invalid_mailchimp_response', 'Invalid MailChimp Response', array('status' => 422));
 		}
 	}
 
@@ -126,13 +130,14 @@ class Mailchimp {
 	 *
 	 * @return void
 	 */
-	public function create_settings_page() {
+	public function create_settings_page()
+	{
 		\add_options_page(
 			'MailChimp Settings Page',
 			'MailChimp Settings',
 			'manage_options',
 			THEMALIZER_MAILCHIMP_MENU_SLUG,
-			array( $this, 'echo_mailchimp_settings' ),
+			array($this, 'echo_mailchimp_settings'),
 			null
 		);
 	}
@@ -142,24 +147,26 @@ class Mailchimp {
 	 *
 	 * @return void
 	 */
-	public static function echo_mailchimp_settings() {
+	public static function echo_mailchimp_settings()
+	{
 		// Check user capability.
-		if ( ! \current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.' ) ); // phpcs:ignore
+		if (!\current_user_can('manage_options')) {
+			wp_die(__('You do not have sufficient permissions to access this page.')); // phpcs:ignore
 		}
-		?>
+?>
 		<div id="themalizer_settings_page">
-			<h1><?php echo Connector::html_sanitization( \get_admin_page_title() ); // phpcs:ignore ?></h1>
+			<h1><?php echo Connector::html_sanitization(\get_admin_page_title()); // phpcs:ignore 
+				?></h1>
 
 			<?php \settings_errors(); ?>
 
 			<form method="post" action="options.php" id="themalizer_settings_form">
-				<?php \settings_fields( 'themalizer_mailchimp_options_group' ); ?>
-				<?php \do_settings_sections( THEMALIZER_MAILCHIMP_MENU_SLUG ); ?>
+				<?php \settings_fields('themalizer_mailchimp_options_group'); ?>
+				<?php \do_settings_sections(THEMALIZER_MAILCHIMP_MENU_SLUG); ?>
 				<?php \submit_button(); ?>
 			</form>
 		</div>
-		<?php
+<?php
 	}
 
 	/**
@@ -167,12 +174,13 @@ class Mailchimp {
 	 *
 	 * @return void
 	 */
-	public function initialize_options() {
+	public function initialize_options()
+	{
 
 		\add_settings_section(
 			'themalizer_mailchimp_section', // section slug.
 			'MailChimp API Settings', // section title.
-			array( $this, 'add_settings_section_description' ), // callable function to echo section description.
+			array($this, 'add_settings_section_description'), // callable function to echo section description.
 			THEMALIZER_MAILCHIMP_MENU_SLUG, // accociate options page.
 		);
 
@@ -188,7 +196,7 @@ class Mailchimp {
 		);
 
 		/** Register the fields of the section */
-		foreach ( $fields as $field_name => $field_args ) {
+		foreach ($fields as $field_name => $field_args) {
 
 			$field_args        = (object) $field_args;
 			$field_args->width = 100;
@@ -198,7 +206,7 @@ class Mailchimp {
 			\add_settings_field(
 				$field_name, // field slug.
 				$field_args->title, // field title.
-				array( $this, 'echo_settings_field_callback' ), // echo inputs.
+				array($this, 'echo_settings_field_callback'), // echo inputs.
 				THEMALIZER_MAILCHIMP_MENU_SLUG, // accociate options page.
 				'themalizer_mailchimp_section', // accociate section.
 				array(
@@ -217,10 +225,9 @@ class Mailchimp {
 				'themalizer_plugin_' . $field_name, // The option name.
 				array(
 					'default'           => null,
-					'sanitize_callback' => array( $this, 'sanitize_inputs' ), // sanitization callback.
+					'sanitize_callback' => array($this, 'sanitize_inputs'), // sanitization callback.
 				)
 			);
-
 		} // end fields.
 	}
 
@@ -230,19 +237,20 @@ class Mailchimp {
 	 * @param mixed $input the input from the field.
 	 * @return mixed
 	 */
-	public function sanitize_inputs( $input ) {
+	public function sanitize_inputs($input)
+	{
 		$new_input = array();
 
-		if ( null === $input || ! is_array( $input ) ) {
+		if (null === $input || !is_array($input)) {
 			return $new_input;
 		}
 
-		$key = array_keys( $input )[0];
+		$key = array_keys($input)[0];
 
-		switch ( $key ) {
+		switch ($key) {
 			case 'text':
-				if ( isset( $input['text'] ) ) {
-					$new_input['text'] = Connector::text_field_sanitization( $input['text'] );
+				if (isset($input['text'])) {
+					$new_input['text'] = Connector::text_field_sanitization($input['text']);
 				}
 				break;
 			default:
@@ -257,7 +265,8 @@ class Mailchimp {
 	 *
 	 * @return void
 	 */
-	public function add_settings_section_description() {
+	public function add_settings_section_description()
+	{
 		echo "<div class='themalizer-settings-page-section-description'>
 				This section for adding the MailChimp API settings in order to enable the subscriptions.
 			</div>";
@@ -269,15 +278,16 @@ class Mailchimp {
 	 * @param array $args same as $args element in add_settings_field function in initialize_options method.
 	 * @return void
 	 */
-	public function echo_settings_field_callback( $args ) {
+	public function echo_settings_field_callback($args)
+	{
 
 		$args         = (object) $args; // covert the arguments into obj for easier use.
 		$option_name  = 'themalizer_plugin_' . $args->field_name; // generate the option name.
-		$option_value = \get_option( $option_name ); // retrive the option value.
+		$option_value = \get_option($option_name); // retrive the option value.
 
-		$args->type       = Connector::html_attr_sanitization( $args->type );
-		$args->field_name = Connector::html_attr_sanitization( $args->field_name );
-		$option_name      = Connector::html_attr_sanitization( $option_name );
+		$args->type       = Connector::html_attr_sanitization($args->type);
+		$args->field_name = Connector::html_attr_sanitization($args->field_name);
+		$option_name      = Connector::html_attr_sanitization($option_name);
 
 		$this->echo_field(
 			array(
@@ -289,7 +299,6 @@ class Mailchimp {
 				'width'        => $args->width,
 			)
 		);
-
 	}
 
 	/**
@@ -298,7 +307,8 @@ class Mailchimp {
 	 * @param array $args field arguments.
 	 * @return void
 	 */
-	private function echo_field( $args ) {
+	private function echo_field($args)
+	{
 		$field_type   = $args['type'];
 		$field_name   = $args['field_name'];
 		$option_name  = $args['option_name'];
@@ -309,7 +319,7 @@ class Mailchimp {
 		$input_name = $option_name . "[$field_type]";
 
 		$sanitized_option_value = Connector::html_attr_sanitization(
-			isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0
+			isset($option_value[$field_type]) ? $option_value[$field_type] : 0
 		);
 		echo "<input 
 		class='themalizer-settings-page-input' 
@@ -326,12 +336,8 @@ class Mailchimp {
 	 *
 	 * @return void
 	 */
-	public function add_setting_page_style() {
+	public function add_setting_page_style()
+	{
 		echo '<style>#themalizer_settings_page{background-color:#fff;padding:2rem;margin:1rem}#themalizer_settings_page>h1{text-align:center;padding:1rem;margin-bottom:4rem;font-size:300%;font-weight:700}#themalizer_settings_page h2{margin-bottom:.5rem;font-size:150%;font-weight:700}#themalizer_settings_page .form-table{background-color:#fafafa;border:1px solid #dee2e6;width:100%;height:auto;border-collapse:separate;border-spacing:1rem}.switch-msgs{color:#6c757d!important}.themalizer-settings-page-input{display:block;width:100%;height:calc(1.5em + .75rem + 2px);padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;color:#495057;background-color:#fff;background-clip:padding-box;border:1px solid #ced4da;border-radius:.25rem;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}.themalizer-settings-page-input-description{color:#6c757d!important;padding-left:.5rem;padding-top:.5rem}</style>';
 	}
-
-
-
 }
-
-

@@ -31,6 +31,7 @@ use Themalizer\Register\ThemeHeader;
 use Themalizer\Luxury\Customizer;
 use Themalizer\Luxury\Sharing;
 use Themalizer\Luxury\ImageHandler;
+use Themalizer\Luxury\MetaBox;
 use Themalizer\Register\RestRoute;
 
 /**
@@ -39,6 +40,14 @@ use Themalizer\Register\RestRoute;
  */
 class Themalizer
 {
+
+	/**
+	 * Sections are as following:
+	 * 	INITIALIZATIONS
+	 * 	Getters
+	 * 	HTML MANIPULATION
+	 * 	HELPERS
+	 */
 
 	/**
 	 * Call the shared static properties from other classes as a static methods.
@@ -50,21 +59,27 @@ class Themalizer
 
 	public static function __callStatic($method, $args)
 	{
-
 		switch ($method) {
-			case 'panel_id':
-			case 'text_domain':
-			case 'prefix':
-			case 'nav_menus':
-				return Connector::${'theme_' . $method};
+			case strpos($method, 'get_') === 0:
+				return self::static_getter($method);
 				break;
-			case 'development':
-				Connector::$development = $args[0];
+			case strpos($method, 'set_') === 0:
+				return self::static_setter($method, $args);
 				break;
 			default:
 				throw new \Exception('Unavailable static method!');
 				break;
 		}
+	}
+
+	private static function static_getter($property)
+	{
+		return Connector::${substr($property, 4)};
+	}
+
+	private static function static_setter($property, $args)
+	{
+		Connector::${substr($property, 4)} = $args[0];
 	}
 
 	/** =================================== INITIALIZATIONS ===================================== */
@@ -186,14 +201,14 @@ class Themalizer
 	 */
 	public static function sharing($linking_platforms)
 	{
-		Connector::empty_test($linkingPlatforms, 'Please fill out the sharing arguments array.');
+		Connector::empty_test($linking_platforms, 'Please fill out the sharing arguments array.');
 
 		if (!isset(Connector::container()->sharing)) {
 			Connector::container()->sharing = array();
 		}
 
 		// TODO: define Setting->id property
-		$new_sharing = new Sharing($linkingPlatforms);
+		$new_sharing = new Sharing($linking_platforms);
 
 		Connector::container()->sharing[$new_sharing->id] = $new_sharing;
 	}
@@ -263,6 +278,61 @@ class Themalizer
 			throw new \Exception('custom taxonomy is not existed');
 		}
 		return Connector::container()->custom_taxonomies[$singular]->get_slug();
+	}
+
+	public static function change_main_post_label($single, $plural = null)
+	{
+		// Function to change "posts" to "news" in the admin side menu
+		add_action('admin_menu', function () use ($single, $plural) {
+			global $menu;
+			global $submenu;
+			$menu[5][0] = __($plural ?? $single, self::get_text_domain());
+			$submenu['edit.php'][5][0] = __($plural ?? $single, self::get_text_domain());
+			$submenu['edit.php'][10][0] = __('Add ' . $single, self::get_text_domain());
+			$submenu['edit.php'][16][0] = __('Tags', self::get_text_domain());
+			echo '';
+		});
+
+		// Function to change post object labels to "news"
+		add_action('init', function () use ($single, $plural) {
+			global $wp_post_types;
+			$labels = &$wp_post_types['post']->labels;
+			$labels->name = __($plural ?? $single, self::get_text_domain());
+			$labels->singular_name = __($single, self::get_text_domain());
+			$labels->add_new = __('Add ' . $single, self::get_text_domain());
+			$labels->add_new_item = __('Add ' . $single, self::get_text_domain());
+			$labels->edit_item = __('Edit ' . $single, self::get_text_domain());
+			$labels->new_item = __($single, self::get_text_domain());
+			$labels->view_item = __('View ' . $single, self::get_text_domain());
+			$labels->search_items = __("Search " . $plural ?? $single, self::get_text_domain());
+			$labels->not_found = __("No " . ($plural ?? $single) . " Found", self::get_text_domain());
+			$labels->not_found_in_trash = __("No " . ($plural ?? $single) . " found in Trash", self::get_text_domain());
+		});
+	}
+
+	public static function add_meta_box(string $box_title, string $box_type, string $description = '', array $post_types = ['post'])
+	{
+		Connector::container()->meta_boxes[$box_title] = new MetaBox($box_title,  $box_type, $description, $post_types);
+	}
+
+	public static function get_meta_key(string $box_title)
+	{
+		return Connector::container()->meta_boxes[$box_title]->meta_key ?? null;
+	}
+
+	public static function add_js_var(array $vars)
+	{
+		try {
+			foreach ($vars as $key => $value) {
+				if (key_exists($key, Initialization::$js_vars)) {
+					throw new \Exception("JS var '$key' was already assigned");
+				}
+			}
+			Initialization::$js_vars = array_merge(Initialization::$js_vars, $vars);
+		} catch (\Exception $error) {
+			echo "<table>" . $error->xdebug_message . "</table>";
+			die;
+		}
 	}
 
 	/** =================================== HTML MANIPULATION ===================================== */
@@ -434,7 +504,7 @@ class Themalizer
 	 */
 	public static function get_menus_locations()
 	{
-		$nav_menus = array_merge(array('primary' => 'Header Menu'), Connector::$theme_nav_menus);
+		$nav_menus = array_merge(array('primary' => 'Header Menu'), Connector::$nav_menus);
 		$locations = array();
 		foreach ($nav_menus as $location => $desc) {
 			array_push($locations, $location);
@@ -513,5 +583,10 @@ class Themalizer
 			return $endpoint;
 
 		echo $endpoint;
+	}
+
+	public static function get_env(string $env)
+	{
+		return Connector::get_env($env);
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Customizer Class
  *
@@ -11,8 +12,8 @@
 
 namespace Themalizer\Luxury;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 use Themalizer\Core\Connector;
@@ -22,7 +23,8 @@ use Themalizer\Core\Connector;
  *
  * @todo make each setting slug uniqe with its section in order to avoid duplication between sections by prepending the section_id to the setting_slug.
  */
-class Customizer {
+class Customizer
+{
 
 	/**
 	 * Setting arguments which will be overriden with the defult arguments.
@@ -92,25 +94,26 @@ class Customizer {
 	 *
 	 * @param array $args The class arguments.
 	 */
-	public function __construct( $args = array() ) {
-		$this->process_args( $args );
+	public function __construct($args = array())
+	{
+		$this->process_args($args);
 		add_action(
 			'customize_register',
-			function ( $wp_customize ) {
+			function ($wp_customize) {
 				$wp_customize->add_section(
 					$this->section_id,
 					array_merge(
 						array(
 							'description_hidden' => true,
-							'panel'              => Connector::$theme_panel_id,
-							'title'              => __( $this->title, $this->text_domain ), // phpcs:ignore WordPress
-							'description'        => __( $this->description, $this->text_domain ), // phpcs:ignore WordPress
+							'panel'              => Connector::$panel_id,
+							'title'              => __($this->title, $this->text_domain), // phpcs:ignore WordPress
+							'description'        => __($this->description, $this->text_domain), // phpcs:ignore WordPress
 						),
 						$this->extra_args
 					)
 				);
-				$this->add_settings( $wp_customize );
-				$this->add_controls( $wp_customize );
+				$this->add_settings($wp_customize);
+				$this->add_controls($wp_customize);
 			}
 		);
 	}
@@ -121,31 +124,32 @@ class Customizer {
 	 * @param array $args the class arguments.
 	 * @return void
 	 */
-	private function process_args( $args ) {
-		$this->test_the_args( $args ); // test the arguments.
+	private function process_args($args)
+	{
+		$this->test_the_args($args); // test the arguments.
 
-		$this->text_domain  = Connector::$theme_text_domain;
-		$this->theme_prefix = Connector::$theme_prefix;;
+		$this->text_domain  = Connector::$text_domain;
+		$this->theme_prefix = Connector::$prefix;
 		$this->title        = $args['title'];
 		$this->description  = $args['description'];
-		$this->extra_args   = isset( $args['args'] ) ? $args['args'] : array(); // check if there is extra arguments to overide the default settings arguments.
+		$this->extra_args   = isset($args['args']) ? $args['args'] : array(); // check if there is extra arguments to overide the default settings arguments.
 		$this->settings     = $args['settings'];
-		$this->section_id   = $this->theme_prefix . '_' . strtolower( str_replace( ' ', '_', $this->title ) ) . '_customizer'; // generate the section id.
+		$this->section_id   = $this->theme_prefix . '_' . strtolower(str_replace(' ', '_', $this->title)) . '_customizer'; // generate the section id.
 
 		/**
 		 * Prepare the settings for the registration.
 		 */
-		foreach ( $this->settings as $setting_slug => $setting_args ) {
-			$this->section_settings_selectors[ $setting_slug ] = isset( $setting_args['selector'] ) ? substr( $setting_args['selector'], 1 ) : ''; // add the selector.
+		foreach ($this->settings as $setting_slug => $setting_args) {
+			$this->section_settings_selectors[$setting_slug] = isset($setting_args['selector']) ? substr($setting_args['selector'], 1) : ''; // add the selector.
 			$setting_id                                        = $this->theme_prefix . '_' . $setting_slug . '_customizer_setting'; // generate the setting id.
-			$this->settings_processed_ids[ $setting_slug ]     = $setting_id; // add the setting id.
-			$setting_args['control']['type']                   = isset( $setting_args['control']['type'] ) ? $setting_args['control']['type'] : 'text';
+			$this->settings_processed_ids[$setting_slug]     = $setting_id; // add the setting id.
+			$setting_args['control']['type']                   = isset($setting_args['control']['type']) ? $setting_args['control']['type'] : 'text';
 			// Merge the settings with the default settings in order to override any provided settings arguments.
-			$this->processed_settings[ $setting_id ] = array_merge(
+			$this->processed_settings[$setting_id] = array_merge(
 				array(
 					'type'              => 'option',
 					'transport'         => 'postMessage',
-					'sanitize_callback' => array( Connector::class, Connector::get_sanitizing_method( $setting_args['control']['type'] ) ),
+					'sanitize_callback' => array(Connector::class, Connector::get_sanitizing_method($setting_args['control']['type'])),
 				),
 				$setting_args
 			);
@@ -158,25 +162,26 @@ class Customizer {
 	 * @param array $args the class arguments.
 	 * @return void
 	 */
-	private function test_the_args( $args ) {
+	private function test_the_args($args)
+	{
 		$this->args = (object) $args;
-		Connector::empty_test( Connector::$theme_panel_id, 'Add the panel ID in the initialization class.' ); // test if the panel id was initiated.
-		Connector::empty_test( $this->args, 'Add the arguments of the section' ); // test if the section is not empty.
-		Connector::empty_isset_test( $this->args->title, 'Add the section name' ); // test if the section name is set.
-		Connector::empty_isset_test( $this->args->description, 'Add the section description' ); // test if the section description is set.
-		Connector::empty_isset_test( $this->args->settings, 'Add the section settings' ); // test if the settings are set.
-		foreach ( $this->args->settings as $setting_slug => $args ) { // test the settings args.
-			Connector::empty_test( $args, 'Add "' . $setting_slug . '"" setting args' ); // test if the settings args array is not empty.
-			Connector::empty_isset_test( $args['control'], 'Add the control of the "' . $setting_slug . '" setting' ); // test if the control section is set inside the settings args.
-			Connector::empty_isset_test( $args['control']['label'], 'Add the label of the "' . $setting_slug . '" control' ); // test if the contol args array is not empty.
+		Connector::empty_test(Connector::$panel_id, 'Add the panel ID in the initialization class.'); // test if the panel id was initiated.
+		Connector::empty_test($this->args, 'Add the arguments of the section'); // test if the section is not empty.
+		Connector::empty_isset_test($this->args->title, 'Add the section name'); // test if the section name is set.
+		Connector::empty_isset_test($this->args->description, 'Add the section description'); // test if the section description is set.
+		Connector::empty_isset_test($this->args->settings, 'Add the section settings'); // test if the settings are set.
+		foreach ($this->args->settings as $setting_slug => $args) { // test the settings args.
+			Connector::empty_test($args, 'Add "' . $setting_slug . '"" setting args'); // test if the settings args array is not empty.
+			Connector::empty_isset_test($args['control'], 'Add the control of the "' . $setting_slug . '" setting'); // test if the control section is set inside the settings args.
+			Connector::empty_isset_test($args['control']['label'], 'Add the label of the "' . $setting_slug . '" control'); // test if the contol args array is not empty.
 		}
-		if ( isset( $this->args->args['title'] ) ) { // to make sure that it is only taking the main input.
-			unset( $this->args->args['title'] );
+		if (isset($this->args->args['title'])) { // to make sure that it is only taking the main input.
+			unset($this->args->args['title']);
 		}
-		if ( isset( $this->args->args['description'] ) ) { // to make sure that it is only taking the main input.
-			unset( $this->args->args['description'] );
+		if (isset($this->args->args['description'])) { // to make sure that it is only taking the main input.
+			unset($this->args->args['description']);
 		}
-		unset( $this->args );
+		unset($this->args);
 	}
 
 	/**
@@ -185,11 +190,12 @@ class Customizer {
 	 * @param object $wp_customize wp customize retrived class, WordPress default.
 	 * @return void
 	 */
-	public function add_settings( $wp_customize ) {
-		foreach ( $this->processed_settings as $setting_id => $setting_args ) {
-			unset( $setting_args['control'], $setting_args['selector'] );
+	public function add_settings($wp_customize)
+	{
+		foreach ($this->processed_settings as $setting_id => $setting_args) {
+			unset($setting_args['control'], $setting_args['selector']);
 			// register the setting without the control and selector.
-			$wp_customize->add_setting( $setting_id, $setting_args );
+			$wp_customize->add_setting($setting_id, $setting_args);
 		}
 	}
 
@@ -199,17 +205,18 @@ class Customizer {
 	 * @param object $wp_customize wp customize retrived class, WordPress default.
 	 * @return void
 	 */
-	public function add_controls( $wp_customize ) {
-		foreach ( $this->processed_settings as $setting_id => $setting_args ) {
+	public function add_controls($wp_customize)
+	{
+		foreach ($this->processed_settings as $setting_id => $setting_args) {
 
 			$setting_control             = $setting_args['control']; // set the control variable.
-			$priority                    = isset( $setting_control['priority'] ) ? $setting_control['priority'] : 10; // set the priority variable.
+			$priority                    = isset($setting_control['priority']) ? $setting_control['priority'] : 10; // set the priority variable.
 			$setting_control['section']  = $this->section_id; // override or add the section id.
 			$setting_control['settings'] = $setting_id; // override or add the settings id.
-			$setting_control['label']    = __( $setting_control['label'], $this->text_domain ); // phpcs:ignore
+			$setting_control['label']    = __($setting_control['label'], $this->text_domain); // phpcs:ignore
 
 			// Add control according to the field type.
-			switch ( $setting_control['type'] ) {
+			switch ($setting_control['type']) {
 				case 'image':
 					$wp_customize->add_control(
 						new \WP_Customize_Image_Control(
@@ -239,18 +246,18 @@ class Customizer {
 					);
 					break;
 				default:
-					$wp_customize->add_control( $setting_id, $setting_control );
+					$wp_customize->add_control($setting_id, $setting_control);
 					break;
 			}
 
 			// Add the selective refresh partial.
-			$setting_selector = isset( $setting_args['selector'] ) ? $setting_args['selector'] : '';
-			if ( isset( $wp_customize->selective_refresh ) && ! empty( $setting_selector ) ) {
+			$setting_selector = isset($setting_args['selector']) ? $setting_args['selector'] : '';
+			if (isset($wp_customize->selective_refresh) && !empty($setting_selector)) {
 				$wp_customize->selective_refresh->add_partial(
 					$setting_id . '-partial',
 					array(
 						'selector' => $setting_selector,
-						'settings' => array( $setting_id ),
+						'settings' => array($setting_id),
 
 					)
 				);
@@ -265,22 +272,23 @@ class Customizer {
 	 * @param string $selector the selector attribute.
 	 * @return void
 	 */
-	public function selector( $setting_id, $selector = 'd' ) {
-		Connector::empty_test( $setting_id, 'Please add the setting id.' );
+	public function selector($setting_id, $selector = 'd')
+	{
+		Connector::empty_test($setting_id, 'Please add the setting id.');
 		$html = '';
-		switch ( $selector ) {
+		switch ($selector) {
 			case 'd':
 				$html  = ' id="';
-				$html .= Connector::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
+				$html .= Connector::html_attr_sanitization($this->section_settings_selectors[$setting_id]);
 				$html .= '" ';
 				break;
 			case 'c':
 				$html  = ' class="';
-				$html .= Connector::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
+				$html .= Connector::html_attr_sanitization($this->section_settings_selectors[$setting_id]);
 				$html .= '" ';
 				break;
 			case 'v':
-				$html = Connector::html_attr_sanitization( $this->section_settings_selectors[ $setting_id ] );
+				$html = Connector::html_attr_sanitization($this->section_settings_selectors[$setting_id]);
 				break;
 		}
 		echo $html; // phpcs:ignore
@@ -293,24 +301,25 @@ class Customizer {
 	 * @param boolean $echo to echo the setting of not.
 	 * @return string if $echo is false.
 	 */
-	public function setting( $setting_id, $echo = true ) {
-		Connector::empty_test( $setting_id, 'Please add the setting id.' );
-		$setting = get_option( $this->settings_processed_ids[ $setting_id ] );
-		$type    = isset( $this->settings[ $setting_id ]['control']['type'] ) ? $this->settings[ $setting_id ]['control']['type'] : 'text';
-		switch ( $type ) {
+	public function setting($setting_id, $echo = true)
+	{
+		Connector::empty_test($setting_id, 'Please add the setting id.');
+		$setting = get_option($this->settings_processed_ids[$setting_id]);
+		$type    = isset($this->settings[$setting_id]['control']['type']) ? $this->settings[$setting_id]['control']['type'] : 'text';
+		switch ($type) {
 			case 'url':
 			case 'image':
-				$setting = Connector::html_url_sanitization( $setting );
+				$setting = Connector::html_url_sanitization($setting);
 				break;
 			case 'color':
-				$setting = Connector::html_attr_sanitization( $setting );
+				$setting = Connector::html_attr_sanitization($setting);
 				break;
 			default:
-				$setting = Connector::html_sanitization( $setting );
+				$setting = Connector::html_sanitization($setting);
 				break;
 		}
 
-		if ( $echo ) {
+		if ($echo) {
 			echo $setting; // phpcs:ignore
 		} else {
 			return $setting;
@@ -319,5 +328,3 @@ class Customizer {
 
 	// There is issue with non text sanitization controls types like checkbox.
 }
-
-

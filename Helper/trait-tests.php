@@ -40,7 +40,7 @@ trait Tests
 			if (!isset($var)) {
 				throw new \Exception($msg);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -59,7 +59,7 @@ trait Tests
 			if (empty($var)) {
 				throw new \Exception($msg);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -93,7 +93,7 @@ trait Tests
 			if (!$obj instanceof \BoshDev\Core\Init) {
 				throw new \Exception($message);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $e->getMassege();
 		}
 	}
@@ -112,7 +112,7 @@ trait Tests
 			if (!$obj instanceof $class) {
 				throw new \Exception("Please make sure that the object is an instance of $class");
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $e->getMassege();
 		}
 	}
@@ -131,7 +131,7 @@ trait Tests
 			if ($var !== $str) {
 				throw new \Exception('Please make sure the variable value is equal to "' . $str . '"');
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $e->getMassege();
 		}
 	}

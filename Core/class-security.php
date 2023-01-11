@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Security
  *
@@ -11,14 +12,15 @@
 
 namespace Themalizer\Core;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 /**
  * Security Class:
  * Handles all the security issues
  */
-class Security {
+class Security
+{
 
 	private $most_recent_php_version = '';
 	private $server_php_version      = '';
@@ -26,14 +28,14 @@ class Security {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->security_practices();
 
-		if ( ! Connector::$development ) {
+		if (!Connector::get_env('DEVELOPMENT')) {
 			$this->security_headers_and_ini_setups();
 			// $this->check_php_version();
 		}
-
 	}
 
 	/**
@@ -41,8 +43,8 @@ class Security {
 	 *
 	 * @return void
 	 */
-	public function check_index_files() {
-
+	public function check_index_files()
+	{
 	}
 
 	/**
@@ -50,50 +52,51 @@ class Security {
 	 *
 	 * @return void
 	 */
-	private function security_practices() {
+	private function security_practices()
+	{
 		$this->smart_jquery_inclusion();
 
-		define( 'DISALLOW_FILE_EDIT', true );
+		define('DISALLOW_FILE_EDIT', true);
 
-		add_action( 'init', array( $this, 'remove_header_info' ) );
-		add_filter( 'style_loader_src', array( $this, 'at_remove_wp_ver_css_js' ), 9999 );
-		add_filter( 'script_loader_src', array( $this, 'at_remove_wp_ver_css_js' ), 9999 );
-		add_filter( 'wp_headers', array( $this, 'remove_x_pingback' ) );
+		add_action('init', array($this, 'remove_header_info'));
+		add_filter('style_loader_src', array($this, 'at_remove_wp_ver_css_js'), 9999);
+		add_filter('script_loader_src', array($this, 'at_remove_wp_ver_css_js'), 9999);
+		add_filter('wp_headers', array($this, 'remove_x_pingback'));
 
 		// disable ping back scanner and complete xmlrpc class.
-		add_filter( 'wp_xmlrpc_server_class', '__return_false' );
-		add_filter( 'xmlrpc_enabled', '__return_false' );
+		add_filter('wp_xmlrpc_server_class', '__return_false');
+		add_filter('xmlrpc_enabled', '__return_false');
 		// remove wp version meta tag and from rss feed.
-		add_filter( 'the_generator', '__return_false' );
+		add_filter('the_generator', '__return_false');
 		// Remove error mesage in login.
 		add_filter(
 			'login_errors',
-			function() {
-				return __( 'Something is wrong!' );
+			function () {
+				return __('Something is wrong!');
 			}
 		);
 		add_filter(
 			'login_messages',
-			function() {
-				return __( 'Something is wrong!' );
+			function () {
+				return __('Something is wrong!');
 			}
 		);
 		// USECASE : Disable XMLRPC Class compeletely
 		/*Disable complete xmlrpc class. */
-		add_filter( 'wp_xmlrpc_server_class', '__return_false' );
-		add_filter( 'xmlrpc_enabled', '__return_false' );
-
+		add_filter('wp_xmlrpc_server_class', '__return_false');
+		add_filter('xmlrpc_enabled', '__return_false');
 	}
 
-	public function remove_header_info() {
-		remove_action( 'wp_head', 'feed_links_extra', 3 );
-		remove_action( 'wp_head', 'rsd_link' );
-		remove_action( 'wp_head', 'wlwmanifest_link' );
-		remove_action( 'wp_head', 'wp_generator' );
-		remove_action( 'wp_head', 'start_post_rel_link' );
-		remove_action( 'wp_head', 'index_rel_link' );
-		remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );
-		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); // for WordPress >= 3.0
+	public function remove_header_info()
+	{
+		remove_action('wp_head', 'feed_links_extra', 3);
+		remove_action('wp_head', 'rsd_link');
+		remove_action('wp_head', 'wlwmanifest_link');
+		remove_action('wp_head', 'wp_generator');
+		remove_action('wp_head', 'start_post_rel_link');
+		remove_action('wp_head', 'index_rel_link');
+		remove_action('wp_head', 'parent_post_rel_link', 10, 0);
+		remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0); // for WordPress >= 3.0
 	}
 
 	/**
@@ -101,24 +104,27 @@ class Security {
 	 *
 	 * @return void
 	 */
-	public function check_php_version() {
-		if ( is_admin() ) {
+	public function check_php_version()
+	{
+		if (is_admin()) {
 			$url      = 'https://www.php.net/releases/?json&version=7';
-			$response = wp_remote_get( $url, array( 'timeout' => 15 ) );
+			$response = wp_remote_get($url, array('timeout' => 15));
 
-			if ( ! is_wp_error( $response )
-				&& isset( $response['response']['code'] )
-				&& 200 === $response['response']['code'] ) {
-				$body                          = \wp_remote_retrieve_body( $response );
-				$data                          = json_decode( $body );
-				$this->most_recent_php_version = substr( $data->version, 0, 3 );
-				$this->server_php_version      = substr( phpversion(), 0, 3 );
+			if (
+				!is_wp_error($response)
+				&& isset($response['response']['code'])
+				&& 200 === $response['response']['code']
+			) {
+				$body                          = \wp_remote_retrieve_body($response);
+				$data                          = json_decode($body);
+				$this->most_recent_php_version = substr($data->version, 0, 3);
+				$this->server_php_version      = substr(phpversion(), 0, 3);
 
-				if ( $this->server_php_version !== $this->most_recent_php_version ) {
+				if ($this->server_php_version !== $this->most_recent_php_version) {
 					add_action(
 						'admin_notices',
-						function() {
-							$msg = __( 'Your php version is ' . $this->server_php_version . ' and it is not the most recent one which is ' . $this->most_recent_php_version . ', this may make your site vulnerable. please update the php version to the most recent one!' );
+						function () {
+							$msg = __('Your php version is ' . $this->server_php_version . ' and it is not the most recent one which is ' . $this->most_recent_php_version . ', this may make your site vulnerable. please update the php version to the most recent one!');
 							echo '<div class="error notice"><p>' . $msg . '</p></div>';
 						}
 					);
@@ -132,7 +138,8 @@ class Security {
 	 *
 	 * @return void
 	 */
-	private function smart_jquery_inclusion() {
+	private function smart_jquery_inclusion()
+	{
 		// if ( ! is_admin() ) {
 		// wp_deregister_script( 'jquery' );
 		// wp_register_script( 'jquery', ( 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' ), false );
@@ -146,9 +153,10 @@ class Security {
 	 * @param string $src the css or js src.
 	 * @return string
 	 */
-	public function at_remove_wp_ver_css_js( $src ) {
-		if ( strpos( $src, 'ver=' ) ) {
-			$src = remove_query_arg( 'ver', $src );
+	public function at_remove_wp_ver_css_js($src)
+	{
+		if (strpos($src, 'ver=')) {
+			$src = remove_query_arg('ver', $src);
 		}
 		return $src;
 	}
@@ -159,13 +167,14 @@ class Security {
 	 * @param array $headers the headers.
 	 * @return string
 	 */
-	public function remove_x_pingback( $headers ) {
-		unset( $headers['X-Pingback'] );
+	public function remove_x_pingback($headers)
+	{
+		unset($headers['X-Pingback']);
 		return $headers;
-
 	}
 
-	private function security_headers_and_ini_setups() {
+	private function security_headers_and_ini_setups()
+	{
 		// reference: https://websitesetup.org/wordpress-security/
 		// header( 'Content-Security-Policy: default-src https:' );
 		// header( 'X-XSS-Protection: 1; mode=block' );
@@ -176,8 +185,4 @@ class Security {
 		// @ini_set( 'session.cookie_secure', true );
 		// @ini_set( 'session.use_only_cookies', true );
 	}
-
-
-
 }
-

@@ -289,6 +289,13 @@ class Init
 	 */
 	private $mailchimp = false;
 
+	/**
+	 * array of js vars to be enqueued.
+	 *
+	 * @var array
+	 */
+	public static $js_vars = array();
+
 
 	/**
 	 * Set of cusomizable properties.
@@ -311,7 +318,7 @@ class Init
 		'change_post_label_name',
 		'support_admin_script',
 		'customizer_panel',
-		'mailchimp',
+		'mailchimp'
 	);
 
 	/**
@@ -337,6 +344,8 @@ class Init
 		}
 
 		$this->initiate_helpers_endpoints();
+
+		$this->setup_connector_props();
 
 		if (class_exists('WooCommerce')) {
 			add_action(
@@ -395,8 +404,8 @@ class Init
 		$this->admin_css_src          = $this->assets_dir_uri . 'css/admin.css'; // compose the admin stylesheet source.
 		$this->admin_js_src           = $this->script_dir . $this->admin_script_file_name; // compose the admin script source.
 
-		Connector::$theme_text_domain = $this->text_domain;
-		Connector::$theme_prefix = $this->prefix;
+		Connector::$text_domain = $this->text_domain;
+		Connector::$prefix = $this->prefix;
 	}
 
 	/**
@@ -426,7 +435,7 @@ class Init
 			Connector::empty_isset_test($this->customizer_panel['description'], 'Make sure panel description is added to the args and is not empty');
 
 			$this->panel_id = $this->prefix . '_customizer_panel_' . str_replace(' ', '_', strtolower($this->customizer_panel['title']));
-			Connector::$theme_panel_id = $this->panel_id;
+			Connector::$panel_id = $this->panel_id;
 			add_action(
 				'customize_register',
 				function ($wp_customize) {
@@ -463,7 +472,7 @@ class Init
 	public function theme_nav_menus()
 	{
 		$nav_menus = array_merge(array('primary' => 'Header Menu'), $this->nav_menus);
-		Connector::$theme_nav_menus = $nav_menus;
+		Connector::$nav_menus = $nav_menus;
 		foreach ($nav_menus as $location => $description) {
 			register_nav_menu($location, __($description, $this->text_domain)); // phpcs:ignore
 		}
@@ -478,6 +487,11 @@ class Init
 	{
 		wp_enqueue_style($this->stylesheet_name, get_stylesheet_uri(), array(), $this->version);
 		wp_enqueue_script(THEMALIZER_SCRIPT_NAME, $this->js_src, array('jquery'), $this->version, true);
+		wp_localize_script(
+			THEMALIZER_SCRIPT_NAME,
+			"ThemalizerJsVars",
+			self::$js_vars
+		);
 	}
 
 	/**
@@ -616,5 +630,14 @@ class Init
 				}
 			)
 		);
+	}
+
+	private function setup_connector_props()
+	{
+		Connector::$text_domain = $this->text_domain;
+		Connector::$prefix = $this->prefix;
+		Connector::$nav_menus = $this->nav_menus;
+		Connector::$panel_id = $this->panel_id;
+		Connector::$script_name = $this->script_name;
 	}
 }

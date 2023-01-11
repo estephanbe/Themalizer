@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Settings Page Class
  *
@@ -11,8 +12,8 @@
 
 namespace Themalizer\Register;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 use Themalizer\Core\Connector;
@@ -20,7 +21,8 @@ use Themalizer\Core\Connector;
 /**
  * Create theme setting page with options.
  */
-class SettingPage {
+class SettingPage
+{
 
 	/**
 	 * Settings Page Title.
@@ -112,17 +114,17 @@ class SettingPage {
 	 *
 	 * @param array $custom_args initialization args.
 	 */
-	public function __construct( $custom_args = array() ) {
-		$this->process_args( $custom_args );
+	public function __construct($custom_args = array())
+	{
+		$this->process_args($custom_args);
 		$this->add_actions(); // add the necessary actions to register the setting page.
 		$this->setting_page_id = $this->page_title;
 
-		if ( isset( $_GET['page'] ) ) {
-			if ( $this->menu_slug === $_GET['page'] ) {
-				add_action( 'admin_head', array( $this, 'add_setting_page_style' ) );
+		if (isset($_GET['page'])) {
+			if ($this->menu_slug === $_GET['page']) {
+				add_action('admin_head', array($this, 'add_setting_page_style'));
 			}
 		}
-
 	}
 
 	/**
@@ -131,32 +133,32 @@ class SettingPage {
 	 * @param array $custom_args args to be processed.
 	 * @return void
 	 */
-	private function process_args( $custom_args ) {
+	private function process_args($custom_args)
+	{
 
 		// Fill the properties.
-		if ( ! empty( $custom_args ) ) {
-			foreach ( $custom_args as $property => $value ) {
-				if ( in_array( $property, $this->customizable_properties, true ) ) {
+		if (!empty($custom_args)) {
+			foreach ($custom_args as $property => $value) {
+				if (in_array($property, $this->customizable_properties, true)) {
 					$this->{$property} = $value;
 				}
 			}
 		}
 
-		$this->theme_prefix  = Connector::$theme_prefix;
-		$this->menu_slug     = $this->theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->menu_title ) ) . '_slug'; // generate the menu_slug.
-		$this->options_group = $this->theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->menu_title ) ) . '_option_group'; // generate the options_group.
+		$this->theme_prefix  = Connector::$prefix;
+		$this->menu_slug     = $this->theme_prefix . '_' . str_replace(' ', '_', strtolower($this->menu_title)) . '_slug'; // generate the menu_slug.
+		$this->options_group = $this->theme_prefix . '_' . str_replace(' ', '_', strtolower($this->menu_title)) . '_option_group'; // generate the options_group.
 
-		Connector::empty_test( $this->sections, 'Please add at least one section' );
+		Connector::empty_test($this->sections, 'Please add at least one section');
 
-		foreach ( $this->sections as $section => $args ) {
-			Connector::empty_isset_test( $args['title'], 'Please add the title field for "' . $section . '" section.' );
-			Connector::empty_isset_test( $args['fields'], 'Please add the section fields and fill its arguments.' );
+		foreach ($this->sections as $section => $args) {
+			Connector::empty_isset_test($args['title'], 'Please add the title field for "' . $section . '" section.');
+			Connector::empty_isset_test($args['fields'], 'Please add the section fields and fill its arguments.');
 
-			foreach ( $args['fields'] as $field_name => $field_args ) {
-				Connector::empty_isset_test( $field_args['title'], 'Please add the title of ' . $field_name . ' field.' );
+			foreach ($args['fields'] as $field_name => $field_args) {
+				Connector::empty_isset_test($field_args['title'], 'Please add the title of ' . $field_name . ' field.');
 			}
 		}
-
 	}
 
 	/**
@@ -164,10 +166,11 @@ class SettingPage {
 	 *
 	 * @return void
 	 */
-	private function add_actions() {
-		if ( is_admin() ) {
-			add_action( 'admin_menu', array( $this, 'settings_menu' ) );
-			add_action( 'admin_init', array( $this, 'initialize_options' ) );
+	private function add_actions()
+	{
+		if (is_admin()) {
+			add_action('admin_menu', array($this, 'settings_menu'));
+			add_action('admin_init', array($this, 'initialize_options'));
 		}
 	}
 
@@ -176,14 +179,15 @@ class SettingPage {
 	 *
 	 * @return void
 	 */
-	public function settings_menu() {
-		if ( 'theme' === $this->menu_location ) {
+	public function settings_menu()
+	{
+		if ('theme' === $this->menu_location) {
 			add_theme_page(
 				$this->page_title,
 				$this->menu_title,
 				$this->capability,
 				$this->menu_slug,
-				array( $this, 'echo_the_page' ),
+				array($this, 'echo_the_page'),
 				$this->position
 			);
 		} else {
@@ -192,7 +196,7 @@ class SettingPage {
 				$this->menu_title,
 				$this->capability,
 				$this->menu_slug,
-				array( $this, 'echo_the_page' ),
+				array($this, 'echo_the_page'),
 				'',
 				$this->position
 			);
@@ -204,24 +208,26 @@ class SettingPage {
 	 *
 	 * @return void
 	 */
-	public function echo_the_page() {
+	public function echo_the_page()
+	{
 		// Check user capability.
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.' ) ); // phpcs:ignore
+		if (!current_user_can('manage_options')) {
+			wp_die(__('You do not have sufficient permissions to access this page.')); // phpcs:ignore
 		}
-		?>
+?>
 		<div id="themalizer_settings_page">
-			<h1><?php echo Connector::html_sanitization( get_admin_page_title() ); // phpcs:ignore ?></h1>
+			<h1><?php echo Connector::html_sanitization(get_admin_page_title()); // phpcs:ignore 
+				?></h1>
 
 			<?php settings_errors(); ?>
 
 			<form method="post" action="options.php" id="themalizer_settings_form">
-				<?php settings_fields( $this->options_group ); ?>
-				<?php do_settings_sections( $this->menu_slug ); ?>
+				<?php settings_fields($this->options_group); ?>
+				<?php do_settings_sections($this->menu_slug); ?>
 				<?php submit_button(); ?>
 			</form>
 		</div>
-		<?php
+<?php
 	}
 
 	/**
@@ -229,34 +235,35 @@ class SettingPage {
 	 *
 	 * @return void
 	 */
-	public function initialize_options() {
+	public function initialize_options()
+	{
 		/** Loop through each section */
-		foreach ( $this->sections as $section => $args ) {
+		foreach ($this->sections as $section => $args) {
 			add_settings_section(
 				$section, // section slug.
 				$args['title'], // section title.
-				array( $this, 'add_settings_section_description' ), // callable function to echo section description.
+				array($this, 'add_settings_section_description'), // callable function to echo section description.
 				$this->menu_slug // accociate options page.
 			);
 
 			/** Register the fields of the section */
-			foreach ( $args['fields'] as $field_name => $field_args ) {
+			foreach ($args['fields'] as $field_name => $field_args) {
 
 				$field_args = (object) $field_args;
 
 				// assign a value of Null for the below three elements if they have no value in order to define them for the below processing.
-				$field_args->description     = isset( $field_args->description ) ? $field_args->description : null;
-				$field_args->switchable_with = isset( $field_args->switchable_with ) ? $field_args->switchable_with : null;
-				$field_args->dependent       = isset( $field_args->dependent ) ? $field_args->dependent : null;
-				$field_args->width           = isset( $field_args->width ) ? $field_args->width : 100;
+				$field_args->description     = isset($field_args->description) ? $field_args->description : null;
+				$field_args->switchable_with = isset($field_args->switchable_with) ? $field_args->switchable_with : null;
+				$field_args->dependent       = isset($field_args->dependent) ? $field_args->dependent : null;
+				$field_args->width           = isset($field_args->width) ? $field_args->width : 100;
 
 				/**
 				 * Field type can be an array where the 0 index is the field type
 				 * and the 1 index is the html which will prepend the input.
 				 */
-				$field_args->type = isset( $field_args->type ) ? $field_args->type : 'text'; // field type is text by default.
+				$field_args->type = isset($field_args->type) ? $field_args->type : 'text'; // field type is text by default.
 				$field_html       = ''; // for adding any html before the input.
-				if ( is_array( $field_args->type ) ) { // check if the field type is array, then add it's prepending HTML.
+				if (is_array($field_args->type)) { // check if the field type is array, then add it's prepending HTML.
 					$field_html       = $field_args->type[1];
 					$field_args->type = $field_args->type[0];
 				}
@@ -265,7 +272,7 @@ class SettingPage {
 				add_settings_field(
 					$field_name, // field slug.
 					$field_args->title, // field title.
-					array( $this, 'echo_settings_field_callback' ), // echo inputs.
+					array($this, 'echo_settings_field_callback'), // echo inputs.
 					$this->menu_slug, // accociate options page.
 					$section, // accociate section.
 					array(
@@ -287,10 +294,9 @@ class SettingPage {
 					$this->theme_prefix . '_' . $field_name, // The option name created by merging the prefx with the field_name.
 					array(
 						'default'           => null,
-						'sanitize_callback' => array( $this, 'sanitize_inputs' ), // sanitization callback.
+						'sanitize_callback' => array($this, 'sanitize_inputs'), // sanitization callback.
 					)
 				);
-
 			} // end fields.
 		} // end sections.
 	}
@@ -301,34 +307,35 @@ class SettingPage {
 	 * @param mixed $input the input from the field.
 	 * @return mixed
 	 */
-	public function sanitize_inputs( $input ) {
+	public function sanitize_inputs($input)
+	{
 		$new_input = array();
 
-		if ( null === $input || ! is_array( $input ) ) {
+		if (null === $input || !is_array($input)) {
 			return $new_input;
 		}
 
-		$key = array_keys( $input )[0];
+		$key = array_keys($input)[0];
 
-		switch ( $key ) {
+		switch ($key) {
 			case 'checkbox':
-				if ( isset( $input['checkbox'] ) ) {
-					$new_input['checkbox'] = absint( $input['checkbox'] );
+				if (isset($input['checkbox'])) {
+					$new_input['checkbox'] = absint($input['checkbox']);
 				}
 				break;
 			case 'text':
-				if ( isset( $input['text'] ) ) {
-					$new_input['text'] = Connector::text_field_sanitization( $input['text'] );
+				if (isset($input['text'])) {
+					$new_input['text'] = Connector::text_field_sanitization($input['text']);
 				}
 				break;
 			case 'date':
-				if ( isset( $input['date'] ) ) {
-					$new_input['date'] = Connector::text_field_sanitization( $input['date'] );
+				if (isset($input['date'])) {
+					$new_input['date'] = Connector::text_field_sanitization($input['date']);
 				}
 				break;
 			case 'number':
-				if ( isset( $input['number'] ) ) {
-					$new_input['number'] = intval( $input['number'] );
+				if (isset($input['number'])) {
+					$new_input['number'] = intval($input['number']);
 				}
 				break;
 			default:
@@ -344,8 +351,9 @@ class SettingPage {
 	 * @param array $args the section args.
 	 * @return void
 	 */
-	public function add_settings_section_description( $args ) {
-		$description = Connector::html_attr_sanitization( $this->sections[ $args['id'] ]['description'] );
+	public function add_settings_section_description($args)
+	{
+		$description = Connector::html_attr_sanitization($this->sections[$args['id']]['description']);
 
 		// phpcs:disable
 		// echo "<button 
@@ -371,11 +379,12 @@ class SettingPage {
 	 * @param array $args same as $args element in add_settings_field function in initialize_options method.
 	 * @return void
 	 */
-	public function echo_settings_field_callback( $args ) {
+	public function echo_settings_field_callback($args)
+	{
 
 		$args         = (object) $args; // covert the arguments into obj for easier use.
 		$option_name  = $this->theme_prefix . '_' . $args->field_name; // generate the option name.
-		$option_value = get_option( $option_name ); // retrive the option value.
+		$option_value = get_option($option_name); // retrive the option value.
 
 		// TODO: check it later.
 		// $field_retrived_value = get_option( $option_name ); // retrive the option value.
@@ -385,12 +394,12 @@ class SettingPage {
 		// } phpcs:ignore.
 
 		/** Sanitize the outputs */
-		$args->type       = Connector::html_attr_sanitization( $args->type );
-		$args->field_name = Connector::html_attr_sanitization( $args->field_name );
-		$option_name      = Connector::html_attr_sanitization( $option_name );
+		$args->type       = Connector::html_attr_sanitization($args->type);
+		$args->field_name = Connector::html_attr_sanitization($args->field_name);
+		$option_name      = Connector::html_attr_sanitization($option_name);
 
-		if ( $args->dependent || $args->switchable_with ) {
-			$switch = $this->process_dependant_and_switchable( $args->dependent, $args->switchable_with );
+		if ($args->dependent || $args->switchable_with) {
+			$switch = $this->process_dependant_and_switchable($args->dependent, $args->switchable_with);
 		} else {
 			$switch['value'] = false;
 		}
@@ -407,7 +416,6 @@ class SettingPage {
 				'width'        => $args->width,
 			)
 		);
-
 	}
 
 	/**
@@ -417,22 +425,23 @@ class SettingPage {
 	 * @param string $switchable_val switchable_with field id.
 	 * @return array
 	 */
-	private function process_dependant_and_switchable( $dependent_val, $switchable_val ) {
+	private function process_dependant_and_switchable($dependent_val, $switchable_val)
+	{
 		$switch_message = '';
 		$field_switch   = false;
 
 		/** The field weather dependent or switchable, it can't be both. So, elseif has been used. */
-		if ( $dependent_val ) { // if the dependent field doesn't have value, process the switch.
-			$retrived_dependent_val = get_option( $this->theme_prefix . '_' . $dependent_val ); // if dependent field is set, get it's value.
-			if ( empty( $retrived_dependent_val ) ) {
+		if ($dependent_val) { // if the dependent field doesn't have value, process the switch.
+			$retrived_dependent_val = get_option($this->theme_prefix . '_' . $dependent_val); // if dependent field is set, get it's value.
+			if (empty($retrived_dependent_val)) {
 				$field_switch   = true; // enable the switch if dependent field retrived value is empty.
-				$switch_message = "This field has been disabled since the '" . $this->get_switching_field_title( $dependent_val ) . "' field doesn't has value.";  // show the msg if it doesn't have value.
+				$switch_message = "This field has been disabled since the '" . $this->get_switching_field_title($dependent_val) . "' field doesn't has value.";  // show the msg if it doesn't have value.
 			}
-		} elseif ( $switchable_val ) { // if the switchable_with field have value, process the switch.
-			$retrived_switchable_val = get_option( $this->theme_prefix . '_' . $switchable_val ); // if switchable field is set, get it's value.
-			if ( ! empty( $retrived_switchable_val ) ) {
+		} elseif ($switchable_val) { // if the switchable_with field have value, process the switch.
+			$retrived_switchable_val = get_option($this->theme_prefix . '_' . $switchable_val); // if switchable field is set, get it's value.
+			if (!empty($retrived_switchable_val)) {
 				$field_switch   = true; // enable the switch if switchable field retrived value is not empty.
-				$switch_message = "This field has been disabled since the '" . $this->get_switching_field_title( $switchable_val ) . "' field has value.";  // show the msg if it doesn't have value.
+				$switch_message = "This field has been disabled since the '" . $this->get_switching_field_title($switchable_val) . "' field has value.";  // show the msg if it doesn't have value.
 			}
 		}
 
@@ -448,11 +457,12 @@ class SettingPage {
 	 * @param string $field_id the field ID.
 	 * @return string
 	 */
-	private function get_switching_field_title( $field_id ) {
+	private function get_switching_field_title($field_id)
+	{
 		$switching_field_title = '';
-		foreach ( $this->sections as $section_to_be_processed ) { // search for the field value in the main sections.
-			if ( isset( $section_to_be_processed['fields'][ $field_id ] ) ) {
-				$switching_field_title = $section_to_be_processed['fields'][ $field_id ]['title']; // get the title if the field to use it with the below msg.
+		foreach ($this->sections as $section_to_be_processed) { // search for the field value in the main sections.
+			if (isset($section_to_be_processed['fields'][$field_id])) {
+				$switching_field_title = $section_to_be_processed['fields'][$field_id]['title']; // get the title if the field to use it with the below msg.
 				break;
 			}
 		}
@@ -465,7 +475,8 @@ class SettingPage {
 	 * @param array $args field arguments.
 	 * @return void
 	 */
-	private function echo_field( $args ) {
+	private function echo_field($args)
+	{
 		$switch       = $args['switch'];
 		$field_type   = $args['type'];
 		$html         = $args['html'];
@@ -475,7 +486,7 @@ class SettingPage {
 		$description  = $args['description'];
 		$width        = $args['width'];
 
-		if ( $switch['value'] ) {
+		if ($switch['value']) {
 			echo "<div class='switch-msgs'>" . $switch['message'] . '</div>'; // phpcs:ignore
 		}
 
@@ -484,9 +495,9 @@ class SettingPage {
 
 		// phpcs:disable
 		echo $html;
-		switch ( $field_type ) {
+		switch ($field_type) {
 			case 'checkbox':
-				$sanitized_option_value = Connector::html_int_sanitization( isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0 );
+				$sanitized_option_value = Connector::html_int_sanitization(isset($option_value[$field_type]) ? $option_value[$field_type] : 0);
 				echo "<input 
 				class='themalizer-settings-page-input' 
 				style='$switch_styling width:'$width%;'
@@ -494,13 +505,13 @@ class SettingPage {
 				id='$field_name' 
 				name='$input_name' 
 				value='1' 
-				" . checked( 1, $sanitized_option_value, false ) . '
+				" . checked(1, $sanitized_option_value, false) . '
 				/>';
 				echo "<span style='$switch_styling' class='themalizer-settings-page-input-description'>$description</span>";
 				break;
 			default:
 				$sanitized_option_value = Connector::html_attr_sanitization(
-					isset( $option_value[ $field_type ] ) ? $option_value[ $field_type ] : 0
+					isset($option_value[$field_type]) ? $option_value[$field_type] : 0
 				);
 				echo "<input 
 				class='themalizer-settings-page-input' 
@@ -521,7 +532,8 @@ class SettingPage {
 	 *
 	 * @return void
 	 */
-	public function add_setting_page_style() {
+	public function add_setting_page_style()
+	{
 		echo '<style>#themalizer_settings_page{background-color:#fff;padding:2rem;margin:1rem}#themalizer_settings_page>h1{text-align:center;padding:1rem;margin-bottom:4rem;font-size:300%;font-weight:700}#themalizer_settings_page h2{margin-bottom:.5rem;font-size:150%;font-weight:700}#themalizer_settings_page .form-table{background-color:#fafafa;border:1px solid #dee2e6;width:100%;height:auto;border-collapse:separate;border-spacing:1rem}.switch-msgs{color:#6c757d!important}.themalizer-settings-page-input{display:block;width:100%;height:calc(1.5em + .75rem + 2px);padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;color:#495057;background-color:#fff;background-clip:padding-box;border:1px solid #ced4da;border-radius:.25rem;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}.themalizer-settings-page-input-description{color:#6c757d!important;padding-left:.5rem;padding-top:.5rem}</style>';
 	}
 
@@ -531,12 +543,10 @@ class SettingPage {
 	 * @param string $option the option name/id.
 	 * @return mixed
 	 */
-	public function get_option_value( $option ) {
+	public function get_option_value($option)
+	{
 		$option_name = $this->theme_prefix . '_' . $option;
 
-		return get_option( $option_name );
+		return get_option($option_name);
 	}
-
 }
-
-

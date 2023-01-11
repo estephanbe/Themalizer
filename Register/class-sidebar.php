@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Register sidebar Class
  *
@@ -11,8 +12,8 @@
 
 namespace Themalizer\Register;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 use Themalizer\Core\Connector;
@@ -20,7 +21,8 @@ use Themalizer\Core\Connector;
 /**
  * Register sidebar class.
  */
-class Sidebar {
+class Sidebar
+{
 
 	/**
 	 * Sidebar name.
@@ -91,12 +93,13 @@ class Sidebar {
 	 * @param array $args the sidebar arguments.
 	 * @return void
 	 */
-	public function __construct( $args = array() ) {
-		$this->process_args( $args );
+	public function __construct($args = array())
+	{
+		$this->process_args($args);
 
 		add_action(
 			'widgets_init',
-			function() {
+			function () {
 				register_sidebar(
 					array(
 						'name'          => $this->name,
@@ -119,13 +122,14 @@ class Sidebar {
 	 * @param array $custom_args Sidebar arguments.
 	 * @return void
 	 */
-	private function process_args( $custom_args ) {
-		if ( ! empty( $custom_args ) ) {
-			foreach ( $custom_args as $property => $value ) {
+	private function process_args($custom_args)
+	{
+		if (!empty($custom_args)) {
+			foreach ($custom_args as $property => $value) {
 				$this->{$property} = $value;
 			}
 		}
-		$this->id = Connector::$theme_prefix . '_' . strtolower( str_replace( ' ', '_', $this->name ) ) . '_sidebar';
+		$this->id = Connector::$prefix . '_' . strtolower(str_replace(' ', '_', $this->name)) . '_sidebar';
 	}
 
 	/**
@@ -134,18 +138,18 @@ class Sidebar {
 	 * @param array $jquery jQuery amendments to the sidebar.
 	 * @return void
 	 */
-	public function echo( $jquery = array() ) {
+	public function echo($jquery = array())
+	{
 
-		if ( is_active_sidebar( $this->id ) ) {
+		if (is_active_sidebar($this->id)) {
 
-			dynamic_sidebar( $this->id ); // echo the sidebar.
+			dynamic_sidebar($this->id); // echo the sidebar.
 
-			if ( ! empty( $jquery ) ) {
+			if (!empty($jquery)) {
 				$this->jquery = $jquery;
-				add_action( 'wp_print_footer_scripts', array( $this, 'dom_script' ) ); // add the jquery scripts.
+				add_action('wp_print_footer_scripts', array($this, 'dom_script')); // add the jquery scripts.
 			}
 		}
-
 	}
 
 	/**
@@ -153,19 +157,20 @@ class Sidebar {
 	 *
 	 * @return void
 	 */
-	public function dom_script() {
+	public function dom_script()
+	{
 		echo '<script>jQuery(document).ready(function($){';
-		foreach ( $this->jquery as $selector => $action ) { // lood through jQuery set.
-			if ( ! is_array( $action ) ) { // if action is str, then the method has no value like .show().
+		foreach ($this->jquery as $selector => $action) { // lood through jQuery set.
+			if (!is_array($action)) { // if action is str, then the method has no value like .show().
 				echo "$('$selector').$action();"; // phpcs:ignore
 			} else { // the action is a method which has value.
-				foreach ( $action as $method => $method_value ) { // loop through each method to apply it on the selector.
-					if ( ! is_array( $method_value ) ) { // if the method value is str, the method has one value;.
+				foreach ($action as $method => $method_value) { // loop through each method to apply it on the selector.
+					if (!is_array($method_value)) { // if the method value is str, the method has one value;.
 						echo "$('$selector').$method('$method_value');"; // phpcs:ignore
 					} else { // the method value is an array with a key as the first method value and a value as the second method value.
-						foreach ( $method_value as $method_args ) {
+						foreach ($method_value as $method_args) {
 							$args = '';
-							foreach ( $method_args as $method_single_arg ) {
+							foreach ($method_args as $method_single_arg) {
 								$args .= "'$method_single_arg',";
 							}
 							echo "$('$selector').$method($args);"; // phpcs:ignore
@@ -182,9 +187,8 @@ class Sidebar {
 	 *
 	 * @return string
 	 */
-	public function get_id() {
+	public function get_id()
+	{
 		return $this->id;
 	}
 }
-
-

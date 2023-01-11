@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - Register taxonomy Class
  *
@@ -11,8 +12,8 @@
 
 namespace Themalizer\Register;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 use Themalizer\Core\Connector;
@@ -20,7 +21,8 @@ use Themalizer\Core\Connector;
 /**
  * Register new taxonomy.
  */
-class Taxonomy {
+class Taxonomy
+{
 
 	/**
 	 * The taxonomy singular label.
@@ -76,14 +78,15 @@ class Taxonomy {
 	 * @param array  $args The rest of the args.
 	 * @return void
 	 */
-	public function __construct( $singular, $plural, $posts_scope, $args = array() ) {
-		$this->process_args( $singular, $plural, $posts_scope, $args );
+	public function __construct($singular, $plural, $posts_scope, $args = array())
+	{
+		$this->process_args($singular, $plural, $posts_scope, $args);
 		$this->generate_labels();
 
 		add_action(
 			'init',
-			function() {
-				register_taxonomy( $this->slug, $this->posts_scope, $this->args );
+			function () {
+				register_taxonomy($this->slug, $this->posts_scope, $this->args);
 			}
 		);
 	}
@@ -97,26 +100,27 @@ class Taxonomy {
 	 * @param array  $args The rest of the args.
 	 * @return void
 	 */
-	private function process_args( $singular, $plural, $posts_scope, $args ) {
-		Connector::empty_test( $singular, 'Please add the singular name of the taxonomy' );
-		Connector::empty_test( $plural, 'Please add the plural name of the taxonomy' );
-		Connector::empty_test( $posts_scope, 'Empty taxonomy posts_scope' );
+	private function process_args($singular, $plural, $posts_scope, $args)
+	{
+		Connector::empty_test($singular, 'Please add the singular name of the taxonomy');
+		Connector::empty_test($plural, 'Please add the plural name of the taxonomy');
+		Connector::empty_test($posts_scope, 'Empty taxonomy posts_scope');
 		$this->singular = $singular;
 		$this->plural   = $plural;
 
-		if ( ! is_array( $posts_scope ) ) {
-			$posts_scope = array( $posts_scope );
+		if (!is_array($posts_scope)) {
+			$posts_scope = array($posts_scope);
 		}
 		$this->posts_scope = $posts_scope;
 
 		// override the value one by one if it's args.
-		if ( ! empty( $args ) ) {
-			foreach ( $args as $arg_key => $arg_value ) {
-				$this->args[ $arg_key ] = $arg_value;
+		if (!empty($args)) {
+			foreach ($args as $arg_key => $arg_value) {
+				$this->args[$arg_key] = $arg_value;
 			}
 		}
 
-		$this->slug = Connector::$theme_prefix . '_' . str_replace( ' ', '_', strtolower( $this->singular ) ) . '_tax'; // create taxonomy slug.
+		$this->slug = Connector::$prefix . '_' . str_replace(' ', '_', strtolower($this->singular)) . '_tax'; // create taxonomy slug.
 	}
 
 	/**
@@ -124,27 +128,28 @@ class Taxonomy {
 	 *
 	 * @return void
 	 */
-	private function generate_labels() {
+	private function generate_labels()
+	{
 		$singular    = $this->singular;
 		$plural      = $this->plural;
-		$text_domain = Connector::$theme_text_domain;
-    // phpcs:disable
+		$text_domain = Connector::$text_domain;
+		// phpcs:disable
 		$this->args['labels'] = array(
-			'name'                  => _x( $plural, $plural, $text_domain ),
-			'singular_name'         => _x( $singular, $singular, $text_domain ),
-			'search_items'          => __( 'Search ' . $plural, $text_domain ),
-			'all_items'             => __( 'All ' . $plural, $text_domain ),
-			'parent_item'           => __( 'Parent ' . $singular, $text_domain ),
-			'parent_item_colon'     => __( 'Parent ' . $singular, $text_domain ),
-			'edit_item'             => __( 'Edit ' . $singular, $text_domain ),
-			'update_item'           => __( 'Update ' . $singular, $text_domain ),
-			'add_new_item'          => __( 'Add New ' . $singular, $text_domain ),
-			'new_item_name'         => __( 'New ' . $singular . ' Name', $text_domain ),
-			'add_or_remove_items'   => __( 'Add or remove ' . $plural, $text_domain ),
-			'choose_from_most_used' => __( 'Choose from most used ' . $plural, $text_domain ),
-			'menu_name'             => __( $plural, $text_domain ),
-    );
-    // phpcs:enable
+			'name'                  => _x($plural, $plural, $text_domain),
+			'singular_name'         => _x($singular, $singular, $text_domain),
+			'search_items'          => __('Search ' . $plural, $text_domain),
+			'all_items'             => __('All ' . $plural, $text_domain),
+			'parent_item'           => __('Parent ' . $singular, $text_domain),
+			'parent_item_colon'     => __('Parent ' . $singular, $text_domain),
+			'edit_item'             => __('Edit ' . $singular, $text_domain),
+			'update_item'           => __('Update ' . $singular, $text_domain),
+			'add_new_item'          => __('Add New ' . $singular, $text_domain),
+			'new_item_name'         => __('New ' . $singular . ' Name', $text_domain),
+			'add_or_remove_items'   => __('Add or remove ' . $plural, $text_domain),
+			'choose_from_most_used' => __('Choose from most used ' . $plural, $text_domain),
+			'menu_name'             => __($plural, $text_domain),
+		);
+		// phpcs:enable
 	}
 
 	/**
@@ -152,8 +157,8 @@ class Taxonomy {
 	 *
 	 * @return string
 	 */
-	public function get_slug() {
+	public function get_slug()
+	{
 		return $this->slug;
 	}
-
 }

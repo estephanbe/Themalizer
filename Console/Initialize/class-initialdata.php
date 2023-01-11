@@ -44,6 +44,7 @@ class InitialData extends CommandPart
 			}
 		);
 
+		$this->env();
 		$this->style_data();
 		$this->functions_data();
 		$this->header_data();
@@ -53,6 +54,14 @@ class InitialData extends CommandPart
 		}
 
 		$this->nav_walker_data();
+	}
+
+	private function env()
+	{
+		$env_data = <<<EOD
+		DEVELOPMENT=true
+		EOD;
+		file_put_contents('../.env', $env_data);
 	}
 
 	private function style_data()
@@ -150,9 +159,7 @@ class InitialData extends CommandPart
 		 * =============================== Themalizer =================================
 		 */
 		require_once 'Themalizer/autoload.php';
-		
-		Themalizer::development(true); // Please remove this in staging/production invironment. 
-		
+				
 		Themalizer::init(
 			array(
 				'prefix'           => '$theme_prefix',

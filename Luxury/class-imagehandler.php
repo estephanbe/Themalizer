@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class File - ImageHandler Class
  *
@@ -11,8 +12,8 @@
 
 namespace Themalizer\Luxury;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'You are not allowed to get here, TINKY WINKY!!' ); // Exit if accessed directly.
+if (!defined('ABSPATH')) {
+	exit('You are not allowed to get here, TINKY WINKY!!'); // Exit if accessed directly.
 }
 
 use Themalizer\Core\Connector;
@@ -20,7 +21,8 @@ use Themalizer\Core\Connector;
 /**
  * Handle images.
  */
-class ImageHandler {
+class ImageHandler
+{
 
 	public $slug                = '';
 	public $width               = '';
@@ -28,55 +30,58 @@ class ImageHandler {
 	public $crop                = false;
 	public $human_friendly_name = '';
 
-	public function __construct( $slug, $width, $height, $crop = false ) {
-		Connector::empty_test( $slug, 'add the image slug.' );
-		Connector::empty_test( $width, 'add the image slug.' );
-		Connector::empty_test( $height, 'add the image slug.' );
+	public function __construct($slug, $width, $height, $crop = false)
+	{
+		Connector::empty_test($slug, 'add the image slug.');
+		Connector::empty_test($width, 'add the image slug.');
+		Connector::empty_test($height, 'add the image slug.');
 
 		$this->slug                = $slug;
 		$this->width               = $width;
 		$this->height              = $height;
 		$this->crop                = $crop;
-		$this->human_friendly_name = ucfirst( str_replace( '_', ' ', $slug ) );
+		$this->human_friendly_name = ucfirst(str_replace('_', ' ', $slug));
 
 		\add_action(
 			'after_setup_theme',
-			function() {
-				\add_image_size( $this->slug, $this->width, $this->height, $this->crop );
+			function () {
+				\add_image_size($this->slug, $this->width, $this->height, $this->crop);
 			}
 		);
 
 		\add_filter(
 			'image_size_names_choose',
-			function ( $sizes ) {
+			function ($sizes) {
 				return array_merge(
 					$sizes,
 					array(
-						$this->slug => \__( $this->human_friendly_name ),
+						$this->slug => \__($this->human_friendly_name),
 					)
 				);
 			}
 		);
 	}
 
-	public static function change_image_size( $url, $size_slug ) {
-		Connector::empty_test( $url, 'add the image url.' );
-		Connector::empty_test( $size_slug, 'add the size slug.' );
+	public static function change_image_size($url, $size_slug)
+	{
+		Connector::empty_test($url, 'add the image url.');
+		Connector::empty_test($size_slug, 'add the size slug.');
 		$attachment_id = $url;
-		if ( gettype( $attachment_id ) !== 'integer' ) {
-			$attachment_id = \attachment_url_to_postid( $url );
+		if (gettype($attachment_id) !== 'integer') {
+			$attachment_id = \attachment_url_to_postid($url);
 		}
 
-		return \esc_url( \wp_get_attachment_image_src( $attachment_id, $size_slug )[0] );
+		return \esc_url(\wp_get_attachment_image_src($attachment_id, $size_slug)[0]);
 	}
 
-	public static function get_logo($attrs = array(), $main_size = 'full'){
-		$logo = get_theme_mod( 'custom_logo' );
-		if(!empty($logo)){
+	public static function get_logo($attrs = array(), $main_size = 'full')
+	{
+		$logo = get_theme_mod('custom_logo');
+		if (!empty($logo)) {
 			$logo_res = array(
-				'src' => wp_get_attachment_image_src( $logo , $main_size )[0]
+				'src' => wp_get_attachment_image_src($logo, $main_size)[0]
 			);
-			if( in_array('srcset', $attrs) ){
+			if (in_array('srcset', $attrs)) {
 				$logo_res['srcset'] = wp_get_attachment_image_srcset($logo, $main_size);
 			}
 		} else {
@@ -84,8 +89,4 @@ class ImageHandler {
 		}
 		return $logo_res;
 	}
-
-
 }
-
-
