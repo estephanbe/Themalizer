@@ -21,7 +21,7 @@ if (class_exists('Themalizer')) {
 }
 
 /** Include external libraries */
-require_once 'vendor/autoload.php';
+//require_once 'vendor/autoload.php';
 
 /** Include Helper Functions */
 require_once 'themalizer-helper-functions.php';
