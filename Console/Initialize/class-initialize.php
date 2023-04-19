@@ -69,7 +69,7 @@ class Initialize extends Core
 	public $files_names = array(
 
 		'home.php'           => 'Home Page Theme Template',
-		'front-page.php'     => 'Front Page Theme Template',
+		'_front-page.php'     => 'Front Page Theme Template',
 		'privacy-policy.php' => 'Privacy Policy Theme Template',
 		'singular.php'       => 'Singular Theme Template',
 		'single.php'         => 'Single Theme Template',

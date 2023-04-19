@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class File - ImageHandler Class
+ * Class File - Metabox Creator Class
  *
  * @package Themalizer
  * @copyright 2019-2020 BoshDev - Bisharah Estephan

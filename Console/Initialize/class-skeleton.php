@@ -37,7 +37,7 @@ class Skeleton extends CommandPart {
 		array( 6, './page-templates/', 'Directory for custom WP templates.' ),
 		array( 7, './template-parts/', 'Directory for the WP default template parts.' ),
 		array( 8, './home.php', 'This template is used to render the blog posts index.' ),
-		array( 9, './front-page.php', 'This template is used to render your site’s front page.' ),
+		array( 9, './_front-page.php', 'This template is used to render your site’s _front page.' ),
 		array( 10, './privacy-policy.php', 'This template is used to render your site’s Privacy Policy page.' ),
 		array( 11, './singular.php', 'This template is used to backup single & page templates if one of them is not existed.' ),
 		array( 12, './single.php', 'This template is used to render a single post.' ), // custom post type

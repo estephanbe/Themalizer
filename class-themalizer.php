@@ -317,7 +317,7 @@ class Themalizer
 
 	public static function get_meta_key(string $box_title)
 	{
-		return Connector::container()->meta_boxes[$box_title]->meta_key ?? null;
+		return Connector::container()->meta_boxes[$box_title]->meta_key ?? '';
 	}
 
 	public static function add_js_var(array $vars)
@@ -589,4 +589,12 @@ class Themalizer
 	{
 		return Connector::get_env($env);
 	}
+
+    public static function with_prefix($str, $hyphen = false) : string {
+        if(!$hyphen) {
+            return self::get_prefix() . "_" . $str;
+        } else {
+	        return self::get_prefix() . "-" . $str;
+        }
+    }
 }

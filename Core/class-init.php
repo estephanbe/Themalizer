@@ -60,7 +60,7 @@ class Init
 	private $prefix = 'bod';
 
 	/**
-	 * The assets directory name which contains the front-end directories and files.
+	 * The assets directory name which contains the _front-end directories and files.
 	 * Customizable.
 	 *
 	 * @var string 'assets'
