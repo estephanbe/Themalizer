@@ -125,8 +125,7 @@ class RestRoute extends WP_REST_Controller
 		} elseif (!isset(Connector::container()->custom_rest_routes[$endpoint_name])) {
 			throw new Exception('No route was registered for "' . $endpoint_name . '" endpoint yet!');
 		}
-		var_dump(Connector::container()->custom_rest_routes);
-		die;
+
 		$endpoint = Connector::container()->custom_rest_routes[$endpoint_name]->route;
 		return get_rest_url() . THEMALIZER_REST_API_NAMESPACE . $endpoint;
 	}

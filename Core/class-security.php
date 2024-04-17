@@ -60,8 +60,6 @@ class Security
 			define('DISALLOW_FILE_EDIT', true);
 
 		add_action('init', array($this, 'remove_header_info'));
-		add_filter('style_loader_src', array($this, 'at_remove_wp_ver_css_js'), 9999);
-		add_filter('script_loader_src', array($this, 'at_remove_wp_ver_css_js'), 9999);
 		add_filter('wp_headers', array($this, 'remove_x_pingback'));
 
 		// disable ping back scanner and complete xmlrpc class.
